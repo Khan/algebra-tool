@@ -11,7 +11,8 @@ class Button extends React.Component {
 
     static defaultProps = {
         color: '#099',
-        activeColor: '#066'
+        activeColor: '#066',
+        width: 44
     };
 
     touchStart = () => {
@@ -24,19 +25,23 @@ class Button extends React.Component {
     };
 
     render() {
-        const {color, activeColor} = this.props;
+        const {bgColor, bgActive, transparent, width} = this.props;
+
+        const color = this.state.active ? bgActive : bgColor;
 
         const style = {
             display: 'inline-block',
-            width: 47.5,
+            width: width,
             height: 32,
-            backgroundColor: this.state.active ? activeColor : color,
-            color: 'white',
-            lineHeight: '32px',
+            backgroundColor: transparent ? 'white' : color,
+            color: transparent ? color : 'white',
+            lineHeight: transparent ? '28px' : '32px',
             textAlign: 'center',
             borderRadius: 4,
             marginLeft: 5,
-            fontFamily: 'helvetica-light'
+            fontFamily: 'helvetica-light',
+            boxSizing: 'border-box',
+            border: transparent ? '2px solid' : 'none'
         };
 
         return <div
