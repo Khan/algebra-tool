@@ -21,6 +21,7 @@ class Button extends React.Component {
     };
 
     touchEnd = () => {
+        console.log('touchEnd');
         this.setState({ active: false });
     };
 

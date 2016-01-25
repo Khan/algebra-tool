@@ -1,6 +1,8 @@
 const React = require('react');
+const { connect } = require('react-redux');
 
 const Keypad = require('./keypad.js');
+const Display = require('./display.js');
 
 class App extends React.Component {
     render() {
@@ -10,10 +12,13 @@ class App extends React.Component {
             left: 0
         };
 
-        return <div style={keypadStyle}>
-            <Keypad />
+        return <div>
+            <Display math={this.props.currentLine} />
+            <div style={keypadStyle}>
+                <Keypad />
+            </div>
         </div>;
     }
 }
 
-module.exports = App;
+module.exports = connect(state => state)(App);

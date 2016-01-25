@@ -1,0 +1,35 @@
+const { createStore } = require('redux');
+
+const math = '2x + 5 = 10';
+
+const initialState = {
+    currentLine: math,
+    cursorPosition: math.length
+};
+
+const reducer = (state = initialState, action) => {
+    const {currentLine, cursorPosition} = state;
+
+    switch (action.type) {
+        case 'INSERT':
+            return {
+                ...state,
+                currentLine: currentLine.substring(0, currentPosition) + action.value + currentLine.substring(currentPosition),
+                cursorPosition: cursorPosition + 1
+            };
+        case 'CURSOR_LEFT':
+            return {
+                ...state,
+                cursorPosition: Math.max(cursorPosition - 1, 0)
+            };
+        case 'CURSOR_RIGHT':
+            return {
+                ...state,
+                cursorPosition: Math.min(cursorPosition + 1, currentLine.length)
+            };
+        default:
+            return state;
+    }
+};
+
+module.exports = createStore(reducer);
