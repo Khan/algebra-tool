@@ -14,8 +14,14 @@ const reducer = (state = initialState, action) => {
         case 'INSERT':
             return {
                 ...state,
-                currentLine: currentLine.substring(0, currentPosition) + action.value + currentLine.substring(currentPosition),
+                currentLine: currentLine.substring(0, cursorPosition) + action.value + currentLine.substring(cursorPosition),
                 cursorPosition: cursorPosition + 1
+            };
+        case 'BACKSPACE':
+            return {
+                ...state,
+                currentLine: currentLine.length > 0 ? currentLine.substring(0, cursorPosition - 1) + currentLine.substring(cursorPosition) : '',
+                cursorPosition: Math.max(cursorPosition - 1, 0)
             };
         case 'CURSOR_LEFT':
             return {

@@ -6,7 +6,8 @@ class Display extends React.Component {
             fontFamily: 'helvetica-light',
             fontSize: 28
         };
-        return <div style={style}>{this.props.math}</div>;
+
+        return <div style={style}>{this.props.currentLine}</div>;
     }
 }
 

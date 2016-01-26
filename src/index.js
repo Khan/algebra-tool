@@ -7,8 +7,9 @@ const store = require('./store.js');
 
 const container = document.getElementById('app-container');
 
-const provider = <Provider store={store}>
-    <App/>
-</Provider>;
-
-ReactDOM.render(provider, container);
+window.onload = function() {
+    const provider = <Provider store={store}>
+        <App/>
+    </Provider>;
+    ReactDOM.render(provider, container);
+};

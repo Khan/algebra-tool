@@ -13,7 +13,7 @@ class App extends React.Component {
         };
 
         return <div>
-            <Display math={this.props.currentLine} />
+            <Display {...this.props} />
             <div style={keypadStyle}>
                 <Keypad />
             </div>

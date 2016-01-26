@@ -12,17 +12,18 @@ class Button extends React.Component {
     static defaultProps = {
         color: '#099',
         activeColor: '#066',
-        width: 44
+        width: 44,
+        onTap: () => {}
     };
 
-    touchStart = () => {
-        console.log(this.props.children);
+    handleTouchStart = (e) => {
+        e.preventDefault();
         this.setState({ active: true });
     };
 
-    touchEnd = () => {
-        console.log('touchEnd');
+    handleTouchEnd = () => {
         this.setState({ active: false });
+        this.props.onTap(this.props.children);
     };
 
     render() {
@@ -31,6 +32,7 @@ class Button extends React.Component {
         const color = this.state.active ? bgActive : bgColor;
 
         const style = {
+            fontSize: 22,
             display: 'inline-block',
             width: width,
             height: 32,
@@ -40,15 +42,15 @@ class Button extends React.Component {
             textAlign: 'center',
             borderRadius: 4,
             marginLeft: 5,
-            fontFamily: 'helvetica-light',
+            fontFamily: 'helvetica',
             boxSizing: 'border-box',
             border: transparent ? '2px solid' : 'none'
         };
 
         return <div
             style={style}
-            onTouchStart={this.touchStart}
-            onTouchEnd={this.touchEnd}
+            onTouchStart={this.handleTouchStart}
+            onTouchEnd={this.handleTouchEnd}
         >
             {this.props.children}
         </div>;
