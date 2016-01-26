@@ -17,9 +17,27 @@ class Keypad extends React.Component {
         });
     };
 
+    handleOperator = (operator) => {
+        store.dispatch({
+            type: 'INSERT',
+            value: operator
+        });
+    };
+
+    handleLeft = () => {
+        store.dispatch({
+            type: 'CURSOR_LEFT'
+        });
+    };
+
+    handleRight = () => {
+        store.dispatch({
+            type: 'CURSOR_RIGHT'
+        });
+    };
+
     render() {
         const width = window.innerWidth;
-        console.log(width);
         const margin = 5;
         const buttonWidth = ((width - margin) / 6) - margin;
 
@@ -53,8 +71,8 @@ class Keypad extends React.Component {
             <div style={rowStyle}>
                 <Button {...topRowColor}>...</Button>
                 <Button {...topRowColor}>abc</Button>
-                <Button {...topRowColor}>&#x2190;</Button>
-                <Button {...topRowColor}>&#x2192;</Button>
+                <Button {...topRowColor} onTap={this.handleLeft}>&#x2190;</Button>
+                <Button {...topRowColor} onTap={this.handleRight}>&#x2192;</Button>
                 <Button {...topRowColor}>&#x21ba;</Button>
                 <Button {...topRowColor}>&#x21bb;</Button>
             </div>
@@ -64,7 +82,7 @@ class Keypad extends React.Component {
                 <Button {...numStyle} onTap={this.handleNumber}>7</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>8</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>9</Button>
-                <Button {...opColors}>+</Button>
+                <Button {...opColors} onTap={this.handleOperator}>+</Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors}>d</Button>
@@ -72,7 +90,7 @@ class Keypad extends React.Component {
                 <Button {...numStyle} onTap={this.handleNumber}>4</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>5</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>6</Button>
-                <Button {...opColors}>–</Button>
+                <Button {...opColors} onTap={this.handleOperator}>–</Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors}>x</Button>
@@ -80,7 +98,7 @@ class Keypad extends React.Component {
                 <Button {...numStyle} onTap={this.handleNumber}>1</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>2</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>3</Button>
-                <Button {...opColors}>·</Button>
+                <Button {...opColors} onTap={this.handleOperator}>·</Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors}>y</Button>
@@ -88,7 +106,7 @@ class Keypad extends React.Component {
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
                 <Button {...numStyle} onTap={this.handleBackspace}>&#x25c0;</Button>
-                <Button {...opColors}>÷</Button>
+                <Button {...opColors} onTap={this.handleOperator}>÷</Button>
             </div>
         </div>;
     }
