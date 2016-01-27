@@ -1,6 +1,8 @@
 const React = require('react');
+const { connect } = require('react-redux');
 
 const { createFlatLayout } = require('./layout.js');
+const store = require('./store.js');
 
 class StaticMath extends React.Component {
     constructor() {
@@ -36,61 +38,54 @@ class StaticMath extends React.Component {
         this.setState({ context, layout });
     }
 
-    componentWillReceiveProps(nextProps) {
-        //const { fontSize, math } = nextProps;
-        //
-        //let layout = createFlatLayout(
-        //    math, fontSize, window.innerWidth, window.innerHeight);
-        //
-        //this.setState({ layout });
-    }
+    handleTouchStart = (e) => {
+        const {layout} = this.state;
+        const touch = e.changedTouches[0];
+        const node = layout.hitTest(touch.pageX, touch.pageY);
 
-    componentWillUpdate(nextProps, nextState) {
-        //const { context } = this.state;
-        //
-        //if (context) {
-        //    const canvas = context.canvas;
-        //    context.clearRect(0, 0, canvas.width, canvas.height);
-        //
-        //    const currentLayout = this.state.layout;
-        //    const nextLayout = nextState.layout;
-        //
-        //    const { selections, hitNode } = nextState;
-        //
-        //    if (selections.getLength() > 0) {
-        //        this.drawSelection(selections, hitNode, nextLayout, nextState);
-        //    }
-        //
-        //    context.fillStyle = nextProps.color;
-        //
-        //    if (currentLayout !== nextLayout) {
-        //        const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
-        //
-        //        let t = 0;
-        //        animatedLayout.callback = () => {
-        //            context.clearRect(0, 0, canvas.width, canvas.height);
-        //            this.drawLayout(context, animatedLayout);
-        //            t += 0.035;
-        //        };
-        //
-        //        animatedLayout.start();
-        //    } else {
-        //        this.drawLayout(context, currentLayout);
-        //    }
-        //}
-    }
+        store.dispatch({
+            type: 'UPDATE_CURSOR',
+            node: node,
+        });
+    };
+
+    handleTouchEnd = (e) => {
+        const {layout} = this.state;
+        const touch = e.changedTouches[0];
+        const node = layout.hitTest(touch.pageX, touch.pageY);
+
+        store.dispatch({
+            type: 'UPDATE_CURSOR',
+            node: node,
+        });
+    };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.cursorNode !== this.props.cursorNode) {
+            this.drawLayout(this.state.context, this.state.layout);
+        }
+    };
 
     drawLayout(context, currentLayout) {
+        context.clearRect(0, 0, this.props.width, this.props.height);
+        context.fillStyle = 'rgba(255,255,0,0.5)';
+        const cursorLayout = this.props.cursorNode;
+        if (cursorLayout) {
+            const bounds = cursorLayout.getBounds();
+            const width = bounds.right - bounds.left;
+            const height = bounds.bottom - bounds.top;
+            context.fillRect(bounds.left, bounds.top, width, height);
+        }
+
         context.fillStyle = 'rgb(0, 0, 0)';
         currentLayout.render(context);
-
     }
 
     render() {
-        return <div>
+        return <div onTouchEnd={this.handleTouchEnd}>
             <div ref="container"></div>
         </div>;
     }
 }
 
-module.exports = StaticMath;
+module.exports = connect(state => state)(StaticMath);

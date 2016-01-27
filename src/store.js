@@ -7,7 +7,8 @@ const math = parser.parse('2x + 5 = 10');
 
 const initialState = {
     currentLine: math,
-    cursorPosition: math.length
+    cursorPosition: math.length,
+    cursorNode: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -35,6 +36,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 cursorPosition: Math.min(cursorPosition + 1, currentLine.length)
+            };
+        case 'UPDATE_CURSOR':
+            return {
+                ...state,
+                cursorNode: action.node,
             };
         default:
             return state;
