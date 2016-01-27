@@ -1,6 +1,9 @@
 const { createStore } = require('redux');
+const Parser = require('./parser');
 
-const math = '2x + 5 = 10';
+const parser = new Parser();
+
+const math = parser.parse('2x + 5 = 10');
 
 const initialState = {
     currentLine: math,
