@@ -19,6 +19,21 @@ class App extends React.Component {
 
         return <div>
             <StaticMath
+                active={false}
+                fontSize={fontSize}
+                math={math}
+                width={width}
+                height={height}
+            />
+            <StaticMath
+                active={false}
+                fontSize={fontSize}
+                math={math}
+                width={width}
+                height={height}
+            />
+            <StaticMath
+                active={true}
                 fontSize={fontSize}
                 math={math}
                 width={width}

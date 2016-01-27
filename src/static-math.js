@@ -39,9 +39,14 @@ class StaticMath extends React.Component {
     }
 
     handleTouchStart = (e) => {
+        if (!this.props.active) {
+            return;
+        }
+        const container = this.refs.container;
+
         const {layout} = this.state;
         const touch = e.changedTouches[0];
-        const node = layout.hitTest(touch.pageX, touch.pageY);
+        const node = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
@@ -50,9 +55,14 @@ class StaticMath extends React.Component {
     };
 
     handleTouchEnd = (e) => {
+        if (!this.props.active) {
+            return;
+        }
+        const container = this.refs.container;
+
         const {layout} = this.state;
         const touch = e.changedTouches[0];
-        const node = layout.hitTest(touch.pageX, touch.pageY);
+        const node = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
@@ -69,15 +79,18 @@ class StaticMath extends React.Component {
     drawLayout(context, currentLayout) {
         context.clearRect(0, 0, this.props.width, this.props.height);
         context.fillStyle = 'rgba(255,255,0,0.5)';
-        const cursorLayout = this.props.cursorNode;
-        if (cursorLayout) {
-            const bounds = cursorLayout.getBounds();
-            const width = bounds.right - bounds.left;
-            const height = bounds.bottom - bounds.top;
-            context.fillRect(bounds.left, bounds.top, width, height);
+
+        if (this.props.active) {
+            const cursorLayout = this.props.cursorNode;
+            if (cursorLayout) {
+                const bounds = cursorLayout.getBounds();
+                const width = bounds.right - bounds.left;
+                const height = bounds.bottom - bounds.top;
+                context.fillRect(bounds.left, bounds.top, width, height);
+            }
         }
 
-        context.fillStyle = 'rgb(0, 0, 0)';
+        context.fillStyle = this.props.active ? 'rgb(0, 0, 0)' : 'rgba(0, 0, 0, 0.25)';
         currentLayout.render(context);
     }
 
