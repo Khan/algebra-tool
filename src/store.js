@@ -7,7 +7,7 @@ const math = parser.parse('2x + 5 = 10');
 
 const initialState = {
     currentLine: math,
-    cursorPosition: math.length,
+    cursorPosition: 0,
     cursorNode: null,
 };
 
@@ -33,9 +33,10 @@ const reducer = (state = initialState, action) => {
                 cursorPosition: Math.max(cursorPosition - 1, 0)
             };
         case 'CURSOR_RIGHT':
+            // TODO: check how many characters are in this leaf node
             return {
                 ...state,
-                cursorPosition: Math.min(cursorPosition + 1, currentLine.length)
+                cursorPosition: cursorPosition + 1
             };
         case 'UPDATE_CURSOR':
             return {

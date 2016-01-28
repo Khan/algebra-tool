@@ -74,7 +74,7 @@ class StaticMath extends React.Component {
     };
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.cursorNode !== this.props.cursorNode) {
+        if (prevProps.cursorNode !== this.props.cursorNode || prevProps.cursorPosition !== this.props.cursorPosition) {
             this.drawLayout(this.state.context, this.state.layout);
         }
     };
@@ -85,6 +85,8 @@ class StaticMath extends React.Component {
         context.lineWidth = 2;
 
         const astNode = this.props.cursorNode;
+        const cursorPosition = this.props.cursorPosition;
+        console.log(`cursorPosition = ${cursorPosition}`);
 
         if (this.props.active && astNode) {
 
@@ -104,10 +106,28 @@ class StaticMath extends React.Component {
             const layoutNodes = layoutDict[astNode.id];
 
             if (layoutNodes.length === 1) {
-                const fontSize = layoutNodes[0].fontSize;
+                let layoutNode = layoutNodes[0];
+                let right = cursorPosition > 0;
+
+                const fontSize = layoutNode.fontSize;
+                const bounds = layoutNode.getBounds();
+
+                let x = bounds.left;
+
+                if (layoutNode.children) {
+                    right = cursorPosition === layoutNode.children.length;
+                    if (cursorPosition < layoutNode.children.length) {
+                        x += layoutNode.children[cursorPosition].x;
+                    }
+                }
+
+                if (right) {
+                    x = bounds.right;
+                }
+
                 context.beginPath();
-                context.moveTo(layoutNodes[0].x, layoutNodes[0].y - 0.85 * fontSize);
-                context.lineTo(layoutNodes[0].x, layoutNodes[0].y + 0.15 * fontSize);
+                context.moveTo(x, layoutNode.y - 0.85 * fontSize);
+                context.lineTo(x, layoutNode.y + 0.15 * fontSize);
                 context.stroke();
             }
         }
