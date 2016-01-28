@@ -14,7 +14,7 @@ class App extends React.Component {
 
         const width = window.innerWidth;
         const fontSize = 30;
-        const height = 60;
+        const height = 80;
         const math = this.props.currentLine;
 
         return <div>

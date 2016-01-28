@@ -86,7 +86,6 @@ class StaticMath extends React.Component {
 
         const astNode = this.props.cursorNode;
         const cursorPosition = this.props.cursorPosition;
-        console.log(`cursorPosition = ${cursorPosition}`);
 
         if (this.props.active && astNode) {
 

@@ -34,8 +34,37 @@ function findNode(node, id) {
     return null;
 }
 
+function traverseNode(node, callback) {
+    callback(node);
+    if (["Expression", "Product"].includes(node.type)) {
+        for (const child of node) {
+            traverseNode(child, callback);
+        }
+    } else if (node.type === "Equation") {
+        traverseNode(node.left, callback);
+        traverseNode(node.right, callback);
+    } else if (node.type === "Fraction") {
+        traverseNode(node.numerator, callback);
+        traverseNode(node.denominator, callback);
+    } else if (node.type === "Negation") {
+        traverseNode(node.value, callback);
+    } else if (node.type === "Math") {
+        traverseNode(node.root, callback);
+    }
+}
+
+function getLeafNodes(root) {
+    const leafNodes = [];
+    traverseNode(root, node => {
+        if (node.type === 'Literal' || node.type === 'Identifier') {
+            leafNodes.push(node);
+        }
+    });
+    return leafNodes;
+}
 
 module.exports = {
     generateId,
     findNode,
+    getLeafNodes,
 };
