@@ -17,7 +17,7 @@ class Math extends Node {
         const clone = Object.create(Math.prototype);
         clone.id = uniqueId ? generateId() : this.id;
         clone.type = this.type;
-        clone.root = this.root.copy(uniqueId);
+        clone.root = this.root.clone(uniqueId);
         clone.root.parent = clone;
         return clone;
     }

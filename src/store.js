@@ -1,7 +1,7 @@
 const { createStore } = require('redux');
 
 const Parser = require('./parser');
-const { getLeafNodes } = require('./ast/node-utils.js');
+const { findNode, getLeafNodes } = require('./ast/node-utils.js');
 
 const parser = new Parser();
 const math = parser.parse('2x + 5/2 = 10');
@@ -14,14 +14,24 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     const {currentLine, cursorPosition, cursorNode} = state;
-    let newCursorPosition, newCursorNode, charCount;
+    let newCursorPosition, newCursorNode, newCurrentLine, charCount;
 
     switch (action.type) {
         case 'INSERT':
+            newCurrentLine = currentLine.clone();
+            newCursorNode = findNode(newCurrentLine, cursorNode.id);
+
+            if (newCursorNode.type === 'Literal') {
+                let value = newCursorNode.value.toString();
+                value = value.substring(0, cursorPosition) + action.value + value.substring(cursorPosition)
+                newCursorNode.value = parseFloat(value);
+            }
+
             return {
                 ...state,
-                currentLine: currentLine.substring(0, cursorPosition) + action.value + currentLine.substring(cursorPosition),
-                cursorPosition: cursorPosition + 1
+                currentLine: newCurrentLine,
+                cursorPosition: cursorPosition + 1,
+                cursorNode: newCursorNode,
             };
         case 'BACKSPACE':
             return {

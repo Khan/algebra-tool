@@ -73,11 +73,20 @@ class StaticMath extends React.Component {
         });
     };
 
+    componentWillReceiveProps(newProps) {
+        if (this.props.math !== newProps.math) {
+            const { math, fontSize, width, height } = newProps;
+            let layout = createFlatLayout(
+                math, fontSize, width, height);
+            this.setState({ layout });
+        }
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.cursorNode !== this.props.cursorNode || prevProps.cursorPosition !== this.props.cursorPosition) {
             this.drawLayout(this.state.context, this.state.layout);
         }
-    };
+    }
 
     drawLayout(context, currentLayout) {
         context.clearRect(0, 0, this.props.width, this.props.height);
