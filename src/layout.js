@@ -179,6 +179,7 @@ class Layout {
         result.id = this.id;
         result.x = this.x;
         result.y = this.y;
+        result.fontSize = this.fontSize;
         return result;
     }
 
@@ -267,6 +268,7 @@ function createLayout(node, fontSize) {
 
         layout.ascent = ascent;
         layout.descent = descent;
+        layout.fontSize = fontSize;
 
         return layout;
     } else if (node.type === "Identifier") {

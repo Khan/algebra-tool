@@ -49,11 +49,10 @@ class StaticMath extends React.Component {
         const { math } = this.props;
         const touch = e.changedTouches[0];
         const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
-        const astNode = findNode(math, layoutNode.id);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
-            node: astNode,
+            node: layoutNode ? findNode(math, layoutNode.id) : null,
         });
     };
 
@@ -67,11 +66,10 @@ class StaticMath extends React.Component {
         const { math } = this.props;
         const touch = e.changedTouches[0];
         const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
-        const astNode = findNode(math, layoutNode.id);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
-            node: astNode,
+            node: layoutNode ? findNode(math, layoutNode.id) : null,
         });
     };
 
@@ -83,7 +81,8 @@ class StaticMath extends React.Component {
 
     drawLayout(context, currentLayout) {
         context.clearRect(0, 0, this.props.width, this.props.height);
-        context.fillStyle = 'rgba(255,255,0,0.5)';
+        context.strokeStyle = 'rgb(0,128,255)';
+        context.lineWidth = 2;
 
         const astNode = this.props.cursorNode;
 
@@ -105,10 +104,11 @@ class StaticMath extends React.Component {
             const layoutNodes = layoutDict[astNode.id];
 
             if (layoutNodes.length === 1) {
-                const bounds = layoutNodes[0].getBounds();
-                const width = bounds.right - bounds.left;
-                const height = bounds.bottom - bounds.top;
-                context.fillRect(bounds.left, bounds.top, width, height);
+                const fontSize = layoutNodes[0].fontSize;
+                context.beginPath();
+                context.moveTo(layoutNodes[0].x, layoutNodes[0].y - 0.85 * fontSize);
+                context.lineTo(layoutNodes[0].x, layoutNodes[0].y + 0.15 * fontSize);
+                context.stroke();
             }
         }
 
