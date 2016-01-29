@@ -3,9 +3,10 @@ const { createStore } = require('redux');
 const Parser = require('./parser');
 const Placeholder = require('./ast/placeholder.js');
 const { findNode, getLeafNodes } = require('./ast/node-utils.js');
+const { add, sub, mul, div } = require('./operations');
 
 const parser = new Parser();
-const math = parser.parse('2x + 5/2 = 10');
+const math = parser.parse('2x + 5/2 = 10 + (1/2)/(3/4)');
 
 const initialState = {
     currentLine: math,
@@ -26,20 +27,45 @@ const reducer = (state = initialState, action) => {
             newCurrentLine = currentLine.clone();
             newCursorNode = findNode(newCurrentLine, cursorNode.id);
 
-            if (newCursorNode.type === 'Literal') {
-                let value = newCursorNode.value;
-                if (value.includes('.') && action.value === '.') {
+            if (action.operator) {
+                const op = {
+                    '+': add,
+                    '-': sub,
+                    '*': mul,
+                    '/': div,
+                }[action.operator];
+
+                if (op) {
+                    const result = op(cursorNode.clone(), new Placeholder());
+                    newCursorNode.parent.replace(newCursorNode, result);
+
+                    return {
+                        ...state,
+                        currentLine: newCurrentLine,
+                        cursorPosition: 0,
+                        cursorNode: cursorNode,
+                    };
+                } else {
                     return state;
                 }
-                newCursorNode.value = value.splice(cursorPosition, 0, action.value);
-            }
+            } else if (action.value) {
+                if (newCursorNode.type === 'Literal') {
+                    let value = newCursorNode.value;
+                    if (value.includes('.') && action.value === '.') {
+                        return state;
+                    }
+                    newCursorNode.value = value.splice(cursorPosition, 0, action.value);
+                }
 
-            return {
-                ...state,
-                currentLine: newCurrentLine,
-                cursorPosition: cursorPosition + 1,
-                cursorNode: newCursorNode,
-            };
+                return {
+                    ...state,
+                    currentLine: newCurrentLine,
+                    cursorPosition: cursorPosition + 1,
+                    cursorNode: newCursorNode,
+                };
+            } else {
+                return state;
+            }
         case 'BACKSPACE':
             newCurrentLine = currentLine.clone();
             newCursorNode = findNode(newCurrentLine, cursorNode.id);
