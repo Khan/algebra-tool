@@ -13,6 +13,10 @@ const initialState = {
     cursorNode: null,
 };
 
+String.prototype.splice = function(index, count, add) {
+    return this.slice(0, index) + (add || "") + this.slice(index + count);
+};
+
 const reducer = (state = initialState, action) => {
     const {currentLine, cursorPosition, cursorNode} = state;
     let newCursorPosition, newCursorNode, newCurrentLine, charCount;
@@ -24,7 +28,7 @@ const reducer = (state = initialState, action) => {
 
             if (newCursorNode.type === 'Literal') {
                 let value = newCursorNode.value.toString();
-                value = value.substring(0, cursorPosition) + action.value + value.substring(cursorPosition);
+                value = value.splice(cursorPosition, 0, action.value);
                 newCursorNode.value = parseFloat(value);
             }
 
@@ -41,7 +45,7 @@ const reducer = (state = initialState, action) => {
 
             if (newCursorNode.type === 'Literal') {
                 let value = newCursorNode.value.toString();
-                value = value.length > 0 ? value.substring(0, cursorPosition - 1) + value.substring(cursorPosition) : '';
+                value = value.length > 0 ? value.splice(cursorPosition - 1, 1) : '';
                 newCursorPosition = Math.max(cursorPosition - 1, 0);
 
                 if (value.length === 0) {

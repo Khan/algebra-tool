@@ -105,7 +105,7 @@ class Keypad extends React.Component {
                 <Button {...emptyColors}>&pi;</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
-                <Button {...numStyle} onTap={this.handleBackspace}>&#x25c0;</Button>
+                <Button {...numStyle} onTap={this.handleBackspace}>&#x232B;</Button>
                 <Button {...opColors} onTap={this.handleOperator}>÷</Button>
             </div>
         </div>;
