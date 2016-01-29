@@ -1,6 +1,7 @@
 const { createStore } = require('redux');
 
 const Parser = require('./parser');
+const Placeholder = require('./ast/placeholder.js');
 const { findNode, getLeafNodes } = require('./ast/node-utils.js');
 
 const parser = new Parser();
@@ -23,7 +24,7 @@ const reducer = (state = initialState, action) => {
 
             if (newCursorNode.type === 'Literal') {
                 let value = newCursorNode.value.toString();
-                value = value.substring(0, cursorPosition) + action.value + value.substring(cursorPosition)
+                value = value.substring(0, cursorPosition) + action.value + value.substring(cursorPosition);
                 newCursorNode.value = parseFloat(value);
             }
 
@@ -34,10 +35,30 @@ const reducer = (state = initialState, action) => {
                 cursorNode: newCursorNode,
             };
         case 'BACKSPACE':
+            newCurrentLine = currentLine.clone();
+            newCursorNode = findNode(newCurrentLine, cursorNode.id);
+            newCursorPosition = cursorPosition;
+
+            if (newCursorNode.type === 'Literal') {
+                let value = newCursorNode.value.toString();
+                value = value.length > 0 ? value.substring(0, cursorPosition - 1) + value.substring(cursorPosition) : '';
+                newCursorPosition = Math.max(cursorPosition - 1, 0);
+
+                if (value.length === 0) {
+                    const placeholder = new Placeholder();
+                    newCursorNode.parent.replace(newCursorNode, placeholder);
+                    newCursorNode = placeholder;
+                    newCursorPosition = 0;
+                }
+
+                newCursorNode.value = parseFloat(value);
+            }
+
             return {
                 ...state,
-                currentLine: currentLine.length > 0 ? currentLine.substring(0, cursorPosition - 1) + currentLine.substring(cursorPosition) : '',
-                cursorPosition: Math.max(cursorPosition - 1, 0)
+                currentLine: newCurrentLine,
+                cursorPosition: newCursorPosition,
+                cursorNode: newCursorNode,
             };
         case 'CURSOR_LEFT':
             newCursorPosition = cursorPosition - 1;
