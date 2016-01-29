@@ -5,7 +5,7 @@ class Literal extends Node {
     constructor(value) {
         super();
         this.type = 'Literal';
-        this.value = value;
+        this.value = String(value);
     }
 
     toString() {

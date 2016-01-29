@@ -27,9 +27,11 @@ const reducer = (state = initialState, action) => {
             newCursorNode = findNode(newCurrentLine, cursorNode.id);
 
             if (newCursorNode.type === 'Literal') {
-                let value = newCursorNode.value.toString();
-                value = value.splice(cursorPosition, 0, action.value);
-                newCursorNode.value = parseFloat(value);
+                let value = newCursorNode.value;
+                if (value.includes('.') && action.value === '.') {
+                    return state;
+                }
+                newCursorNode.value = value.splice(cursorPosition, 0, action.value);
             }
 
             return {
@@ -44,7 +46,7 @@ const reducer = (state = initialState, action) => {
             newCursorPosition = cursorPosition;
 
             if (newCursorNode.type === 'Literal') {
-                let value = newCursorNode.value.toString();
+                let value = newCursorNode.value;
                 value = value.length > 0 ? value.splice(cursorPosition - 1, 1) : '';
                 newCursorPosition = Math.max(cursorPosition - 1, 0);
 
@@ -55,7 +57,7 @@ const reducer = (state = initialState, action) => {
                     newCursorPosition = 0;
                 }
 
-                newCursorNode.value = parseFloat(value);
+                newCursorNode.value = value;
             }
 
             return {
