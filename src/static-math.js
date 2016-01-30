@@ -44,11 +44,12 @@ class StaticMath extends React.Component {
             return;
         }
         const container = this.refs.container;
+        const scrollTop = container.parentElement.parentElement.scrollTop;
 
         const { layout } = this.state;
         const { math } = this.props;
         const touch = e.changedTouches[0];
-        const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
+        const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop - scrollTop);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
@@ -61,11 +62,12 @@ class StaticMath extends React.Component {
             return;
         }
         const container = this.refs.container;
+        const scrollTop = container.parentElement.parentElement.scrollTop;
 
         const { layout } = this.state;
         const { math } = this.props;
         const touch = e.changedTouches[0];
-        const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop);
+        const layoutNode = layout.hitTest(touch.pageX, touch.pageY - container.offsetTop + scrollTop);
 
         store.dispatch({
             type: 'UPDATE_CURSOR',
