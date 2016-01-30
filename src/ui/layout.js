@@ -1,4 +1,4 @@
-const fontMetrics = require("../metrics/helvetica-light.json");
+const fontMetrics = require("../../metrics/helvetica-light.json");
 
 // TODO: handle fonts with different unitsPerEm
 const {unitsPerEm, glyphMetrics} = fontMetrics;

@@ -1,7 +1,7 @@
 const React = require('react');
 
 const Button = require('./button.js');
-const store = require('./store.js');
+const store = require('../store.js');
 
 class Keypad extends React.Component {
     handleNumber = (key) => {
