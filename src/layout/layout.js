@@ -1,11 +1,8 @@
 import Rect from './rect';
+import Box from './box';
+import Glyph from './glyph';
 
-const fontMetrics = require("../../metrics/helvetica-light.json");
-
-// TODO: handle fonts with different unitsPerEm
-const {unitsPerEm, glyphMetrics} = fontMetrics;
-
-const RenderOptions = {
+export const RenderOptions = {
     bounds: false
 };
 
@@ -16,107 +13,7 @@ function formatText(text, parens) {
     return String(text).replace(/\-/g, "\u2212").replace(/\*/g, "\u00B7");
 }
 
-function getMetrics(c, fontSize) {
-    const result = {};
-    for (const [k, v] of Object.entries(glyphMetrics[c.charCodeAt(0)])) {
-        result[k] = fontSize * v / unitsPerEm;
-    }
-    return result;
-}
-
-function getAscent(fontSize) {
-    const TMetrics = getMetrics('T', fontSize);
-    const descent = getDescent(fontSize);
-    return -TMetrics.height - descent; // negative y values are above the baseline
-}
-
-function getDescent(fontSize) {
-    const yMetrics = getMetrics('y', fontSize);
-    return -yMetrics.bearingY;
-}
-
-class Glyph {
-    constructor(c, fontSize, metrics = getMetrics(c, fontSize)) {
-        this.x = 0;
-        this.y = 0;
-        this.text = c;
-        this.fontSize = fontSize;
-        this.selectable = true;
-        this.ascent = getAscent(fontSize);
-        this.descent = getDescent(fontSize);
-        this.atomic = true;
-        this.metrics = metrics;
-        this.advance = this.metrics.advance;
-    }
-
-    render(ctx) {
-        // TODO when we flatten group all of the items with the same fontSize
-        if (this.id && RenderOptions.bounds) {
-            ctx.strokeStyle = 'red';
-            const bounds = this.bounds;
-            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        }
-
-        const weight = 100;
-        ctx.font = `${weight} ${this.fontSize}px Helvetica`;
-        ctx.fillText(this.text, this.x, this.y);
-    }
-
-    get bounds() {
-        const {bearingX, bearingY, width, height} = this.metrics;
-        const x = this.x + bearingX;
-        const y = this.y - bearingY - height;  // glyph coords are opposite canvas coords
-        return new Rect(x, y, width, height);
-    }
-
-    clone() {
-        const result = new Glyph(this.text, this.fontSize);
-        Object.assign(result, this);
-        return result;
-    }
-
-    hitTest(x, y) {
-        return this.bounds.contains(x,y) ? this : null;
-    }
-}
-
-// TODO: extend Rect
-class Box {
-    constructor(x, y, width, height, stroke = false) {
-        Object.assign(this, {x, y, width, height, stroke});
-        this.type = 'box';
-        this.selectable = true;
-    }
-
-    render(ctx) {
-        if (this.stroke) {
-            ctx.strokeRect(this.x, this.y, this.width, this.height);
-        } else {
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-    }
-
-    get bounds() {
-        return new Rect(this.x, this.y, this.width, this.height);
-    }
-
-    get advance() {
-        return this.width;
-    }
-
-    clone() {
-        const result = new Box(this.x, this.y, this.width, this.height);
-        result.type = 'box';
-        Object.assign(result, this);
-        return result;
-    }
-
-    hitTest(x, y) {
-        return this.bounds.contains(x, y) ? this : null;
-    }
-}
-
-class Layout {
+export class Layout {
     constructor(children, atomic = false) {
         this.x = 0;
         this.y = 0;
@@ -209,8 +106,12 @@ function startsExpression(node) {
 
 
 function createLayout(node, fontSize) {
-    const spaceMetrics = getMetrics(" ", fontSize);
-    const dashMetrics = getMetrics("\u2212", fontSize);
+    const spaceGlyph = new Glyph(' ', fontSize);
+    const dashGlyph = new Glyph('\u2212', fontSize);
+    const spaceMetrics = spaceGlyph.metrics;
+    const dashMetrics = dashGlyph.metrics;
+    const tGlyph = new Glyph('T', fontSize);
+    const yGlyph = new Glyph('y', fontSize);
 
     if (node.type === "Literal") {
         const parens = startsExpression(node) || node.parent.type === "Product" && node.parent.first !== node;
@@ -232,8 +133,8 @@ function createLayout(node, fontSize) {
         layout.advance = penX;
         layout.id = node.id;
 
-        const ascent = getAscent(fontSize);
-        const descent = getDescent(fontSize);
+        const ascent = tGlyph.ascent;
+        const descent = yGlyph.descent;
 
         layout.ascent = ascent;
         layout.descent = descent;
@@ -506,7 +407,7 @@ function createLayout(node, fontSize) {
     }
 }
 
-function _flatten(layout, dx = 0, dy = 0, result = []) {
+function flatten(layout, dx = 0, dy = 0, result = []) {
     if (layout.atomic) {
         layout = layout.clone();
         layout.x += dx;
@@ -516,7 +417,7 @@ function _flatten(layout, dx = 0, dy = 0, result = []) {
         dx += layout.x;
         dy += layout.y;
         for (const child of layout.children) {
-            _flatten(child, dx, dy, result);
+            flatten(child, dx, dy, result);
         }
     } else {
         const glyph = layout.clone();
@@ -527,14 +428,10 @@ function _flatten(layout, dx = 0, dy = 0, result = []) {
     return result;
 }
 
-function flatten(layout) {
-    return new Layout(_flatten(layout));
-}
-
 // TODO: separate the centering from the creation of the layout
-function createFlatLayout(node, fontSize, width, height) {
+export function createFlatLayout(node, fontSize, width, height) {
     let newLayout = createLayout(node, fontSize);
-    let flattenedLayout = flatten(newLayout);
+    let flattenedLayout = new Layout(flatten(newLayout));
 
     function findEqual(flatLayout) {
         for (const child of flatLayout.children) {
@@ -573,28 +470,3 @@ function createFlatLayout(node, fontSize, width, height) {
 
     return flattenedLayout;
 }
-
-function unionBounds(layouts) {
-    const bounds = {
-        left: Infinity,
-        right: -Infinity,
-        top: Infinity,
-        bottom: -Infinity
-    };
-    layouts.forEach(layout => {
-        const layoutBounds = layout.bounds;
-        bounds.left = Math.min(bounds.left, layoutBounds.left);
-        bounds.right = Math.max(bounds.right, layoutBounds.right);
-        bounds.top = Math.min(bounds.top, layoutBounds.top);
-        bounds.bottom = Math.max(bounds.bottom, layoutBounds.bottom);
-    });
-    return bounds;
-}
-
-module.exports = {
-    getMetrics,
-    createFlatLayout,
-    RenderOptions,
-    Layout,
-    unionBounds,
-};
