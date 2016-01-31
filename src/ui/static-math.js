@@ -2,7 +2,7 @@ const React = require('react');
 const { connect } = require('react-redux');
 
 const store = require('../store.js');
-const { createFlatLayout } = require('./layout.js');
+const { createFlatLayout } = require('../layout/layout.js');
 const { findNode } = require('../ast/node-utils.js');
 
 class StaticMath extends React.Component {
