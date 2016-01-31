@@ -1,7 +1,7 @@
 const f = require('functify');
 
 const {generateId} = require('./node-utils');
-const ListNode = require('./list-node.js');
+import ListNode from './list-node.js';
 
 class Product extends ListNode {
     constructor(...nodes) {

@@ -1,6 +1,6 @@
-const Node = require('./node');
+import Node from './node';
 
-class ListNode extends Node {
+export default class ListNode extends Node {
     constructor(...nodes) {
         super();
         this.first = null;
@@ -131,7 +131,7 @@ class ListNode extends Node {
         }
     }
 
-    getLength() {
+    get length() {
         let count = 0;
         for (let node of this) {
             count++;
@@ -154,5 +154,3 @@ class ListNode extends Node {
         return result;
     }
 }
-
-module.exports = ListNode;
