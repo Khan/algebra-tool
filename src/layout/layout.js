@@ -53,8 +53,8 @@ class Glyph {
         // TODO when we flatten group all of the items with the same fontSize
         if (this.id && RenderOptions.bounds) {
             ctx.strokeStyle = 'red';
-            const bounds = this.getBounds();
-            ctx.strokeRect(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+            const bounds = this.bounds;
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
         const weight = 100;
@@ -62,7 +62,7 @@ class Glyph {
         ctx.fillText(this.text, this.x, this.y);
     }
 
-    getBounds() {
+    get bounds() {
         const {bearingX, bearingY, width, height} = this.metrics;
         const x = this.x + bearingX;
         const y = this.y - bearingY - height;  // glyph coords are opposite canvas coords
@@ -76,7 +76,7 @@ class Glyph {
     }
 
     hitTest(x, y) {
-        return this.getBounds().contains(x,y) ? this : null;
+        return this.bounds.contains(x,y) ? this : null;
     }
 }
 
@@ -96,7 +96,7 @@ class Box {
         }
     }
 
-    getBounds() {
+    get bounds() {
         return new Rect(this.x, this.y, this.width, this.height);
     }
 
@@ -112,10 +112,7 @@ class Box {
     }
 
     hitTest(x, y) {
-        const { left, right, top, bottom } = this.getBounds();
-        if (x >= left && x <= right && y >= top && y <= bottom) {
-            return this;
-        }
+        return this.bounds.contains(x, y) ? this : null;
     }
 }
 
@@ -132,8 +129,8 @@ class Layout {
         ctx.translate(this.x, this.y);
         if (this.atomic && RenderOptions.bounds) {
             ctx.strokeStyle = 'red';
-            const bounds = this.getBounds();
-            ctx.strokeRect(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+            const bounds = this.bounds;
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
         for (const child of this.children) {
@@ -142,8 +139,8 @@ class Layout {
         ctx.restore();
     }
 
-    getBounds() {
-        const bounds = Rect.union(this.children.map(child => child.getBounds()));
+    get bounds() {
+        const bounds = Rect.union(this.children.map(child => child.bounds));
         bounds.x += this.x;
         bounds.y += this.y;
         return bounds;
@@ -160,7 +157,7 @@ class Layout {
 
     hitTest(x, y) {
         if (this.atomic) {
-            return this.getBounds().contains(x, y) ? this : null;
+            return this.bounds.contains(x, y) ? this : null;
         }
         for (const child of this.children) {
             const result = child.hitTest(x - this.x, y - this.y);
@@ -563,11 +560,11 @@ function createFlatLayout(node, fontSize, width, height) {
     const equalNode = findEqual(flattenedLayout);
 
     if (equalNode) {
-        const bounds = equalNode.getBounds();
+        const bounds = equalNode.bounds;
         dx = centerX - (bounds.left + bounds.right) / 2;
         dy = centerY - (bounds.top + bounds.bottom) / 2;
     } else {
-        const bounds = flattenedLayout.getBounds();
+        const bounds = flattenedLayout.bounds;
         dx = centerX - (bounds.left + bounds.right) / 2;
         dy = centerY - (bounds.top + bounds.bottom) / 2;
     }
@@ -585,7 +582,7 @@ function unionBounds(layouts) {
         bottom: -Infinity
     };
     layouts.forEach(layout => {
-        const layoutBounds = layout.getBounds();
+        const layoutBounds = layout.bounds;
         bounds.left = Math.min(bounds.left, layoutBounds.left);
         bounds.right = Math.max(bounds.right, layoutBounds.right);
         bounds.top = Math.min(bounds.top, layoutBounds.top);

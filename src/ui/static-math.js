@@ -120,7 +120,7 @@ class StaticMath extends React.Component {
                 let right = cursorPosition > 0;
 
                 const fontSize = layoutNode.fontSize;
-                const bounds = layoutNode.getBounds();
+                const bounds = layoutNode.bounds;
 
                 let x = bounds.left;
 
