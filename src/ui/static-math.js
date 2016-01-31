@@ -119,7 +119,7 @@ class StaticMath extends Component {
                 let layoutNode = layoutNodes[0];
                 let right = cursorPosition > 0;
 
-                const fontSize = layoutNode.fontSize;
+                const fontSize = layoutNode.font.size;
                 const bounds = layoutNode.bounds;
 
                 let x = bounds.left;

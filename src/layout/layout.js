@@ -1,6 +1,7 @@
 import Rect from './rect';
 import Box from './box';
 import Glyph from './glyph';
+import Font from './font';
 
 const RenderOptions = {
     bounds: false
@@ -48,7 +49,7 @@ class Layout {
         result.id = this.id;
         result.x = this.x;
         result.y = this.y;
-        result.fontSize = this.fontSize;
+        result.font = this.font;
         return result;
     }
 
@@ -106,12 +107,12 @@ function startsExpression(node) {
 
 
 function createLayout(node, fontSize) {
-    const spaceGlyph = new Glyph(' ', fontSize);
-    const dashGlyph = new Glyph('\u2212', fontSize);
+    const font = new Font(fontSize);
+
+    const spaceGlyph = new Glyph(' ', font);
+    const dashGlyph = new Glyph('\u2212', font);
     const spaceMetrics = spaceGlyph.metrics;
     const dashMetrics = dashGlyph.metrics;
-    const tGlyph = new Glyph('T', fontSize);
-    const yGlyph = new Glyph('y', fontSize);
 
     if (node.type === "Literal") {
         const parens = startsExpression(node) || node.parent.type === "Product" && node.parent.first !== node;
@@ -121,7 +122,7 @@ function createLayout(node, fontSize) {
         const layouts = [];
 
         for (const c of text) {
-            const glyph = new Glyph(c, fontSize);
+            const glyph = new Glyph(c, font);
 
             glyph.x = penX;
             penX += glyph.advance;
@@ -133,18 +134,15 @@ function createLayout(node, fontSize) {
         layout.advance = penX;
         layout.id = node.id;
 
-        const ascent = tGlyph.ascent;
-        const descent = yGlyph.descent;
-
-        layout.ascent = ascent;
-        layout.descent = descent;
-        layout.fontSize = fontSize;
+        layout.ascent = font.ascent;
+        layout.descent = font.descent;
+        layout.font = font;
 
         return layout;
     } else if (node.type === "Identifier") {
         const name = formatIdentifier(node.name);
         // TODO handle multi character identifiers such as sin, cos, tan, etc.
-        const glyph = new Glyph(name, fontSize);
+        const glyph = new Glyph(name, font);
         glyph.id = node.id;
         return glyph;
     } else if (node.type === "Negation") {
@@ -152,7 +150,7 @@ function createLayout(node, fontSize) {
         let penX = 0;
 
         if (startsExpression(node)) {
-            const lParen = new Glyph("(", fontSize);
+            const lParen = new Glyph("(", font);
             lParen.x = penX;
             lParen.id = node.id + ":(outer";
             lParen.selectable = false;
@@ -160,14 +158,14 @@ function createLayout(node, fontSize) {
             children.push(lParen);
         }
 
-        const negativeSign = new Glyph("\u2212", fontSize);
+        const negativeSign = new Glyph("\u2212", font);
         negativeSign.x = penX;
         negativeSign.id = node.id + ":-";
         penX += negativeSign.advance;
         children.push(negativeSign);
 
         if (["Expression", "Product"].includes(node.value.type)) {
-            const lParen2 = new Glyph("(", fontSize);
+            const lParen2 = new Glyph("(", font);
             lParen2.x = penX;
             lParen2.id = node.id + ":(inner";
             penX += lParen2.advance;
@@ -180,7 +178,7 @@ function createLayout(node, fontSize) {
         children.push(valueLayout);
 
         if (["Expression", "Product"].includes(node.value.type)) {
-            const rParen2 = new Glyph(")", fontSize);
+            const rParen2 = new Glyph(")", font);
             rParen2.x = penX;
             rParen2.id = node.id + ":)inner";
             penX += rParen2.advance;
@@ -188,7 +186,7 @@ function createLayout(node, fontSize) {
         }
 
         if (startsExpression(node)) {
-            const rParen = new Glyph(")", fontSize);
+            const rParen = new Glyph(")", font);
             rParen.x = penX;
             rParen.id = node.id + ":)outer";
             rParen.selectable = false;
@@ -206,7 +204,7 @@ function createLayout(node, fontSize) {
         return layout;
     } else if (node.type === "Operator") {
         const operator = formatText(node.operator);
-        const glyph = new Glyph(operator, fontSize);
+        const glyph = new Glyph(operator, font);
         if (node.operator === "-") {
             glyph.metrics = makeMetricsSquare(glyph.metrics);
         }
@@ -236,7 +234,7 @@ function createLayout(node, fontSize) {
             if (child.type === "Operator") {
                 penX += spaceMetrics.advance / 1.5;
             } else if (child.type === "Expression") {
-                const lParen = new Glyph("(", fontSize);
+                const lParen = new Glyph("(", font);
                 lParen.x = penX;
                 lParen.id = child.id + ":(";
                 lParen.selectable = false;
@@ -250,7 +248,7 @@ function createLayout(node, fontSize) {
             if (child.type === "Operator") {
                 penX += spaceMetrics.advance / 1.5;
             } else if (child.type === "Expression") {
-                const rParen = new Glyph(")", fontSize);
+                const rParen = new Glyph(")", font);
                 rParen.x = penX;
                 rParen.id = child.id + ":)";
                 rParen.selectable = false;
@@ -272,7 +270,6 @@ function createLayout(node, fontSize) {
 
         layout.advance = penX;
         layout.id = node.id;
-
         layout.ascent = ascent;
         layout.descent = descent;
 
@@ -285,7 +282,7 @@ function createLayout(node, fontSize) {
         penX += lhs.advance;
 
         // TODO: update Equation to handle inequalities
-        const equal = new Glyph("=", fontSize);
+        const equal = new Glyph("=", font);
         equal.circle = true;
         equal.metrics = makeMetricsSquare(equal.metrics);
         // TODO: figure out how to differentiate between layout and equal node
@@ -348,7 +345,7 @@ function createLayout(node, fontSize) {
         for (let child of node) {
             // TODO: handle multiple numbers and numbers that come in the middle
             if (child.type === "Expression" || child.type === "Product") {
-                const lParen = new Glyph("(", fontSize);
+                const lParen = new Glyph("(", font);
                 lParen.x = penX;
                 lParen.id = child.id + ":(";
                 lParen.selectable = false;
@@ -377,7 +374,7 @@ function createLayout(node, fontSize) {
 
             layouts.push(childLayout);
             if (child.type === "Expression" || child.type === "Product") {
-                const rParen = new Glyph(")", fontSize);
+                const rParen = new Glyph(")", font);
                 rParen.x = penX;
                 rParen.id = child.id + ":)";
                 rParen.selectable = false;
