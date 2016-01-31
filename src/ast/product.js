@@ -1,7 +1,7 @@
-const f = require('functify');
+import f from 'functify';
 
-const {generateId} = require('./node-utils');
-import ListNode from './list-node.js';
+import { generateId } from './node';
+import ListNode from './list-node';
 
 export default class Product extends ListNode {
     constructor(...nodes) {

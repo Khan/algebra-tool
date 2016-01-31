@@ -1,5 +1,4 @@
-import { generateId } from './node-utils';
-import Node from './node';
+import Node, { generateId } from './node';
 
 export default class Literal extends Node {
     constructor(value) {

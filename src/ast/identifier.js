@@ -1,5 +1,4 @@
-import { generateId } from './node-utils';
-import Node from './node.js';
+import Node, { generateId } from './node';
 
 export default class Identifier extends Node {
     constructor(name, options = {}) {

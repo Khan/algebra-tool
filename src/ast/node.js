@@ -1,6 +1,10 @@
-import { generateId } from './node-utils';
+let _id = 1;
 
-export default class Node {
+function generateId() {
+    return String(_id++);
+}
+
+class Node {
     constructor() {
         this.id = generateId();
         this.parent = null;
@@ -8,3 +12,5 @@ export default class Node {
         this.prev = null;
     }
 }
+
+export { generateId, Node as default };

@@ -1,9 +1,3 @@
-let _id = 1;
-
-function generateId() {
-    return String(_id++);
-}
-
 function findNode(node, id) {
     if (node.id === id) {
         return node;
@@ -63,4 +57,4 @@ function getLeafNodes(root) {
     return leafNodes;
 }
 
-export { generateId, findNode, getLeafNodes };
+export { findNode, getLeafNodes };

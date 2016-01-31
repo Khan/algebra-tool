@@ -1,5 +1,4 @@
-import {generateId} from './node-utils';
-import Node from './node';
+import Node, { generateId } from './node';
 
 export default class Math extends Node {
     constructor(root) {

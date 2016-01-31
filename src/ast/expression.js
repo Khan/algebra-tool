@@ -1,6 +1,6 @@
 import f from 'functify';
 
-import { generateId } from './node-utils';
+import { generateId } from './node';
 import ListNode from './list-node';
 
 export default class Expression extends ListNode {
