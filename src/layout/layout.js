@@ -1,3 +1,5 @@
+import Rect from './rect';
+
 const fontMetrics = require("../../metrics/helvetica-light.json");
 
 // TODO: handle fonts with different unitsPerEm
@@ -62,11 +64,9 @@ class Glyph {
 
     getBounds() {
         const {bearingX, bearingY, width, height} = this.metrics;
-        const left = this.x + bearingX;
-        const right = left + width;
-        const top = this.y - bearingY - height;
-        const bottom = top + height;
-        return { left, right, top, bottom };
+        const x = this.x + bearingX;
+        const y = this.y - bearingY - height;  // glyph coords are opposite canvas coords
+        return new Rect(x, y, width, height);
     }
 
     clone() {
@@ -76,13 +76,11 @@ class Glyph {
     }
 
     hitTest(x, y) {
-        const { left, right, top, bottom } = this.getBounds();
-        if (x >= left && x <= right && y >= top && y <= bottom) {
-            return this;
-        }
+        return this.getBounds().contains(x,y) ? this : null;
     }
 }
 
+// TODO: extend Rect
 class Box {
     constructor(x, y, width, height, stroke = false) {
         Object.assign(this, {x, y, width, height, stroke});
@@ -99,11 +97,7 @@ class Box {
     }
 
     getBounds() {
-        const left = this.x;
-        const right = left + this.width;
-        const top = this.y;
-        const bottom = top + this.height;
-        return { left, right, top, bottom };
+        return new Rect(this.x, this.y, this.width, this.height);
     }
 
     get advance() {
@@ -149,28 +143,9 @@ class Layout {
     }
 
     getBounds() {
-        let initialBounds = {
-            left: Infinity,
-            right: -Infinity,
-            top: Infinity,
-            bottom: -Infinity
-        };
-
-        const bounds = this.children.reduce((bounds, child) => {
-            const childBounds = child.getBounds();
-            return {
-                left: Math.min(bounds.left, childBounds.left),
-                right: Math.max(bounds.right, childBounds.right),
-                top: Math.min(bounds.top, childBounds.top),
-                bottom: Math.max(bounds.bottom, childBounds.bottom)
-            }
-        }, initialBounds);
-
-        bounds.left += this.x;
-        bounds.right += this.x;
-        bounds.top += this.y;
-        bounds.bottom += this.y;
-
+        const bounds = Rect.union(this.children.map(child => child.getBounds()));
+        bounds.x += this.x;
+        bounds.y += this.y;
         return bounds;
     }
 
@@ -185,10 +160,7 @@ class Layout {
 
     hitTest(x, y) {
         if (this.atomic) {
-            const bounds = this.getBounds();
-            if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
-                return this;
-            }
+            return this.getBounds().contains(x, y) ? this : null;
         }
         for (const child of this.children) {
             const result = child.hitTest(x - this.x, y - this.y);
