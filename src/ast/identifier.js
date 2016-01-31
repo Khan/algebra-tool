@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node.js');
+import { generateId } from './node-utils';
+import Node from './node.js';
 
-class Identifier extends Node {
+export default class Identifier extends Node {
     constructor(name, options = {}) {
         super();
         this.type = 'Identifier';
@@ -24,5 +24,3 @@ class Identifier extends Node {
         return copy;
     }
 }
-
-module.exports = Identifier;

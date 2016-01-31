@@ -22,7 +22,7 @@ function getDescent(fontSize) {
     return -yMetrics.bearingY;
 }
 
-export default class Glyph {
+class Glyph {
     constructor(c, fontSize, metrics = getMetrics(c, fontSize)) {
         this.x = 0;
         this.y = 0;
@@ -66,3 +66,5 @@ export default class Glyph {
         return this.bounds.contains(x,y) ? this : null;
     }
 }
+
+export { Glyph as default };

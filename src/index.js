@@ -1,9 +1,9 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const { Provider } = require('react-redux');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
-const App = require('./ui/app.js');
-const store = require('./store.js');
+import App from './ui/app';
+import store from './store';
 
 const container = document.getElementById('app-container');
 

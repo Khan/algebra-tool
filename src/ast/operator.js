@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Operator extends Node {
+export default class Operator extends Node {
     constructor(operator) {
         super();
         this.type = 'Operator';
@@ -20,5 +20,3 @@ class Operator extends Node {
         return copy;
     }
 }
-
-module.exports = Operator;

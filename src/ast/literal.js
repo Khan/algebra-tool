@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Literal extends Node {
+export default class Literal extends Node {
     constructor(value) {
         super();
         this.type = 'Literal';
@@ -20,5 +20,3 @@ class Literal extends Node {
         return copy;
     }
 }
-
-module.exports = Literal;

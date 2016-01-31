@@ -1,11 +1,11 @@
-const React = require('react');
-const { connect } = require('react-redux');
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-const store = require('../store.js');
-const { createFlatLayout } = require('../layout/layout.js');
-const { findNode } = require('../ast/node-utils.js');
+import store from '../store.js';
+import { createFlatLayout } from '../layout/layout';
+import { findNode } from '../ast/node-utils';
 
-class StaticMath extends React.Component {
+class StaticMath extends Component {
     constructor() {
         super();
 

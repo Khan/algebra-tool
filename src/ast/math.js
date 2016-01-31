@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import {generateId} from './node-utils';
+import Node from './node';
 
-class Math extends Node {
+export default class Math extends Node {
     constructor(root) {
         super();
         this.type = 'Math';
@@ -30,5 +30,3 @@ class Math extends Node {
         }
     }
 }
-
-module.exports = Math;

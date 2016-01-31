@@ -1,6 +1,6 @@
-const {generateId} = require('./node-utils');
+import { generateId } from './node-utils';
 
-class Node {
+export default class Node {
     constructor() {
         this.id = generateId();
         this.parent = null;
@@ -8,5 +8,3 @@ class Node {
         this.prev = null;
     }
 }
-
-module.exports = Node;

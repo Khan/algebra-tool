@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Power extends Node {
+export default class Power extends Node {
     constructor(base, exponent) {
         super();
         this.type = 'Power';
@@ -26,5 +26,3 @@ class Power extends Node {
         return copy;
     }
 }
-
-module.exports = Power;

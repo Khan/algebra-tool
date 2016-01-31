@@ -63,8 +63,4 @@ function getLeafNodes(root) {
     return leafNodes;
 }
 
-module.exports = {
-    generateId,
-    findNode,
-    getLeafNodes,
-};
+export { generateId, findNode, getLeafNodes };

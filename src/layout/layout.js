@@ -2,7 +2,7 @@ import Rect from './rect';
 import Box from './box';
 import Glyph from './glyph';
 
-export const RenderOptions = {
+const RenderOptions = {
     bounds: false
 };
 
@@ -13,7 +13,7 @@ function formatText(text, parens) {
     return String(text).replace(/\-/g, "\u2212").replace(/\*/g, "\u00B7");
 }
 
-export class Layout {
+class Layout {
     constructor(children, atomic = false) {
         this.x = 0;
         this.y = 0;
@@ -429,7 +429,7 @@ function flatten(layout, dx = 0, dy = 0, result = []) {
 }
 
 // TODO: separate the centering from the creation of the layout
-export function createFlatLayout(node, fontSize, width, height) {
+function createFlatLayout(node, fontSize, width, height) {
     let newLayout = createLayout(node, fontSize);
     let flattenedLayout = new Layout(flatten(newLayout));
 
@@ -470,3 +470,5 @@ export function createFlatLayout(node, fontSize, width, height) {
 
     return flattenedLayout;
 }
+
+export { createFlatLayout, Layout, RenderOptions };

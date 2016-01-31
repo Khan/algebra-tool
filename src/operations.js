@@ -1,10 +1,10 @@
-const {
+import {
     Expression,
     Product,
     Fraction,
     Operator,
     Equation
-} = require("./ast.js");
+} from './ast';
 
 function removeExtraParens(expr) {
     if (expr.type !== 'Expression') {
@@ -118,6 +118,4 @@ function div(a, b) {
     }
 }
 
-module.exports = {
-    add, sub, mul, div, removeExtraParens, removeExtraProductParens,
-};
+export { add, sub, mul, div, removeExtraParens, removeExtraProductParens };

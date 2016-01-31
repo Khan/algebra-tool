@@ -1,4 +1,4 @@
-const {
+import {
     Equation,
     Expression,
     Product,
@@ -10,7 +10,7 @@ const {
     Fraction,
     Math,
     Placeholder,
-} = require('./ast.js');
+} from './ast';
 
 function isAlpha(token) {
     return (token >= 'a' && token <= 'z');
@@ -177,8 +177,6 @@ class Parser {
             return factor;
         }
     }
-
 }
 
-module.exports = Parser;
-
+export { Parser as default };

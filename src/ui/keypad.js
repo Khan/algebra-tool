@@ -1,9 +1,9 @@
-const React = require('react');
+import React, { Component } from 'react';
 
-const Button = require('./button.js');
-const store = require('../store.js');
+import Button from './button';
+import store from '../store';
 
-class Keypad extends React.Component {
+export default class Keypad extends Component {
     handleNumber = (key) => {
         store.dispatch({
             type: 'INSERT',
@@ -111,5 +111,3 @@ class Keypad extends React.Component {
         </div>;
     }
 }
-
-module.exports = Keypad;

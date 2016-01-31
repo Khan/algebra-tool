@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node.js');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Placeholder extends Node {
+export default class Placeholder extends Node {
     constructor() {
         super();
         this.type = 'Placeholder';
@@ -18,5 +18,3 @@ class Placeholder extends Node {
         return copy;
     }
 }
-
-module.exports = Placeholder;

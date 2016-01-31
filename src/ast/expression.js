@@ -1,9 +1,9 @@
-const f = require('functify');
+import f from 'functify';
 
-const {generateId} = require('./node-utils');
-import ListNode from './list-node.js';
+import { generateId } from './node-utils';
+import ListNode from './list-node';
 
-class Expression extends ListNode {
+export default class Expression extends ListNode {
     constructor(...nodes) {
         super();
         this.type = 'Expression';
@@ -56,5 +56,3 @@ class Expression extends ListNode {
 
     // TODO have a validate method
 }
-
-module.exports = Expression;

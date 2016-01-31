@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Equation extends Node {
+export default class Equation extends Node {
     constructor(left, right) {
         super();
         this.type = 'Equation';
@@ -38,5 +38,3 @@ class Equation extends Node {
         }
     }
 }
-
-module.exports = Equation;

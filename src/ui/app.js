@@ -1,10 +1,10 @@
-const React = require('react');
-const { connect } = require('react-redux');
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-const Keypad = require('./keypad.js');
-const StaticMath = require('./static-math.js');
+import Keypad from './keypad';
+import StaticMath from './static-math';
 
-class App extends React.Component {
+class App extends Component {
     render() {
         const keypadStyle = {
             bottom: 0,

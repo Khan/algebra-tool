@@ -1,9 +1,9 @@
-const { createStore } = require('redux');
+import { createStore } from 'redux';
 
-const Parser = require('./parser');
-const Placeholder = require('./ast/placeholder.js');
-const { findNode, getLeafNodes } = require('./ast/node-utils.js');
-const { add, sub, mul, div } = require('./operations');
+import Parser from './parser';
+import Placeholder from './ast/placeholder';
+import { findNode, getLeafNodes } from './ast/node-utils';
+import { add, sub, mul, div } from './operations';
 
 const parser = new Parser();
 const math = parser.parse('2x + 5/2 = 10 + (1/2)/(3/4)');
@@ -163,4 +163,6 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-module.exports = createStore(reducer);
+const store = createStore(reducer);
+
+export { store as default };

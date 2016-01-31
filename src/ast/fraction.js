@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Fraction extends Node {
+export default class Fraction extends Node {
     constructor(numerator, denominator) {
         super();
         this.type = 'Fraction';
@@ -38,5 +38,3 @@ class Fraction extends Node {
         }
     }
 }
-
-module.exports = Fraction;

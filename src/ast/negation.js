@@ -1,7 +1,7 @@
-const {generateId} = require('./node-utils');
-const Node = require('./node');
+import { generateId } from './node-utils';
+import Node from './node';
 
-class Negation extends Node {
+export default class Negation extends Node {
     constructor(value) {
         super();
         this.type = 'Negation';
@@ -30,5 +30,3 @@ class Negation extends Node {
         }
     }
 }
-
-module.exports = Negation;

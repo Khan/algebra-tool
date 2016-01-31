@@ -3,7 +3,7 @@ const f = require('functify');
 const {generateId} = require('./node-utils');
 import ListNode from './list-node.js';
 
-class Product extends ListNode {
+export default class Product extends ListNode {
     constructor(...nodes) {
         super();
         this.type = 'Product';
@@ -56,5 +56,3 @@ class Product extends ListNode {
 
     // TODO have a validate method
 }
-
-module.exports = Product;
