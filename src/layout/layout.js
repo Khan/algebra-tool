@@ -55,8 +55,18 @@ class Layout {
 
     hitTest(x, y) {
         if (this.atomic) {
-            return this.bounds.contains(x, y) ? this : null;
+            let bounds = this.bounds;
+
+            let paddingX = 2;
+            let paddingY = 2;
+            if (bounds.width < 14) {
+                paddingX += (14 - bounds.width) / 2;
+            }
+
+            bounds = bounds.addPadding(paddingX, paddingY);
+            return bounds.contains(x, y) ? this : null;
         }
+
         for (const child of this.children) {
             const result = child.hitTest(x - this.x, y - this.y);
             if (result) {

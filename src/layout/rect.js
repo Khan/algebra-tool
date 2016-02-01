@@ -45,4 +45,8 @@ export default class Rect {
 
         return new Rect(x, y, width, height);
     }
+
+    addPadding(dx, dy) {
+        return new Rect(this.x - dx, this.y - dy, this.width + 2 * dx, this.height + 2 * dy);
+    }
 }
