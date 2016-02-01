@@ -40,6 +40,7 @@ class StaticMath extends Component {
     }
 
     handleTouchStart = (e) => {
+        console.log(e);
         if (!this.props.active) {
             return;
         }

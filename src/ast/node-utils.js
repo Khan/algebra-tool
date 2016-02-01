@@ -57,4 +57,30 @@ function getLeafNodes(root) {
     return leafNodes;
 }
 
-export { findNode, getLeafNodes };
+function getPath(node) {
+    const path = [];
+
+    while (node != null) {
+        path.push(node);
+        node = node.parent;
+    }
+
+    path.reverse();
+
+    return path;
+}
+
+function findCommonAncestor(...args) {
+    const paths = args.map(node => getPath(node));
+
+    let ancestor = null;
+    for (const [first, ...remainder] of f.zip(paths)) {
+        if (remainder.every(node => node === first)) {
+            ancestor = first;
+        }
+    }
+
+    return ancestor;
+};
+
+export { findNode, traverseNode, getLeafNodes, getPath, findCommonAncestor };

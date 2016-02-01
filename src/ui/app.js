@@ -3,14 +3,10 @@ import { connect } from 'react-redux';
 
 import Keypad from './keypad';
 import StaticMath from './static-math';
+import MathRenderer from './math-renderer';
 
 class App extends Component {
     render() {
-        const keypadStyle = {
-            bottom: 0,
-            left: 0
-        };
-
         const width = window.innerWidth;
         const fontSize = 30;
         const height = 160;
@@ -22,29 +18,48 @@ class App extends Component {
             height: '100vh',
         };
 
+        const keypadStyle = {
+            flexGrow: 0,
+            flexShrink: 1
+        };
+
+        const containerStyle = {
+            flexGrow: 1,
+            overflow: 'scroll'
+        };
+
+        const typing = location.search.includes('typing');
+
+        // TODO: develop a more robust way of getting the scrollTop
         return <div style={style}>
-            <div style={{ overflow: 'scroll' }}>
-                <StaticMath
-                    active={false}
+            <div style={containerStyle}>
+                {typing && <StaticMath
                     fontSize={fontSize}
                     math={math}
                     width={width}
                     height={height}
-                />
-                <StaticMath
-                    active={false}
+                />}
+                {typing && <StaticMath
                     fontSize={fontSize}
                     math={math}
                     width={width}
                     height={height}
-                />
-                <StaticMath
+                />}
+                {typing && <StaticMath
                     active={true}
                     fontSize={fontSize}
                     math={math}
                     width={width}
                     height={height}
-                />
+                />}
+                {!typing && <MathRenderer
+                    ref='renderer'
+                    color={'black'}
+                    fontSize={fontSize}
+                    width={width}
+                    height={height}
+                    math={math}
+                />}
             </div>
             <div style={keypadStyle}>
                 <Keypad />
