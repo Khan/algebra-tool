@@ -1,3 +1,5 @@
+import f from 'functify';
+
 function findNode(node, id) {
     if (node.id === id) {
         return node;

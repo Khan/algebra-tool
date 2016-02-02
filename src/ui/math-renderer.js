@@ -22,12 +22,6 @@ class MathRenderer extends Component {
             selections: [],
             layout: null,
         };
-
-        this.handleClick = this.handleClick.bind(this);
-
-        this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
     }
 
     static defaultProps = {
@@ -217,16 +211,13 @@ class MathRenderer extends Component {
         return items.length > 0 ? <Menu position={pos} items={items}/> : null;
     }
 
-    handleClick(e) {
-
-    }
-
-    handleMouseDown(e) {
+    handleTouchStart = e => {
         e.preventDefault();
+        const touch = e.changedTouches[0];
 
         const { math } = this.props;
         const { layout, selections } = this.state;
-        const hitNode = layout.hitTest(e.pageX, e.pageY);
+        const hitNode = layout.hitTest(touch.pageX, touch.pageY);
 
         if (hitNode && hitNode.selectable) {
             const id = hitNode.id.split(":")[0];
@@ -269,9 +260,12 @@ class MathRenderer extends Component {
                 hitNode: null,
             });
         }
-    }
+    };
 
-    handleMouseMove(e) {
+    handleTouchMove = e => {
+        e.preventDefault();
+        const touch = e.changedTouches[0];
+
         const { math } = this.props;
         const { layout, selections, mouse } = this.state;
 
@@ -281,7 +275,7 @@ class MathRenderer extends Component {
 
         e.preventDefault();
 
-        const hitNode = layout.hitTest(e.pageX, e.pageY);
+        const hitNode = layout.hitTest(touch.pageX, touch.pageY);
 
         if (hitNode && hitNode.selectable) {
             const id = hitNode.id.split(":")[0];
@@ -308,9 +302,11 @@ class MathRenderer extends Component {
                 });
             }
         }
-    }
+    };
 
-    handleMouseUp(e) {
+    handleTouchEnd = e => {
+        const touch = e.changedTouches[0];
+
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
         const {selections, mouse} = this.state;
         if (mouse === 'down') {
@@ -318,7 +314,7 @@ class MathRenderer extends Component {
 
             if (selections.length > 0) {
                 const {layout} = this.state;
-                const hitNode = layout.hitTest(e.pageX, e.pageY);
+                const hitNode = layout.hitTest(touch.pageX, touch.pageY);
                 menu = this.getMenu(layout, selections, hitNode);
             }
 
@@ -327,7 +323,7 @@ class MathRenderer extends Component {
                 mouse: 'up',
             });
         }
-    }
+    };
 
     render() {
         const { menu } = this.state;
@@ -335,9 +331,9 @@ class MathRenderer extends Component {
         return <div>
             <div
                 ref="container"
-                onMouseDown={this.handleMouseDown}
-                onMouseMove={this.handleMouseMove}
-                onMouseUp={this.handleMouseUp}
+                onTouchStart={this.handleTouchStart}
+                onTouchMove={this.handleTouchMove}
+                onTouchEnd={this.handleTouchEnd}
             ></div>
             {menu}
         </div>;

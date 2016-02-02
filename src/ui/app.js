@@ -9,7 +9,7 @@ class App extends Component {
     render() {
         const width = window.innerWidth;
         const fontSize = 30;
-        const height = 160;
+        const height = 80;
         const math = this.props.currentLine;
 
         const style = {

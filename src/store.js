@@ -6,7 +6,7 @@ import { findNode, getLeafNodes } from './ast/node-utils';
 import { add, sub, mul, div } from './operations';
 
 const parser = new Parser();
-const math = parser.parse('2x + 5/2 = 10 + (1/2)/(3/4)');
+const math = parser.parse('2x + 5/2 = 10');
 
 const initialState = {
     currentLine: math,
