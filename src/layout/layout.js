@@ -461,17 +461,17 @@ function createFlatLayout(node, fontSize, width, height) {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    const equalNode = findEqual(flattenedLayout);
+    //const equalNode = findEqual(flattenedLayout);
 
-    if (equalNode) {
-        const bounds = equalNode.bounds;
-        dx = centerX - (bounds.left + bounds.right) / 2;
-        dy = centerY - (bounds.top + bounds.bottom) / 2;
-    } else {
+    //if (equalNode) {
+    //    const bounds = equalNode.bounds;
+    //    dx = centerX - (bounds.left + bounds.right) / 2;
+    //    dy = centerY - (bounds.top + bounds.bottom) / 2;
+    //} else {
         const bounds = flattenedLayout.bounds;
         dx = centerX - (bounds.left + bounds.right) / 2;
         dy = centerY - (bounds.top + bounds.bottom) / 2;
-    }
+    //}
 
     translateLayout(flattenedLayout, dx, dy);
 

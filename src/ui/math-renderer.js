@@ -140,7 +140,7 @@ class MathRenderer extends Component {
         const { context } = this.state;
 
         const highlights = this.getSelectionHighlights(layout, selections, hitNode);
-        const padding = 8;
+        const padding = 4;
 
         context.fillStyle = 'rgba(255,255,0,0.5)';
 

@@ -57,7 +57,7 @@ class App extends Component {
                     color={'black'}
                     fontSize={fontSize}
                     width={width}
-                    height={height}
+                    height={380}
                     math={math}
                 />}
             </div>
