@@ -3,14 +3,21 @@ var webpack = require('webpack');
 
 module.exports = {
     devtool: 'cheap-module-eval-source-map',
-    entry: [
-        'webpack-dev-server/client?http://localhost:3000',
-        'webpack/hot/only-dev-server',
-        './src/index'
-    ],
+    entry: {
+        main: [
+            'webpack-dev-server/client?http://localhost:3000',
+            'webpack/hot/only-dev-server',
+            './src/main'
+        ],
+        aux: [
+            'webpack-dev-server/client?http://localhost:3000',
+            'webpack/hot/only-dev-server',
+            './src/aux'
+        ]
+    },
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'main.js',
+        filename: '[name].js',
         publicPath: '/build/'
     },
     plugins: [
