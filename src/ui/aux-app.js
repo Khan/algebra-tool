@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Keypad from './keypad';
+import NewKeypad from './new-keypad';
 
 class AuxApp extends Component {
     render() {
@@ -27,7 +27,7 @@ class AuxApp extends Component {
                     2x + 5 = 10
                 </div>
             </div>
-            <Keypad />
+            <NewKeypad />
         </div>;
     }
 }

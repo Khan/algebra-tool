@@ -38,7 +38,7 @@ export default class Button extends Component {
             height: 32,
             backgroundColor: transparent ? 'white' : color,
             color: transparent ? color : 'white',
-            lineHeight: transparent ? '28px' : '32px',
+            lineHeight: '32px',
             textAlign: 'center',
             borderRadius: 4,
             marginLeft: 5,
