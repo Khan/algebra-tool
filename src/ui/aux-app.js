@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import NewKeypad from './new-keypad';
+import TextLine from './text-line';
 
 class AuxApp extends Component {
     render() {
@@ -21,15 +23,18 @@ class AuxApp extends Component {
             fontSize: 30,
         };
 
+        const insertedText = {
+            "6": " - 5",
+            "11": " - 5",
+        };
+
         return <div style={style}>
-            <div style={containerStyle}>
-                <div style={lineStyle}>
-                    2x + 5 = 10
-                </div>
+            <div style={{...containerStyle, paddingLeft: 20}}>
+                {this.props.lines.map(line => <TextLine {...line}/>)}
             </div>
             <NewKeypad />
         </div>;
     }
 }
 
-export { AuxApp as default };
+module.exports = connect(state => state)(AuxApp);
