@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 
 class TextLine extends Component {
+    static defaultProps = {
+        insertedText: {},
+        selectedText: []
+    };
+
     render() {
-        const { text, insertedText } = this.props;
+        const { text, insertedText, selectedText } = this.props;
 
         const spanStyle = {
             fontSize: 26,
@@ -15,30 +20,55 @@ class TextLine extends Component {
         for (let end of Object.keys(insertedText)) {
             textRanges.push({
                 text: text.substring(start, end),
-                color: 'black',
             });
             textRanges.push({
                 text: insertedText[end],
-                color: 'blue',
+                type: 'insertion'
             });
             start = end;
         }
 
         textRanges.push({
             text: text.substring(start, text.length),
-            color: 'black'
         });
 
+        if (textRanges.length === 1 && selectedText.length > 0) {
+            textRanges.length = 0;
+
+            let start = 0;
+            for (const selection of selectedText) {
+                textRanges.push({
+                    text: text.substring(start, selection.start),
+                });
+                textRanges.push({
+                    text: text.substring(selection.start, selection.end),
+                    type: 'selection'
+                });
+                start = selection.end;
+            }
+            textRanges.push({
+                text: text.substring(start, text.length),
+            });
+        }
+
         const lineStyle = {
-            marginTop: 20
+            marginTop: 20,
+            marginBottom: 20,
         };
 
         return <div style={lineStyle}>
             {textRanges.map(
                 range => {
-                    let style = {...spanStyle, color: range.color};
-                    if (range.color !== 'black') {
+                    let style = {...spanStyle};
+                    if (range.type === 'insertion') {
                         style.textDecoration = 'underline';
+                        style.color = 'orange';
+                    } else if (range.type === 'selection') {
+                        style.borderRadius = 4;
+                        style.border = 'solid 2px';
+                        style.paddingLeft = 2;
+                        style.paddingRight = 2;
+                        style.color = 'blue';
                     }
                     return <span style={style}>{range.text}</span>;
                 }
