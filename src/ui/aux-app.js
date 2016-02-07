@@ -34,15 +34,10 @@ class AuxApp extends Component {
             fontSize: 26,
         };
 
-        const insertedText = {
-            "6": " - 5",
-            "11": " - 5",
-        };
-
         const math = parser.parse('x = 5/2');
 
         return <div style={style}>
-            <div style={{...containerStyle, paddingLeft: 20}}>
+            <div style={containerStyle}>
                 {this.props.steps.map((line, i) =>
                     <TextLine
                         {...line}
@@ -51,10 +46,11 @@ class AuxApp extends Component {
                         active={this.props.activeStep === i}
                     />)
                 }
-                <div style={{height:200}}></div>
+                <div style={{height:180, backgroundColor:'#DDD'}}></div>
             </div>
             <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
-                Goal: <StaticMath fontSize={26} active={true} math={math} width={60} height={60} />
+                <div style={{float:'left', height: 60, lineHeight: '60px'}}>Goal: </div>
+                <StaticMath fontSize={26} active={true} math={math} width={65} height={60} />
             </div>
             <NewKeypad />
         </div>;

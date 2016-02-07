@@ -52,12 +52,14 @@ class TextLine extends Component {
         }
 
         const lineStyle = {
-            marginTop: 30,
-            marginBottom: 30,
-            opacity: active ? 1.0 : 0.3,
+            paddingTop: 15,
+            paddingBottom: 15,
+            backgroundColor: active ? '#FFF' : '#DDD',
+            paddingLeft: 20,
         };
 
         return <div style={lineStyle} onClick={this.props.onClick}>
+            <div style={{opacity: active ? 1.0 : 0.5}}>
             {textRanges.map(
                 (range, i) => {
                     let style = {...spanStyle};
@@ -72,12 +74,13 @@ class TextLine extends Component {
                         style.color = 'blue';
                     }
                     const text = range.text
-                        .replace('/', '÷')
-                        .replace('-', '–')
-                        .replace('*', '·');
+                        .replace(/\//g, '÷')
+                        .replace(/\-/g, '–')
+                        .replace(/\*/g, '·');
                     return <span style={style} key={i}>{text}</span>;
                 }
             )}
+            </div>
         </div>;
     }
 }
