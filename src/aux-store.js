@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 
 const initialState = {
-    lines: [
+    steps: [
         {
             text: '2x + 5 = 10',
         },
@@ -66,15 +66,15 @@ const initialState = {
             text: 'x = 5 / 2',
         },
     ],
-    activeLine: 8,
+    activeStep: 8,
 };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'SELECT_LINE':
+        case 'SELECT_STEP':
             return {
                 ...state,
-                activeLine: action.activeLine,
+                activeStep: action.step,
             };
         default:
             return state;
