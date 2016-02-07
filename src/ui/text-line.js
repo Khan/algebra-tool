@@ -71,7 +71,11 @@ class TextLine extends Component {
                         style.paddingRight = 2;
                         style.color = 'blue';
                     }
-                    return <span style={style} key={i}>{range.text}</span>;
+                    const text = range.text
+                        .replace('/', '÷')
+                        .replace('-', '–')
+                        .replace('*', '·');
+                    return <span style={style} key={i}>{text}</span>;
                 }
             )}
         </div>;
