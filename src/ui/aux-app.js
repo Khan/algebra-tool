@@ -26,9 +26,8 @@ class AuxApp extends Component {
         };
 
         const lineStyle = {
-            textAlign: 'center',
             fontFamily: 'Helvetica-Light',
-            fontSize: 30,
+            fontSize: 26,
         };
 
         const insertedText = {
@@ -46,7 +45,10 @@ class AuxApp extends Component {
                         active={this.props.activeStep === i}
                     />)
                 }
-                <div style={{height:250}}></div>
+                <div style={{height:200}}></div>
+            </div>
+            <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
+                Goal: x = 5 / 2
             </div>
             <NewKeypad />
         </div>;
