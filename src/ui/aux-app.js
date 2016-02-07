@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import NewKeypad from './new-keypad';
 import TextLine from './text-line';
 import auxStore from './../aux-store';
+import StaticMath from './static-math';
+import Parser from '../parser';
+
+const parser = new Parser();
 
 class AuxApp extends Component {
     select = step => {
@@ -35,6 +39,8 @@ class AuxApp extends Component {
             "11": " - 5",
         };
 
+        const math = parser.parse('x = 5/2');
+
         return <div style={style}>
             <div style={{...containerStyle, paddingLeft: 20}}>
                 {this.props.steps.map((line, i) =>
@@ -48,7 +54,7 @@ class AuxApp extends Component {
                 <div style={{height:200}}></div>
             </div>
             <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
-                Goal: x = 5 / 2
+                Goal: <StaticMath fontSize={26} active={true} math={math} width={60} height={60} />
             </div>
             <NewKeypad />
         </div>;

@@ -148,7 +148,7 @@ class StaticMath extends Component {
     }
 
     render() {
-        return <div onTouchEnd={this.handleTouchEnd}>
+        return <div onTouchEnd={this.handleTouchEnd} style={{display:'inline-block'}}>
             <div ref="container"></div>
         </div>;
     }
