@@ -3,70 +3,67 @@ import { createStore } from 'redux';
 const initialState = {
     steps: [
         {
-            text: '2x + 5 = 10',
+            text: '2x+5=10',
         },
         {
-            text: '2x + 5 = 10',
+            text: '2x+5=10',
             insertedText: {
-                "6": " - 5",
-                "11": " - 5",
+                "4": "-5",
+                "7": "-5",
             }
         },
         {
-            text: '2x + 5 - 5 = 10 - 5',
+            text: '2x+5-5=10-5',
             selectedText: [
                 {
-                    start: 5,
-                    end: 10
-                }
-            ]
-        },
-        {
-            text: '2x + 0 = 10 - 5',
-            selectedText: [
-                {
-                    start: 9,
-                    end: 15
-                }
-            ]
-        },
-        {
-            text: '2x + 0 = 5',
-            selectedText: [
-                {
-                    start: 5,
+                    start: 3,
                     end: 6
                 }
             ]
         },
         {
-            text: '2x = 5',
+            text: '2x+0=10-5',
+            selectedText: [
+                {
+                    start: 5,
+                    end: 9
+                }
+            ]
+        },
+        {
+            text: '2x+0=5',
+            selectedText: [
+                {
+                    start: 3,
+                    end: 4
+                }
+            ]
+        },
+        {
+            text: '2x=5',
             insertedText: {
-                "2": " / 2",
-                "6": " / 2",
+                "2": "/2",
+                "4": "/2",
             }
         },
         {
-            text: '2x / 2 = 5 / 2',
-        },
-        {
-            text: '2x / 2 = 5 / 2',
+            text: '2x/2=5/2',
             selectedText: [
                 {
                     start: 0,
                     end: 1
                 },
                 {
-                    start: 5,
-                    end: 6
+                    start: 3,
+                    end: 4
                 }
             ]
         },
         {
-            text: 'x = 5 / 2',
+            text: 'x=5/2',
         },
     ],
-    activeStep: 8,
+    activeStep: 7,
 };
 
 const reducer = (state = initialState, action) => {
@@ -84,7 +81,7 @@ const reducer = (state = initialState, action) => {
             const newActiveStep = {
                 ...activeStep,
                 insertedText: {
-                    [equalIndex - 1]: action.operator,
+                    [equalIndex]: action.operator,
                     [activeStep.text.length]: action.operator
                 }
             };
