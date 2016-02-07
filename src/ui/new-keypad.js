@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
 
 import Button from './button';
+import auxStore from './../aux-store';
 
 class NewKeypad extends Component {
-    handleNumber = (key) => {
-
+    handleNumber = key => {
+        auxStore.dispatch({
+            type: 'INSERT_NUMBER',
+            number: key
+        });
     };
 
     handleBackspace = () => {
-
+        auxStore.dispatch({
+            type: 'BACKSPACE'
+        })
     };
 
-    handleOperator = (operator) => {
-
+    handleOperator = operator => {
+        auxStore.dispatch({
+            type: 'SIMPLE_OPERATION',
+            operator: operator
+        });
     };
 
     handleLeft = () => {
@@ -63,7 +72,7 @@ class NewKeypad extends Component {
                 <Button {...topRowColor} onTap={this.handleLeft}>&#x2190;</Button>
                 <Button {...topRowColor} onTap={this.handleRight}>&#x2192;</Button>
                 <Button {...topRowColor}>&nbsp;</Button>
-                <Button {...topRowColor}>&#x232B;</Button>
+                <Button {...topRowColor} onTap={this.handleBackspace}>&#x232B;</Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors}>(</Button>
@@ -94,7 +103,7 @@ class NewKeypad extends Component {
                 <Button {...emptyColors}>y</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
-                <Button {...opColors} onTap={() => this.handleOperator('=')}>=</Button>
+                <Button {...opColors}>=</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('/')}>÷</Button>
             </div>
         </div>;

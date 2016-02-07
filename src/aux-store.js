@@ -70,11 +70,58 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
+    const activeStep = state.steps[state.activeStep];
+    const newInsertedText = {};
+
     switch (action.type) {
         case 'SELECT_STEP':
             return {
                 ...state,
                 activeStep: action.step,
+            };
+        case 'SIMPLE_OPERATION':
+            const equalIndex = activeStep.text.indexOf('=');
+            const newActiveStep = {
+                ...activeStep,
+                insertedText: {
+                    [equalIndex - 1]: action.operator,
+                    [activeStep.text.length]: action.operator
+                }
+            };
+
+            return {
+                ...state,
+                steps: [...state.steps.slice(0, state.activeStep), newActiveStep, ...state.steps.slice(state.activeStep + 1)]
+            };
+        case 'INSERT_NUMBER':
+            for (const [k, v] of Object.entries(activeStep.insertedText)) {
+                newInsertedText[k] = v + action.number;
+            }
+
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, state.activeStep),
+                    {
+                        ...activeStep,
+                        insertedText: newInsertedText
+                    },
+                    ...state.steps.slice(state.activeStep + 1)]
+            };
+        case 'BACKSPACE':
+            for (const [k, v] of Object.entries(activeStep.insertedText)) {
+                newInsertedText[k] = v.slice(0, v.length - 1);
+            }
+
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, state.activeStep),
+                    {
+                        ...activeStep,
+                        insertedText: newInsertedText
+                    },
+                    ...state.steps.slice(state.activeStep + 1)]
             };
         default:
             return state;

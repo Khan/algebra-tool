@@ -52,9 +52,9 @@ class TextLine extends Component {
         }
 
         const lineStyle = {
-            marginTop: 20,
-            marginBottom: 20,
-            opacity: active ? 1.0 : 0.5,
+            marginTop: 30,
+            marginBottom: 30,
+            opacity: active ? 1.0 : 0.3,
         };
 
         return <div style={lineStyle} onClick={this.props.onClick}>
