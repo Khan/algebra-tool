@@ -65,12 +65,20 @@ const initialState = {
         {
             text: 'x = 5 / 2',
         },
-    ]
+    ],
+    activeLine: 8,
 };
 
 const reducer = (state = initialState, action) => {
-    console.log(action);
-    return state;
+    switch (action.type) {
+        case 'SELECT_LINE':
+            return {
+                ...state,
+                activeLine: action.activeLine,
+            };
+        default:
+            return state;
+    }
 };
 
 const store = createStore(reducer);

@@ -7,7 +7,7 @@ class TextLine extends Component {
     };
 
     render() {
-        const { text, insertedText, selectedText } = this.props;
+        const { text, insertedText, selectedText, active } = this.props;
 
         const spanStyle = {
             fontSize: 26,
@@ -54,9 +54,10 @@ class TextLine extends Component {
         const lineStyle = {
             marginTop: 20,
             marginBottom: 20,
+            opacity: active ? 1.0 : 0.5,
         };
 
-        return <div style={lineStyle}>
+        return <div style={lineStyle} onClick={this.props.onClick}>
             {textRanges.map(
                 range => {
                     let style = {...spanStyle};

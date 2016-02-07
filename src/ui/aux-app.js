@@ -3,8 +3,16 @@ import { connect } from 'react-redux';
 
 import NewKeypad from './new-keypad';
 import TextLine from './text-line';
+import auxStore from './../aux-store';
 
 class AuxApp extends Component {
+    select = i => {
+        auxStore.dispatch({
+            type: 'SELECT_LINE',
+            activeLine: i
+        });
+    };
+
     render() {
         const style = {
             display: 'flex',
@@ -30,7 +38,14 @@ class AuxApp extends Component {
 
         return <div style={style}>
             <div style={{...containerStyle, paddingLeft: 20}}>
-                {this.props.lines.map(line => <TextLine {...line}/>)}
+                {this.props.lines.map((line, i) =>
+                    <TextLine
+                        {...line}
+                        key={i}
+                        onClick={() => this.select(i)}
+                        active={this.props.activeLine === i}
+                    />)
+                }
             </div>
             <NewKeypad />
         </div>;
