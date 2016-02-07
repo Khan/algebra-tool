@@ -19,16 +19,15 @@ class StaticMath extends Component {
     }
 
     componentDidMount() {
+        const { fontSize, math } = this.props;
+        const layout = createFlatLayout(math, fontSize);
+        const bounds = layout.bounds;
+
         const container = this.refs.container;
 
         const canvas = document.createElement('canvas');
-        canvas.width = this.props.width;
-        canvas.height = this.props.height;
-
-        const { fontSize, math } = this.props;
-
-        let layout = createFlatLayout(
-            math, fontSize, canvas.width, canvas.height);
+        canvas.width = bounds.width;
+        canvas.height = bounds.height;
 
         const context = canvas.getContext('2d');
 

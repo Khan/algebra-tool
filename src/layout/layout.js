@@ -19,6 +19,7 @@ class Layout {
         this.x = 0;
         this.y = 0;
         this.selectable = true;
+        this.padding = 0;
         Object.assign(this, {children, atomic});
     }
 
@@ -41,6 +42,10 @@ class Layout {
         const bounds = Rect.union(this.children.map(child => child.bounds));
         bounds.x += this.x;
         bounds.y += this.y;
+        bounds.x -= this.padding;
+        bounds.y -= this.padding;
+        bounds.width += 2 * this.padding;
+        bounds.height += 2 * this.padding;
         return bounds;
     }
 
@@ -436,7 +441,7 @@ function flatten(layout, dx = 0, dy = 0, result = []) {
 }
 
 // TODO: separate the centering from the creation of the layout
-function createFlatLayout(node, fontSize, width, height) {
+function createFlatLayout(node, fontSize) {
     let newLayout = createLayout(node, fontSize);
     let flattenedLayout = new Layout(flatten(newLayout));
 
@@ -455,23 +460,16 @@ function createFlatLayout(node, fontSize, width, height) {
         }
     }
 
-    let dx = 0;
-    let dy = 0;
+    flattenedLayout.padding = 2;
+    const bounds = flattenedLayout.bounds;
+    const width = bounds.right - bounds.left;
+    const height = bounds.bottom - bounds.top;
 
     const centerX = width / 2;
     const centerY = height / 2;
 
-    //const equalNode = findEqual(flattenedLayout);
-
-    //if (equalNode) {
-    //    const bounds = equalNode.bounds;
-    //    dx = centerX - (bounds.left + bounds.right) / 2;
-    //    dy = centerY - (bounds.top + bounds.bottom) / 2;
-    //} else {
-        const bounds = flattenedLayout.bounds;
-        dx = centerX - (bounds.left + bounds.right) / 2;
-        dy = centerY - (bounds.top + bounds.bottom) / 2;
-    //}
+    const dx = centerX - (bounds.left + bounds.right) / 2;
+    const dy = centerY - (bounds.top + bounds.bottom) / 2;
 
     translateLayout(flattenedLayout, dx, dy);
 
