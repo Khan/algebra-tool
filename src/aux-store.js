@@ -123,6 +123,28 @@ const reducer = (state = initialState, action) => {
                     },
                     ...state.steps.slice(state.activeStep + 1)]
             };
+        case 'ACCEPT_STEP':
+            const step = state.steps[state.activeStep];
+
+            let text = "";
+
+            let start = 0;
+            for (let end of Object.keys(step.insertedText)) {
+                text += step.text.substring(start, end);
+                text += step.insertedText[end];
+                start = end;
+            }
+
+            text += step.text.substring(start, step.text.length);
+
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, state.activeStep + 1),
+                    { text }
+                ],
+                activeStep: state.activeStep + 1
+            };
         default:
             return state;
     }

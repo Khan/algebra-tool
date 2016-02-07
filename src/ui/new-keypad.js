@@ -11,18 +11,21 @@ class NewKeypad extends Component {
         });
     };
 
-    handleBackspace = () => {
+    handleBackspace = () =>
         auxStore.dispatch({
             type: 'BACKSPACE'
-        })
-    };
+        });
 
-    handleOperator = operator => {
+    handleOperator = operator =>
         auxStore.dispatch({
             type: 'SIMPLE_OPERATION',
             operator: operator
         });
-    };
+
+    handleEnter = () =>
+        auxStore.dispatch({
+            type: 'ACCEPT_STEP'
+        });
 
     handleLeft = () => {
 
@@ -71,7 +74,7 @@ class NewKeypad extends Component {
                 <Button {...topRowColor}>&nbsp;</Button>
                 <Button {...topRowColor} onTap={this.handleLeft}>&#x2190;</Button>
                 <Button {...topRowColor} onTap={this.handleRight}>&#x2192;</Button>
-                <Button {...topRowColor}>&nbsp;</Button>
+                <Button {...topRowColor} onTap={this.handleEnter}>&#x21B5;</Button>
                 <Button {...topRowColor} onTap={this.handleBackspace}>&#x232B;</Button>
             </div>
             <div style={rowStyle}>
