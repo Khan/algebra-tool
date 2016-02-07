@@ -17,6 +17,14 @@ class AuxApp extends Component {
         });
     };
 
+    componentDidMount() {
+        const {offsetHeight, scrollHeight} = this.refs.container;
+
+        if (scrollHeight > offsetHeight) {
+            this.refs.container.scrollTop = scrollHeight - offsetHeight;
+        }
+    }
+
     render() {
         const style = {
             display: 'flex',
@@ -37,7 +45,7 @@ class AuxApp extends Component {
         const math = parser.parse('x = 5/2');
 
         return <div style={style}>
-            <div style={containerStyle}>
+            <div style={containerStyle} ref="container">
                 {this.props.steps.map((line, i) =>
                     <TextLine
                         {...line}
