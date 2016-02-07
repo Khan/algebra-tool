@@ -46,6 +46,7 @@ class AuxApp extends Component {
                         active={this.props.activeStep === i}
                     />)
                 }
+                <div style={{height:250}}></div>
             </div>
             <NewKeypad />
         </div>;

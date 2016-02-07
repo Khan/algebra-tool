@@ -59,7 +59,7 @@ class TextLine extends Component {
 
         return <div style={lineStyle} onClick={this.props.onClick}>
             {textRanges.map(
-                range => {
+                (range, i) => {
                     let style = {...spanStyle};
                     if (range.type === 'insertion') {
                         style.textDecoration = 'underline';
@@ -71,7 +71,7 @@ class TextLine extends Component {
                         style.paddingRight = 2;
                         style.color = 'blue';
                     }
-                    return <span style={style}>{range.text}</span>;
+                    return <span style={style} key={i}>{range.text}</span>;
                 }
             )}
         </div>;
