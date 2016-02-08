@@ -102,8 +102,8 @@ class NewKeypad extends Component {
                 <Button {...opColors} onTap={() => this.handleOperator('*')}>·</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>x</Button>
-                <Button {...emptyColors}>y</Button>
+                <Button {...emptyColors} onTap={this.handleNumber}>x</Button>
+                <Button {...emptyColors} onTap={this.handleNumber}>y</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
                 <Button {...opColors}>=</Button>

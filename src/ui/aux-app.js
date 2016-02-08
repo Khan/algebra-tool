@@ -44,6 +44,11 @@ class AuxApp extends Component {
 
         const math = parser.parse('x = 5/2');
 
+        //const goal = <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
+        //    <div style={{float:'left', height: 60, lineHeight: '60px'}}>Goal: </div>
+        //    <StaticMath fontSize={26} active={true} math={math} width={65} height={60} />
+        //</div>;
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 {this.props.steps.map((line, i) =>
@@ -55,10 +60,6 @@ class AuxApp extends Component {
                     />)
                 }
                 <div style={{height:120, backgroundColor:'#DDD'}}></div>
-            </div>
-            <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
-                <div style={{float:'left', height: 60, lineHeight: '60px'}}>Goal: </div>
-                <StaticMath fontSize={26} active={true} math={math} width={65} height={60} />
             </div>
             <NewKeypad />
         </div>;
