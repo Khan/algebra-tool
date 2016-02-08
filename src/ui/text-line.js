@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 
+import Parser from '../parser';
+import StaticMath from './static-math';
+
+const parser = new Parser();
+
 class TextLine extends Component {
     static defaultProps = {
         insertedText: {},
@@ -58,9 +63,11 @@ class TextLine extends Component {
             paddingLeft: 20,
         };
 
+        const useStaticMath = Object.keys(insertedText).length === 0;
+
         return <div style={lineStyle} onClick={this.props.onClick}>
             <div style={{opacity: active ? 1.0 : 0.5}}>
-            {textRanges.map(
+            {!useStaticMath && textRanges.map(
                 (range, i) => {
                     let style = {...spanStyle};
                     if (range.type === 'insertion') {
@@ -80,6 +87,12 @@ class TextLine extends Component {
                     return <span style={style} key={i}>{text}</span>;
                 }
             )}
+            {useStaticMath &&
+            <StaticMath
+                fontSize={26}
+                math={parser.parse(text)}
+                active={true}
+            />}
             </div>
         </div>;
     }

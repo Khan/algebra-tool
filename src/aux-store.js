@@ -47,7 +47,7 @@ const initialState = {
             }
         },
         {
-            text: '2x/2=5/2',
+            text: '(2x)/2=5/2',
             selectedText: [
                 {
                     start: 0,

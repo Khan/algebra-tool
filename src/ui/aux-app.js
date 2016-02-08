@@ -54,7 +54,7 @@ class AuxApp extends Component {
                         active={this.props.activeStep === i}
                     />)
                 }
-                <div style={{height:180, backgroundColor:'#DDD'}}></div>
+                <div style={{height:120, backgroundColor:'#DDD'}}></div>
             </div>
             <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
                 <div style={{float:'left', height: 60, lineHeight: '60px'}}>Goal: </div>
