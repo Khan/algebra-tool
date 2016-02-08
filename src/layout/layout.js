@@ -23,7 +23,8 @@ class Layout {
         Object.assign(this, {children, atomic});
     }
 
-    render(ctx) {
+    render(ctx, selections = []) {
+
         ctx.save();
         ctx.translate(this.x, this.y);
         if (this.atomic && RenderOptions.bounds) {
@@ -32,9 +33,15 @@ class Layout {
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
-        for (const child of this.children) {
-            child.render(ctx);
+        if (selections.has(this.id)) {
+            ctx.fillStyle = 'blue';
         }
+
+        for (const child of this.children) {
+            child.render(ctx, selections);
+        }
+
+        ctx.fillStyle = 'black';
         ctx.restore();
     }
 

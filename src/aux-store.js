@@ -1,19 +1,25 @@
 import { createStore } from 'redux';
 
+import Parser from './parser';
+
+const parser = new Parser();
+
 const initialState = {
     steps: [
         {
             text: '2x+5=10',
+            math: parser.parse('2x+5=10')
         },
         {
             text: '2x+5=10',
             insertedText: {
                 "4": "-5",
-                "7": "-5",
+                "7": "-5"
             }
         },
         {
             text: '2x+5-5=10-5',
+            math: parser.parse('2x+5-5=10-5'),
             selectedText: [
                 {
                     start: 3,
@@ -23,6 +29,7 @@ const initialState = {
         },
         {
             text: '2x+0=10-5',
+            math: parser.parse('2x+0=10-5'),
             selectedText: [
                 {
                     start: 5,
@@ -32,6 +39,7 @@ const initialState = {
         },
         {
             text: '2x+0=5',
+            math: parser.parse('2x+0=5'),
             selectedText: [
                 {
                     start: 3,
@@ -48,6 +56,7 @@ const initialState = {
         },
         {
             text: '(2x)/2=5/2',
+            math: parser.parse('(2x)/2=5/2'),
             selectedText: [
                 {
                     start: 0,
@@ -57,14 +66,18 @@ const initialState = {
                     start: 3,
                     end: 4
                 }
-            ]
+            ],
+            selectedNodeIds: [ 49, 53 ]
         },
         {
             text: 'x=5/2',
+            math: parser.parse('x=5/2')
         },
     ],
     activeStep: 7,
 };
+
+console.log(initialState.steps[6]);
 
 const reducer = (state = initialState, action) => {
     const activeStep = state.steps[state.activeStep];

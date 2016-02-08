@@ -12,7 +12,7 @@ class TextLine extends Component {
     };
 
     render() {
-        const { text, insertedText, selectedText, active } = this.props;
+        const { text, math, insertedText, selectedText, active } = this.props;
 
         const spanStyle = {
             fontSize: 26,
@@ -67,7 +67,7 @@ class TextLine extends Component {
 
         return <div style={lineStyle} onClick={this.props.onClick}>
             <div style={{opacity: active ? 1.0 : 0.5}}>
-            {!useStaticMath && textRanges.map(
+            {!math && textRanges.map(
                 (range, i) => {
                     let style = {...spanStyle};
                     if (range.type === 'insertion') {
@@ -87,7 +87,7 @@ class TextLine extends Component {
                     return <span style={style} key={i}>{text}</span>;
                 }
             )}
-            {useStaticMath &&
+            {math &&
             <StaticMath
                 fontSize={26}
                 math={parser.parse(text)}
