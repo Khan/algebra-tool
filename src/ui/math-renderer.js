@@ -30,19 +30,19 @@ class MathRenderer extends Component {
     };
 
     componentDidMount() {
-        const container = this.refs.container;
+        const { fontSize, math } = this.props;
+        const layout = createFlatLayout(math, fontSize, 6);
+        const bounds = layout.bounds;
 
         const canvas = document.createElement('canvas');
-        canvas.width = this.props.width;
-        canvas.height = this.props.height;
+        canvas.width = bounds.width;
+        canvas.height = bounds.height;
 
-        const { fontSize, math, width, height } = this.props;
-        const layout = createFlatLayout(math, fontSize, width, height);
         const context = canvas.getContext('2d');
 
         this.drawLayout(context, layout);
 
-        container.appendChild(canvas);
+        this.refs.container.appendChild(canvas);
 
         this.setState({ context, layout });
     }
@@ -142,7 +142,7 @@ class MathRenderer extends Component {
         const highlights = this.getSelectionHighlights(layout, selections, hitNode);
         const padding = 4;
 
-        context.fillStyle = 'rgba(255,255,0,0.5)';
+        context.fillStyle = 'rgba(0,0,255,0.4)';
 
         for (const {shape, bounds} of highlights) {
             if (shape === 'circle') {
@@ -212,12 +212,28 @@ class MathRenderer extends Component {
     }
 
     handleTouchStart = e => {
-        e.preventDefault();
+        if (!this.props.active) {
+            return;
+        }
         const touch = e.changedTouches[0];
+
+        // TODO: generalize to find all ancestors that can be scrolled
+        const container = this.refs.container;
+        let node = container;
+        while (node != null) {
+            if (node.scrollHeight !== node.offsetHeight) {
+                break;
+            }
+            node = node.parentElement;
+        }
+        const scrollTop = node.scrollTop;
+
+        const y = touch.pageY - container.offsetTop + scrollTop;
+        const x = touch.pageX - container.offsetLeft;
 
         const { math } = this.props;
         const { layout, selections } = this.state;
-        const hitNode = layout.hitTest(touch.pageX, touch.pageY);
+        const hitNode = layout.hitTest(x, y);
 
         if (hitNode && hitNode.selectable) {
             const id = hitNode.id.split(":")[0];
@@ -263,8 +279,24 @@ class MathRenderer extends Component {
     };
 
     handleTouchMove = e => {
-        e.preventDefault();
+        if (!this.props.active) {
+            return;
+        }
         const touch = e.changedTouches[0];
+
+        // TODO: generalize to find all ancestors that can be scrolled
+        const container = this.refs.container;
+        let node = container;
+        while (node != null) {
+            if (node.scrollHeight !== node.offsetHeight) {
+                break;
+            }
+            node = node.parentElement;
+        }
+        const scrollTop = node.scrollTop;
+
+        const y = touch.pageY - container.offsetTop + scrollTop;
+        const x = touch.pageX - container.offsetLeft;
 
         const { math } = this.props;
         const { layout, selections, mouse } = this.state;
@@ -273,9 +305,7 @@ class MathRenderer extends Component {
             return;
         }
 
-        e.preventDefault();
-
-        const hitNode = layout.hitTest(touch.pageX, touch.pageY);
+        const hitNode = layout.hitTest(x, y);
 
         if (hitNode && hitNode.selectable) {
             const id = hitNode.id.split(":")[0];
@@ -305,7 +335,24 @@ class MathRenderer extends Component {
     };
 
     handleTouchEnd = e => {
+        if (!this.props.active) {
+            return;
+        }
         const touch = e.changedTouches[0];
+
+        // TODO: generalize to find all ancestors that can be scrolled
+        const container = this.refs.container;
+        let node = container;
+        while (node != null) {
+            if (node.scrollHeight !== node.offsetHeight) {
+                break;
+            }
+            node = node.parentElement;
+        }
+        const scrollTop = node.scrollTop;
+
+        const y = touch.pageY - container.offsetTop + scrollTop;
+        const x = touch.pageX - container.offsetLeft;
 
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
         const {selections, mouse} = this.state;
@@ -314,7 +361,7 @@ class MathRenderer extends Component {
 
             if (selections.length > 0) {
                 const {layout} = this.state;
-                const hitNode = layout.hitTest(touch.pageX, touch.pageY);
+                const hitNode = layout.hitTest(x, y);
                 menu = this.getMenu(layout, selections, hitNode);
             }
 

@@ -64,6 +64,10 @@ class StaticMath extends Component {
         }
         const container = this.refs.container;
 
+        const { layout } = this.state;
+        const { math } = this.props;
+        const touch = e.changedTouches[0];
+
         // TODO: generalize to find all ancestors that can be scrolled
         let node = container;
         while (node != null) {
@@ -73,10 +77,6 @@ class StaticMath extends Component {
             node = node.parentElement;
         }
         const scrollTop = node.scrollTop;
-
-        const { layout } = this.state;
-        const { math } = this.props;
-        const touch = e.changedTouches[0];
 
         const y = touch.pageY - container.offsetTop + scrollTop;
         const x = touch.pageX - container.offsetLeft;

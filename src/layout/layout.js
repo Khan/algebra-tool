@@ -23,7 +23,7 @@ class Layout {
         Object.assign(this, {children, atomic});
     }
 
-    render(ctx, selections = []) {
+    render(ctx, selections = new Set()) {
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -447,8 +447,7 @@ function flatten(layout, dx = 0, dy = 0, result = []) {
     return result;
 }
 
-// TODO: separate the centering from the creation of the layout
-function createFlatLayout(node, fontSize) {
+function createFlatLayout(node, fontSize, padding = 2) {
     let newLayout = createLayout(node, fontSize);
     let flattenedLayout = new Layout(flatten(newLayout));
 
@@ -467,7 +466,7 @@ function createFlatLayout(node, fontSize) {
         }
     }
 
-    flattenedLayout.padding = 2;
+    flattenedLayout.padding = padding;
     const bounds = flattenedLayout.bounds;
     const width = bounds.right - bounds.left;
     const height = bounds.bottom - bounds.top;

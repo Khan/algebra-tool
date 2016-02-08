@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Parser from '../parser';
 import StaticMath from './static-math';
+import MathRenderer from './math-renderer';
 
 const parser = new Parser();
 
@@ -88,10 +89,10 @@ class TextLine extends Component {
                 }
             )}
             {math &&
-            <StaticMath
+            <MathRenderer
                 fontSize={26}
-                math={parser.parse(text)}
-                active={true}
+                math={math}
+                active={active}
             />}
             </div>
         </div>;
