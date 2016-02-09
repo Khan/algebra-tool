@@ -14,8 +14,25 @@ class AuxApp extends Component {
         const {offsetHeight, scrollTop} = this.refs.container;
         const center = target.offsetTop - scrollTop + target.offsetHeight / 2;
         // TODO: take into account the offsetTop of the container
-        this.refs.container.scrollTop =
-            parseInt(scrollTop - (offsetHeight / 2 - center));
+
+        const currentScrollTop = scrollTop;
+        const futureScrollTop = scrollTop - (offsetHeight / 2 - center);
+
+        let t = 0;
+
+        const animate = () => {
+            if (t < 1) {
+                t = Math.min(t + 0.05, 1);
+                this.refs.container.scrollTop =
+                    parseInt(t * futureScrollTop + (1 - t) * currentScrollTop);
+
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+        //this.refs.container.scrollTop =
+        //    parseInt(scrollTop - (offsetHeight / 2 - center));
 
         auxStore.dispatch({
             type: 'SELECT_STEP',

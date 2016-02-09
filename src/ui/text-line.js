@@ -67,33 +67,33 @@ class TextLine extends Component {
         };
 
         return <div style={lineStyle} onClick={this.props.onClick}>
-            <div style={{opacity: active ? 1.0 : 0.5}}>
-            {!math && textRanges.map(
-                (range, i) => {
-                    let style = {...spanStyle};
-                    if (range.type === 'insertion') {
-                        style.textDecoration = 'underline';
-                        style.color = 'orange';
-                    } else if (range.type === 'selection') {
-                        style.borderRadius = 4;
-                        style.border = 'solid 2px';
-                        style.paddingLeft = 2;
-                        style.paddingRight = 2;
-                        style.color = 'blue';
+            <div style={{opacity: active ? 1.0 : 0.5, transitionProperty: 'opacity', transitionDuration: '0.5s'}}>
+                {!math && textRanges.map(
+                    (range, i) => {
+                        let style = {...spanStyle};
+                        if (range.type === 'insertion') {
+                            style.textDecoration = 'underline';
+                            style.color = 'orange';
+                        } else if (range.type === 'selection') {
+                            style.borderRadius = 4;
+                            style.border = 'solid 2px';
+                            style.paddingLeft = 2;
+                            style.paddingRight = 2;
+                            style.color = 'blue';
+                        }
+                        const text = range.text
+                            .replace(/\//g, '÷')
+                            .replace(/\-/g, '–')
+                            .replace(/\*/g, '·');
+                        return <span style={style} key={i}>{text}</span>;
                     }
-                    const text = range.text
-                        .replace(/\//g, '÷')
-                        .replace(/\-/g, '–')
-                        .replace(/\*/g, '·');
-                    return <span style={style} key={i}>{text}</span>;
-                }
-            )}
-            {math &&
-            <MathRenderer
-                fontSize={26}
-                math={math}
-                active={active}
-            />}
+                )}
+                {math &&
+                <MathRenderer
+                    fontSize={26}
+                    math={math}
+                    active={active}
+                />}
             </div>
         </div>;
     }
