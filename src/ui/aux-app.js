@@ -10,7 +10,13 @@ import Parser from '../parser';
 const parser = new Parser();
 
 class AuxApp extends Component {
-    select = step => {
+    select = (step, target) => {
+        const {offsetHeight, scrollTop} = this.refs.container;
+        const center = target.offsetTop - scrollTop + target.offsetHeight / 2;
+        // TODO: take into account the offsetTop of the container
+        this.refs.container.scrollTop =
+            parseInt(scrollTop - (offsetHeight / 2 - center));
+
         auxStore.dispatch({
             type: 'SELECT_STEP',
             step: step
@@ -55,7 +61,7 @@ class AuxApp extends Component {
                     <TextLine
                         {...line}
                         key={i}
-                        onClick={() => this.select(i)}
+                        onClick={e => this.select(i, e.target)}
                         active={this.props.activeStep === i}
                     />)
                 }

@@ -62,6 +62,8 @@ class TextLine extends Component {
             paddingBottom: 15,
             backgroundColor: active ? '#FFF' : '#DDD',
             paddingLeft: 20,
+            transitionProperty: 'background-color',
+            transitionDuration: '0.5s'
         };
 
         return <div style={lineStyle} onClick={this.props.onClick}>
