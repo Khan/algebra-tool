@@ -64,8 +64,6 @@ class TextLine extends Component {
             paddingLeft: 20,
         };
 
-        const useStaticMath = Object.keys(insertedText).length === 0;
-
         return <div style={lineStyle} onClick={this.props.onClick}>
             <div style={{opacity: active ? 1.0 : 0.5}}>
             {!math && textRanges.map(
