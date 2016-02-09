@@ -242,7 +242,10 @@ class MathRenderer extends Component {
         const { layout, selections } = this.state;
         const hitNode = layout.hitTest(x, y);
 
+        // TODO: check if the click is inside a highlight
         if (hitNode && hitNode.selectable) {
+            e.preventDefault();
+
             const id = hitNode.id.split(":")[0];
             let mathNode = findNode(math, id);
 
@@ -276,27 +279,21 @@ class MathRenderer extends Component {
                 mouse: 'down',
             });
         } else {
-            // TODO: check if the click is inside a highlight
             this.setState({
-                menu: null,
-                selections: [],
-                hitNode: null,
+                mouse: 'down',
             });
         }
     };
 
     handleTouchMove = e => {
         if (!this.props.active) return;
+        if (this.state.mouse !== 'down') return;
 
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
         const { math } = this.props;
-        const { layout, selections, mouse } = this.state;
-
-        if (mouse !== 'down') {
-            return;
-        }
+        const { layout, selections } = this.state;
 
         const hitNode = layout.hitTest(x, y);
 
@@ -324,18 +321,22 @@ class MathRenderer extends Component {
                     selections: [...prevSels, selection],
                 });
             }
+        } else {
+            this.setState({ scrolling: true });
         }
     };
 
     handleTouchEnd = e => {
         if (!this.props.active) return;
 
+        e.preventDefault();
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
+        const { layout, selections, mouse, scrolling } = this.state;
+        const hitNode = layout.hitTest(x, y);
 
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
-        const {selections, mouse} = this.state;
         if (mouse === 'down') {
             let menu = null;
 
@@ -345,9 +346,14 @@ class MathRenderer extends Component {
                 menu = this.getMenu(layout, selections, hitNode);
             }
 
+            if (!hitNode && !scrolling) {
+                this.setState({ selections: [] });
+            }
+
             this.setState({
                 menu,
                 mouse: 'up',
+                scrolling: false,
             });
         }
     };
