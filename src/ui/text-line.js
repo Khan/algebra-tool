@@ -63,11 +63,12 @@ class TextLine extends Component {
             backgroundColor: active ? '#FFF' : '#DDD',
             paddingLeft: 20,
             transitionProperty: 'background-color',
-            transitionDuration: '0.5s'
+            transitionDuration: '0.5s',
+            transitionTimingFunction: 'ease-in-out',
         };
 
         return <div style={lineStyle} onClick={this.props.onClick}>
-            <div style={{opacity: active ? 1.0 : 0.5, transitionProperty: 'opacity', transitionDuration: '0.5s'}}>
+            <div style={{opacity: active ? 1.0 : 0.5, transitionProperty: 'opacity', transitionDuration: '0.5s', transitionTimingFunction: 'ease-in-out'}}>
                 {!math && textRanges.map(
                     (range, i) => {
                         let style = {...spanStyle};

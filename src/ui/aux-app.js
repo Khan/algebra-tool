@@ -9,6 +9,14 @@ import Parser from '../parser';
 
 const parser = new Parser();
 
+function easeCubic(t) {
+    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+}
+
+function easeQuadratic(t) {
+    return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
 class AuxApp extends Component {
     select = (step, target) => {
         const {offsetHeight, scrollTop} = this.refs.container;
@@ -16,15 +24,16 @@ class AuxApp extends Component {
         // TODO: take into account the offsetTop of the container
 
         const currentScrollTop = scrollTop;
-        const futureScrollTop = scrollTop - (offsetHeight / 2 - center);
+        const futureScrollTop = Math.max(0, scrollTop - (offsetHeight / 2 - center));
 
         let t = 0;
 
         const animate = () => {
             if (t < 1) {
                 t = Math.min(t + 0.05, 1);
+                const u = easeQuadratic(t);
                 this.refs.container.scrollTop =
-                    parseInt(t * futureScrollTop + (1 - t) * currentScrollTop);
+                    parseInt(u * futureScrollTop + (1 - u) * currentScrollTop);
 
                 requestAnimationFrame(animate);
             }
