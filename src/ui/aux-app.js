@@ -39,9 +39,8 @@ class AuxApp extends Component {
             }
         };
 
-        requestAnimationFrame(animate);
-        //this.refs.container.scrollTop =
-        //    parseInt(scrollTop - (offsetHeight / 2 - center));
+        // TODO: only animate the scrollTop if the item is partially off-screen
+        //requestAnimationFrame(animate);
 
         auxStore.dispatch({
             type: 'SELECT_STEP',
