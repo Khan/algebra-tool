@@ -343,11 +343,19 @@ class MathRenderer extends Component {
             if (selections.length > 0) {
                 const {layout} = this.state;
                 const hitNode = layout.hitTest(x, y);
-                menu = this.getMenu(layout, selections, hitNode);
+                // used to position the menu by the selection
+                // menu = this.getMenu(layout, selections, hitNode);
             }
 
             if (!hitNode && !scrolling) {
                 this.setState({ selections: [] });
+                if (this.props.onSelectionChange) {
+                    this.props.onSelectionChange([]);
+                }
+            } else {
+                if (this.props.onSelectionChange) {
+                    this.props.onSelectionChange(selections);
+                }
             }
 
             this.setState({
