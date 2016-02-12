@@ -26,55 +26,9 @@ const initialState = {
                     end: 6
                 }
             ]
-        },
-        {
-            text: '2x+0=10-5',
-            math: parser.parse('2x+0=10-5'),
-            selectedText: [
-                {
-                    start: 5,
-                    end: 9
-                }
-            ]
-        },
-        {
-            text: '2x+0=5',
-            math: parser.parse('2x+0=5'),
-            selectedText: [
-                {
-                    start: 3,
-                    end: 4
-                }
-            ]
-        },
-        {
-            text: '2x=5',
-            insertedText: {
-                "2": "/2",
-                "4": "/2",
-            }
-        },
-        {
-            text: '(2x)/2=5/2',
-            math: parser.parse('(2x)/2=5/2'),
-            selectedText: [
-                {
-                    start: 0,
-                    end: 1
-                },
-                {
-                    start: 3,
-                    end: 4
-                }
-            ],
-            selectedNodeIds: [ 49, 53 ]
-        },
-        {
-            text: 'x=5/2',
-            math: parser.parse('x=5/2')
-        },
+        }
     ],
-    activeStep: 7,
+    activeStep: 2
 };
 
 console.log(initialState.steps[6]);
@@ -152,6 +106,18 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps.slice(0, state.activeStep + 1),
                     { text }
+                ],
+                activeStep: state.activeStep + 1
+            };
+        case 'ADD_STEP':
+            return {
+                ...state,
+                steps: [
+                    ...state.steps,
+                    {
+                        text: '',
+                        math: action.math
+                    }
                 ],
                 activeStep: state.activeStep + 1
             };

@@ -33,9 +33,14 @@ function doTransform(selection, newMath) {
         const parent = first.parent;
         rest.forEach(node => parent.remove(node));
 
-        const replacement = newMath;
+        //const replacement = newMath;
         // TODO: re-enable automatic evaluation of single operations
-        //const replacement = new Literal(operations[node.operator](prev.value, next.value);
+        const replacement = first.clone();
+        for (let i = 0; i < rest.length; i += 2) {
+            const operator = rest[i].operator;
+            const operand = rest[i + 1].value;
+            replacement.value = operations[operator](replacement.value, operand);
+        }
 
         parent.replace(first, replacement);
 

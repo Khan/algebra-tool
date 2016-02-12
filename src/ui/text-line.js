@@ -5,6 +5,9 @@ import transforms from '../transforms';
 
 import StaticMath from './static-math';
 import MathRenderer from './math-renderer';
+import Selection from './selection';
+import { findNode } from '../ast/node-utils';
+import auxStore from './../aux-store';
 
 const parser = new Parser();
 
@@ -113,11 +116,25 @@ class TextLine extends Component {
     handleTap = item => {
         const transform = transforms[item];
         const { math } = this.props;
-        const { selection } = this.state;
-        //const newMath = math.clone();
-        //console.log(transform.canTransform(selection));
-        //transform.doTransform(selection);
-        //console.log(newMath.toString());
+        const { selection } = this.state;   // selection should be part of the global redux state
+
+        const newMath = math.clone();
+
+        // TODO: send the selection and the math AST and let the transform take care of this
+        const first = findNode(newMath, selection.first.id);
+        const last = findNode(newMath, selection.last.id);
+        const newSelection = new Selection(first, last);
+
+        transform.doTransform(newSelection);
+
+        auxStore.dispatch({
+            type: 'ADD_STEP',
+            math: newMath
+        });
+
+        this.setState({
+            menu: null
+        });
     };
 
     handleSelectionChange = selections => {

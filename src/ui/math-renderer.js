@@ -16,11 +16,11 @@ const transforms = {};
 function getScrollTop(node) {
     while (node != null) {
         if (node.scrollHeight !== node.offsetHeight) {
-            break;
+            return node.scrollTop;
         }
         node = node.parentElement;
     }
-    return node.scrollTop;
+    return 0;
 }
 
 class MathRenderer extends Component {
