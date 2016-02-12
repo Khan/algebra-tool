@@ -8,6 +8,93 @@ import MathRenderer from './math-renderer';
 
 const parser = new Parser();
 
+class MenuItem extends Component {
+    handleTouchStart = e => {
+
+    };
+
+    handleTouchMove = e => {
+
+    };
+
+    handleTouchEnd = e => {
+        if (this.props.onTap) {
+            this.props.onTap(this.props.item);
+        }
+    };
+
+    render() {
+        const { item } = this.props;
+
+        const sepColor = '#CCC';
+
+        const itemStyle = {
+            borderTop: `solid 1px ${sepColor}`,
+            padding: 10
+        };
+
+        return <li
+            style={itemStyle}
+            onTouchStart={this.handleTouchStart}
+            onTouchMove={this.handleTouchMove}
+            onTouchEnd={this.handleTouchEnd}
+        >
+            {item}
+        </li>;
+    }
+}
+
+class Menu extends Component {
+    handleTouchStart = e => {
+
+    };
+
+    handleTouchMove = e => {
+        e.preventDefault();
+    };
+
+    handleTouchEnd = e => {
+
+    };
+
+    handleTap = item => {
+        console.log(item);
+        if (this.props.onTap) {
+            this.props.onTap(item);
+        }
+    };
+
+    render() {
+        const { items } = this.props;
+
+        const sepColor = '#CCC';
+
+        const listStyle = {
+            listStyleType: 'none',
+            padding: 0,
+            margin: 0,
+            borderBottom: `solid 1px ${sepColor}`
+        };
+
+        const menuStyle = {
+            background: '#EEE',
+            fontFamily: 'helvetica-light',
+        };
+
+        return <div
+            style={menuStyle}
+            onTouchStart={this.handleTouchStart}
+            onTouchMove={this.handleTouchMove}
+            onTouchEnd={this.handleTouchEnd}
+        >
+            <ul style={listStyle}>
+                {items.map(item =>
+                    <MenuItem key={item} item={item} onTap={this.handleTap} />)}
+            </ul>
+        </div>;
+    }
+}
+
 class TextLine extends Component {
     static defaultProps = {
         insertedText: {},
@@ -18,11 +105,22 @@ class TextLine extends Component {
         super();
 
         this.state = {
-            menu: null
+            menu: null,
+            selection: null
         };
     }
 
-    handleSelectionChange = (selections) => {
+    handleTap = item => {
+        const transform = transforms[item];
+        const { math } = this.props;
+        const { selection } = this.state;
+        //const newMath = math.clone();
+        //console.log(transform.canTransform(selection));
+        //transform.doTransform(selection);
+        //console.log(newMath.toString());
+    };
+
+    handleSelectionChange = selections => {
         console.log(selections);
         if (selections.length === 1) {
             const [selection] = selections;
@@ -33,44 +131,19 @@ class TextLine extends Component {
                 }
             }
 
-            const menuStyle = {
-                background: '#EEE',
-                fontFamily: 'helvetica-light',
-
-            };
-
-            // TODO: replace these with transform objects
-            const items = [
-                'cancel terms',
-                'evaluate',
-                'rewrite subtraction'
-            ];
-
-            const sepColor = '#CCC';
-
-            const listStyle = {
-                listStyleType: 'none',
-                padding: 0,
-                margin: 0,
-                borderBottom: `solid 1px ${sepColor}`
-            };
-
-            const itemStyle = {
-                borderTop: `solid 1px ${sepColor}`,
-                padding: 10
-            };
+            const items = Object.keys(transforms).filter(key => {
+                const transform = transforms[key];
+                console.log(transform.canTransform(selection));
+                return transform.canTransform(selection);
+            });
 
             this.setState({
-                menu: <div style={menuStyle}>
-                    <ul style={listStyle}>
-                        {items.map(item =>
-                            <li key={item} style={itemStyle}>{item}</li>)
-                        }
-                    </ul>
-                </div>
+                selection: selection,
+                menu: <Menu items={items} onTap={this.handleTap} />
             });
         } else {
             this.setState({
+                selection: null,
                 menu: null
             });
         }
@@ -121,33 +194,51 @@ class TextLine extends Component {
             });
         }
 
+        const animate = false;
+        const transitionStyle = animate ? {
+            transitionProperty: 'background-color',
+            transitionDuration: '0.5s',
+            transitionTimingFunction: 'ease-in-out'
+        } : null;
+
         const lineStyle = {
             paddingTop: 15,
             paddingBottom: 15,
             backgroundColor: active ? '#FFF' : '#DDD',
             paddingLeft: 20,
-            transitionProperty: 'background-color',
-            transitionDuration: '0.5s',
-            transitionTimingFunction: 'ease-in-out',
+            ...transitionStyle
+        };
+
+        const textStyle = {
+            opacity: active ? 1.0 : 0.5,
+            ...transitionStyle
+        };
+
+        const selectionStyle = {
+            borderRadius: 4,
+            border: 'solid 2px',
+            paddingLeft: 2,
+            paddingRight: 2,
+            color: 'blue'
+        };
+
+        const insertionStyle = {
+            textDecoration: 'underline',
+            color: 'orange'
         };
 
         const { menu } = this.state;
 
         return <div>
             <div style={lineStyle} onClick={this.props.onClick}>
-                <div style={{opacity: active ? 1.0 : 0.5, transitionProperty: 'opacity', transitionDuration: '0.5s', transitionTimingFunction: 'ease-in-out'}}>
+                <div style={textStyle}>
                     {!math && textRanges.map(
                         (range, i) => {
-                            let style = {...spanStyle};
+                            const style = {...spanStyle};
                             if (range.type === 'insertion') {
-                                style.textDecoration = 'underline';
-                                style.color = 'orange';
+                                Object.assign(style, insertionStyle);
                             } else if (range.type === 'selection') {
-                                style.borderRadius = 4;
-                                style.border = 'solid 2px';
-                                style.paddingLeft = 2;
-                                style.paddingRight = 2;
-                                style.color = 'blue';
+                                Object.assign(style, selectionStyle);
                             }
                             const text = range.text
                                 .replace(/\//g, '÷')
