@@ -20,12 +20,7 @@ const initialState = {
         {
             text: '2x+5-5=10-5',
             math: parser.parse('2x+5-5=10-5'),
-            selectedText: [
-                {
-                    start: 3,
-                    end: 6
-                }
-            ]
+            selection: null
         }
     ],
     activeStep: 2
@@ -43,6 +38,14 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 activeStep: action.step,
             };
+        case 'SELECT_MATH':
+            const steps = [...state.steps];
+            steps.splice(state.activeStep, 1, {
+                ...activeStep,
+                selection: action.selection
+            });
+
+            return { ...state, steps };
         case 'SIMPLE_OPERATION':
             const equalIndex = activeStep.text.indexOf('=');
             const newActiveStep = {

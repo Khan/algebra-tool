@@ -101,7 +101,6 @@ class Menu extends Component {
 class TextLine extends Component {
     static defaultProps = {
         insertedText: {},
-        selectedText: []
     };
 
     constructor() {
@@ -115,8 +114,7 @@ class TextLine extends Component {
 
     handleTap = item => {
         const transform = transforms[item];
-        const { math } = this.props;
-        const { selection } = this.state;   // selection should be part of the global redux state
+        const { math, selection } = this.props;
 
         const newMath = math.clone();
 
@@ -138,36 +136,28 @@ class TextLine extends Component {
     };
 
     handleSelectionChange = selections => {
-        console.log(selections);
         if (selections.length === 1) {
             const [selection] = selections;
 
-            for (const transform of Object.values(transforms)) {
-                if (transform.canTransform(selection)) {
-                    console.log(transform.label);
-                }
-            }
-
-            const items = Object.keys(transforms).filter(key => {
-                const transform = transforms[key];
-                console.log(transform.canTransform(selection));
-                return transform.canTransform(selection);
+            auxStore.dispatch({
+                type: 'SELECT_MATH',
+                selection: selection
             });
 
-            this.setState({
-                selection: selection,
-                menu: <Menu items={items} onTap={this.handleTap} />
-            });
+            //this.setState({
+            //    selection: selection,
+            //    menu: <Menu items={items} onTap={this.handleTap} />
+            //});
         } else {
-            this.setState({
-                selection: null,
-                menu: null
-            });
+            //this.setState({
+            //    selection: null,
+            //    menu: null
+            //});
         }
     };
 
     render() {
-        const { text, math, insertedText, selectedText, active } = this.props;
+        const { text, math, insertedText, selection, active } = this.props;
 
         const spanStyle = {
             fontSize: 26,
@@ -191,25 +181,6 @@ class TextLine extends Component {
         textRanges.push({
             text: text.substring(start, text.length),
         });
-
-        if (textRanges.length === 1 && selectedText.length > 0) {
-            textRanges.length = 0;
-
-            let start = 0;
-            for (const selection of selectedText) {
-                textRanges.push({
-                    text: text.substring(start, selection.start),
-                });
-                textRanges.push({
-                    text: text.substring(selection.start, selection.end),
-                    type: 'selection'
-                });
-                start = selection.end;
-            }
-            textRanges.push({
-                text: text.substring(start, text.length),
-            });
-        }
 
         const animate = false;
         const transitionStyle = animate ? {
@@ -244,7 +215,12 @@ class TextLine extends Component {
             color: 'orange'
         };
 
-        const { menu } = this.state;
+        const items = Object.keys(transforms).filter(key => {
+            const transform = transforms[key];
+            return selection && transform.canTransform(selection);
+        });
+
+        const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
 
         return <div>
             <div style={lineStyle} onClick={this.props.onClick}>
@@ -273,7 +249,7 @@ class TextLine extends Component {
                     />}
                 </div>
             </div>
-            {menu}
+            {active && menu}
         </div>;
     }
 }
