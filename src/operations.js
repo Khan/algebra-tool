@@ -74,7 +74,10 @@ function add(a, b) {
     if (a.type === 'Equation' && b.type === 'Equation') {
         return new Equation(add(a.left, b.left), add(a.right, b.right));
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
-        return new Equation(add(a.left, b.clone()), add(a.right, b.clone()));
+        // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
+        const eqn = new Equation(add(a.left, b.clone()), add(a.right, b.clone()));
+        eqn.id = a.id;
+        return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
         return new Equation(add(a.clone(), b.left), add(a.clone(), b.right));
     } else {
@@ -86,7 +89,10 @@ function sub(a, b) {
     if (a.type === 'Equation' && b.type === 'Equation') {
         return new Equation(sub(a.left, b.left), sub(a.right, b.right));
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
-        return new Equation(sub(a.left, b), sub(a.right, b));
+        // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
+        const eqn = new Equation(sub(a.left, b), sub(a.right, b));
+        eqn.id = a.id;
+        return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
         return new Equation(sub(a, b.left), sub(a, b.right));
     } else {
@@ -98,7 +104,10 @@ function mul(a, b) {
     if (a.type === 'Equation' && b.type === 'Equation') {
         throw new Error("can't multiply two equations");
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
-        return new Equation(mul(a.left, b), mul(a.right, b));
+        // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
+        const eqn = new Equation(mul(a.left, b), mul(a.right, b));
+        eqn.id = a.id;
+        return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
         return new Equation(mul(a, b.left), mul(a, b.right));
     } else {
@@ -110,7 +119,10 @@ function div(a, b) {
     if (a.type === 'Equation' && b.type === 'Equation') {
         throw new Error("can't divide two equations");
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
-        return new Equation(div(a.left, b), div(a.right, b));
+        // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
+        const eqn = new Equation(div(a.left, b), div(a.right, b));
+        eqn.id = a.id;
+        return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
         return new Equation(div(a, b.left), div(a, b.right));
     } else {
