@@ -37,38 +37,43 @@ class NewKeypad extends Component {
 
     render() {
         const width = window.innerWidth;
-        const margin = 5;
+        const margin = 1;
         const buttonWidth = ((width - margin) / 6) - margin;
 
         const rowStyle = {
-            marginBottom: 5
+            marginBottom: margin
         };
         const buttonStyle = {
             width: buttonWidth
         };
         const numStyle = {
             ...buttonStyle,
-            bgColor: "#099",
-            bgActive: "#066"
+            bgColor: "#DDD",
+            bgActive: "#AAA",
+            text: "black"
         };
         const opColors = {
             ...buttonStyle,
-            bgColor: "#F90",
-            bgActive: "#D80"
+            bgColor: "#BBB",
+            bgActive: "#999",
+            text: "black",
         };
         const emptyColors = {
             ...buttonStyle,
-            bgColor: "#999",
-            bgActive: "#666"
+            bgColor: "#BBB",
+            bgActive: "#999",
+            text: "black"
         };
         const topRowColor = {
             ...emptyColors,
-            transparent: true
+            bgColor: "#999",
+            bgActive: "#666"
+            //transparent: true
         };
         //&#x232B;
         //&#x2610;/&#x2610;
 
-        return <div style={{marginTop:5}}>
+        return <div style={{marginTop:1}}>
             <div style={rowStyle}>
                 <Button {...topRowColor}>...</Button>
                 <Button {...topRowColor}>&nbsp;</Button>
@@ -99,14 +104,14 @@ class NewKeypad extends Component {
                 <Button {...numStyle} onTap={this.handleNumber}>1</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>2</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>3</Button>
-                <Button {...opColors} onTap={() => this.handleOperator('*')}>·</Button>
+                <Button {...opColors} onTap={() => this.handleOperator('*')}>×</Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors} onTap={this.handleNumber}>x</Button>
                 <Button {...emptyColors} onTap={this.handleNumber}>y</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
-                <Button {...opColors}>=</Button>
+                <Button {...emptyColors}>=</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('/')}>÷</Button>
             </div>
         </div>;

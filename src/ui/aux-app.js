@@ -66,6 +66,7 @@ class AuxApp extends Component {
         const containerStyle = {
             flexGrow: 1,
             overflow: 'scroll',
+            background: '#EEE',
         };
 
         const lineStyle = {
@@ -82,6 +83,7 @@ class AuxApp extends Component {
 
         return <div style={style}>
             <div style={containerStyle} ref="container">
+                <div style={{height:180}}></div>
                 {this.props.steps.map((line, i) =>
                     <TextLine
                         {...line}
@@ -90,7 +92,7 @@ class AuxApp extends Component {
                         active={this.props.activeStep === i}
                     />)
                 }
-                <div style={{height:120, backgroundColor:'#DDD'}}></div>
+                <div style={{height:180}}></div>
             </div>
             <NewKeypad />
         </div>;

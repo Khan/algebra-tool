@@ -149,6 +149,11 @@ class TextLine extends Component {
             //    menu: <Menu items={items} onTap={this.handleTap} />
             //});
         } else {
+
+            auxStore.dispatch({
+                type: 'SELECT_MATH',
+                selection: null
+            });
             //this.setState({
             //    selection: null,
             //    menu: null
@@ -192,10 +197,13 @@ class TextLine extends Component {
         const lineStyle = {
             paddingTop: 15,
             paddingBottom: 15,
-            backgroundColor: active ? '#FFF' : '#DDD',
             paddingLeft: 20,
             ...transitionStyle
         };
+
+        if (active) {
+            lineStyle.backgroundColor = '#FFF';
+        }
 
         const textStyle = {
             opacity: active ? 1.0 : 0.5,
@@ -212,7 +220,7 @@ class TextLine extends Component {
 
         const insertionStyle = {
             textDecoration: 'underline',
-            color: 'orange'
+            color: 'rgb(0, 192, 192)'
         };
 
         const items = Object.keys(transforms).filter(key => {

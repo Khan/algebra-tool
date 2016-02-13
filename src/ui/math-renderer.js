@@ -153,7 +153,7 @@ class MathRenderer extends Component {
         const highlights = this.getSelectionHighlights(layout, selections, hitNode);
         const padding = 4;
 
-        context.fillStyle = 'rgba(0,0,255,0.4)';
+        context.fillStyle = 'rgba(0, 208, 208, 1.0)';
 
         for (const {shape, bounds} of highlights) {
             if (shape === 'circle') {

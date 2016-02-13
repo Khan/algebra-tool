@@ -13,7 +13,8 @@ export default class Button extends Component {
         color: '#099',
         activeColor: '#066',
         width: 44,
-        onTap: () => {}
+        onTap: () => {},
+        text: 'white'
     };
 
     handleTouchStart = (e) => {
@@ -27,7 +28,7 @@ export default class Button extends Component {
     };
 
     render() {
-        const {bgColor, bgActive, transparent, width} = this.props;
+        const {bgColor, bgActive, text, transparent, width} = this.props;
 
         const color = this.state.active ? bgActive : bgColor;
 
@@ -37,12 +38,12 @@ export default class Button extends Component {
             width: width,
             height: 32,
             backgroundColor: transparent ? 'white' : color,
-            color: transparent ? color : 'white',
+            color: text,
             lineHeight: '32px',
             textAlign: 'center',
-            borderRadius: 4,
-            marginLeft: 5,
-            fontFamily: 'helvetica',
+            //borderRadius: 4,
+            marginLeft: 1,
+            fontFamily: 'helvetica-light',
             boxSizing: 'border-box',
             border: transparent ? '2px solid' : 'none'
         };
