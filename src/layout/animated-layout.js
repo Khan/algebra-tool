@@ -143,7 +143,7 @@ class AnimatedLayout {
         return null;
     }
 
-    render(ctx) {
+    render(ctx, maxId) {
         const transition = this.transitions[0];
         if (transition) {
 
@@ -160,7 +160,7 @@ class AnimatedLayout {
                         ctx.fillStyle = `rgba(0, 0, 0, 1.0)`;
                     }
 
-                    child.render(ctx);
+                    child.render(ctx, maxId);
                 }
 
                 ctx.restore();
@@ -186,7 +186,7 @@ class AnimatedLayout {
                         ctx.fillStyle = `rgba(0, 0, 0, 1.0)`;
                     }
 
-                    child.render(ctx);
+                    child.render(ctx, maxId);
                 }
 
                 ctx.restore();
@@ -195,9 +195,8 @@ class AnimatedLayout {
         }
     }
 
-    // TODO: get the in between bounds
-    getBounds() {
-        return this.endLayout.getBounds();
+    get bounds() {
+        return this.endLayout.bounds;
     }
 }
 

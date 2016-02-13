@@ -38,6 +38,7 @@ class MathRenderer extends Component {
     static defaultProps = {
         color: 'black',
         fontSize: 60,
+        maxId: Infinity,
     };
 
     componentDidMount() {
@@ -86,6 +87,9 @@ class MathRenderer extends Component {
 
             if (currentLayout !== nextLayout) {
                 const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
+
+                canvas.width = animatedLayout.bounds.width;
+                canvas.height = animatedLayout.bounds.height;
 
                 let t = 0;
                 animatedLayout.callback = () => {
@@ -143,8 +147,8 @@ class MathRenderer extends Component {
 
     drawLayout(context, currentLayout) {
         context.fillStyle = 'rgb(0, 0, 0)';
-        currentLayout.render(context);
-
+        const { maxId } = this.props;
+        currentLayout.render(context, maxId);
     }
 
     drawSelection(selections, hitNode, layout, nextState) {

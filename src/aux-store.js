@@ -1,6 +1,9 @@
 import { createStore } from 'redux';
 
 import Parser from './parser';
+import Placeholder from './ast/placeholder';
+import { add, sub, mul, div } from './operations';
+import { traverseNode } from './ast/node-utils';
 
 const parser = new Parser();
 
@@ -10,20 +13,20 @@ const initialState = {
             text: '2x+5=10',
             math: parser.parse('2x+5=10')
         },
-        {
-            text: '2x+5=10',
-            insertedText: {
-                "4": "-5",
-                "7": "-5"
-            }
-        },
-        {
-            text: '2x+5-5=10-5',
-            math: parser.parse('2x+5-5=10-5'),
-            selection: null
-        }
+        //{
+        //    text: '2x+5=10',
+        //    insertedText: {
+        //        "4": "-5",
+        //        "7": "-5"
+        //    }
+        //},
+        //{
+        //    text: '2x+5-5=10-5',
+        //    math: parser.parse('2x+5-5=10-5'),
+        //    selection: null
+        //}
     ],
-    activeStep: 2
+    activeStep: 0
 };
 
 console.log(initialState.steps[6]);
@@ -48,12 +51,21 @@ const reducer = (state = initialState, action) => {
             return { ...state, steps };
         case 'SIMPLE_OPERATION':
             const equalIndex = activeStep.text.indexOf('=');
+            const newMath = activeStep.math.clone();
+
+            // TODO: reduce for tree traversal
+            let maxId = 0;
+            traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
+
+            if (equalIndex) {
+                const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
+                newMath.root = op(newMath.root, new Placeholder());
+            }
+
             const newActiveStep = {
                 ...activeStep,
-                insertedText: {
-                    [equalIndex]: action.operator,
-                    [activeStep.text.length]: action.operator
-                }
+                math: newMath,
+                maxId: maxId
             };
 
             return {

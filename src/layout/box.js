@@ -7,12 +7,22 @@ export default class Box {
         this.selectable = true;
     }
 
-    render(ctx) {
+    render(ctx, maxId) {
+        const id = this.id.includes(':') ? this.id.split(':')[0] : this.id;
+
+        if (id > maxId) {
+            ctx.fillStyle = 'rgb(0,192,192)';
+            ctx.strokeStyle = 'rgb(0,192,192)';
+        }
+
         if (this.stroke) {
             ctx.strokeRect(this.x, this.y, this.width, this.height);
         } else {
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
+
+        ctx.fillStyle = 'black';
+        ctx.strokeStyle = 'black';
     }
 
     get bounds() {

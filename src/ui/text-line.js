@@ -162,7 +162,7 @@ class TextLine extends Component {
     };
 
     render() {
-        const { text, math, insertedText, selection, active } = this.props;
+        const { text, math, maxId, insertedText, selection, active } = this.props;
 
         const spanStyle = {
             fontSize: 26,
@@ -250,6 +250,7 @@ class TextLine extends Component {
                     )}
                     {math &&
                     <MathRenderer
+                        maxId={maxId}
                         fontSize={26}
                         math={math}
                         active={active}

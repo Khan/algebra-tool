@@ -23,7 +23,7 @@ class Layout {
         Object.assign(this, {children, atomic});
     }
 
-    render(ctx, selections = new Set()) {
+    render(ctx, maxId) {
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -33,15 +33,17 @@ class Layout {
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
-        if (selections.has(this.id)) {
-            ctx.fillStyle = 'blue';
+        if (this.id > maxId) {
+            ctx.fillStyle = 'rgb(0,192,192)';
+            ctx.strokeStyle = 'rgb(0,192,192)';
         }
 
         for (const child of this.children) {
-            child.render(ctx, selections);
+            child.render(ctx, maxId);
         }
 
         ctx.fillStyle = 'black';
+        ctx.strokeStyle = 'black';
         ctx.restore();
     }
 
