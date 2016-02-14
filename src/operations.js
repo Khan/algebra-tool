@@ -75,7 +75,7 @@ function add(a, b) {
         return new Equation(add(a.left, b.left), add(a.right, b.right));
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
         // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
-        const eqn = new Equation(add(a.left, b.clone()), add(a.right, b.clone()));
+        const eqn = new Equation(add(a.left, b.clone(true)), add(a.right, b.clone(true)));
         eqn.id = a.id;
         return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
@@ -90,7 +90,7 @@ function sub(a, b) {
         return new Equation(sub(a.left, b.left), sub(a.right, b.right));
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
         // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
-        const eqn = new Equation(sub(a.left, b), sub(a.right, b));
+        const eqn = new Equation(sub(a.left, b.clone(true)), sub(a.right, b.clone(true)));
         eqn.id = a.id;
         return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
@@ -105,7 +105,7 @@ function mul(a, b) {
         throw new Error("can't multiply two equations");
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
         // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
-        const eqn = new Equation(mul(a.left, b), mul(a.right, b));
+        const eqn = new Equation(mul(a.left, b.clone(true)), mul(a.right, b.clone(true)));
         eqn.id = a.id;
         return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
@@ -120,7 +120,7 @@ function div(a, b) {
         throw new Error("can't divide two equations");
     } else if (a.type === 'Equation' && b.type !== 'Equation') {
         // maintain the id of the equals sign so it doesn't disappear and reappear during transitions
-        const eqn = new Equation(div(a.left, b), div(a.right, b));
+        const eqn = new Equation(div(a.left, b.clone(true)), div(a.right, b.clone(true)));
         eqn.id = a.id;
         return eqn;
     } else if (a.type !== 'Equation' && b.type === 'Equation') {
