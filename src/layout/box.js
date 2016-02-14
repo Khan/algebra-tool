@@ -7,12 +7,12 @@ export default class Box {
         this.selectable = true;
     }
 
-    render(ctx, maxId) {
+    render(ctx, maxId, k = 1.0) {
         const id = this.id.includes(':') ? this.id.split(':')[0] : this.id;
 
         if (id > maxId) {
-            ctx.fillStyle = 'rgb(0,192,192)';
-            ctx.strokeStyle = 'rgb(0,192,192)';
+            ctx.fillStyle = `rgba(0,192,192,${k})`;
+            ctx.strokeStyle = `rgba(0,192,192,${k})`;
         }
 
         if (this.stroke) {

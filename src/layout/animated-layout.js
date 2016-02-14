@@ -186,7 +186,8 @@ class AnimatedLayout {
                         ctx.fillStyle = `rgba(0, 0, 0, 1.0)`;
                     }
 
-                    child.render(ctx, maxId);
+                    // TODO: pass in opacity
+                    child.render(ctx, maxId, k);
                 }
 
                 ctx.restore();
