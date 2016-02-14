@@ -418,11 +418,35 @@ function createLayout(node, fontSize) {
     } else if (node.type === 'Math') {
         return createLayout(node.root, fontSize);
     } else if (node.type === 'Placeholder') {
-        const box = new Box(0, 0 - 0.85 * fontSize, fontSize, fontSize, true);
-        box.ascent = -0.85 * fontSize;
-        box.descent = 0.15 * fontSize;
-        box.id = node.id;
-        return box;
+        let penX = 0;
+        const layouts = [];
+
+        for (const c of node.text) {
+            const glyph = new Glyph(c, font);
+
+            glyph.x = penX;
+            penX += glyph.advance;
+
+            layouts.push(glyph);
+        }
+
+        const layout = new Layout(layouts, true);
+        layout.advance = penX;
+        layout.id = node.id;
+
+        layout.ascent = font.ascent;
+        layout.descent = font.descent;
+        layout.font = font;
+
+        // TODO: eventually all the user to move the cursor position
+
+        return layout;
+
+        //const box = new Box(0, 0 - 0.85 * fontSize, fontSize, fontSize, true);
+        //box.ascent = -0.85 * fontSize;
+        //box.descent = 0.15 * fontSize;
+        //box.id = node.id;
+        //return box;
     } else {
         throw Error(`unrecogized node '${node.type}`);
     }

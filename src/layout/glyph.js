@@ -34,8 +34,10 @@ class Glyph {
         ctx.font = this.font.toStyle();
         ctx.fillText(this.text, this.x, this.y);
 
-        ctx.fillStyle = 'black';
-        ctx.strokeStyle = 'black';
+        if (id > maxId) {
+            ctx.fillStyle = 'black';
+            ctx.strokeStyle = 'black';
+        }
     }
 
     get bounds() {

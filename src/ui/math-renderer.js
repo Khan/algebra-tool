@@ -61,8 +61,8 @@ class MathRenderer extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.math !== nextProps.math) {
-            const { fontSize, math, width, height } = nextProps;
-            const layout = createFlatLayout(math, fontSize, width, height);
+            const { fontSize, math } = nextProps;
+            const layout = createFlatLayout(math, fontSize, 6);
             this.setState({ layout });
         }
     }
@@ -88,10 +88,11 @@ class MathRenderer extends Component {
             if (currentLayout !== nextLayout) {
                 const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
 
-                canvas.width = animatedLayout.bounds.width;
-                canvas.height = animatedLayout.bounds.height;
+                canvas.width = nextLayout.bounds.width;
+                canvas.height = nextLayout.bounds.height;
 
                 let t = 0;
+                // TODO: add some way to be notified of when the animation completes
                 animatedLayout.callback = () => {
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     this.drawLayout(context, animatedLayout);

@@ -4,6 +4,7 @@ export default class Placeholder extends Node {
     constructor() {
         super();
         this.type = 'Placeholder';
+        this.text = "5";
     }
 
     toString() {
@@ -14,6 +15,7 @@ export default class Placeholder extends Node {
         const copy = Object.create(Placeholder.prototype);
         copy.type = this.type;
         copy.id = uniqueId ? generateId() : this.id;
+        copy.text = this.text;
         return copy;
     }
 }
