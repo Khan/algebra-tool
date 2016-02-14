@@ -1,8 +1,9 @@
 const React = require('react');
 //const Modal = require('../views/modal.js');
 
-const Literal = require("../ast/literal.js");
-const { compare } = require('../ast/node-utils.js');
+const Literal = require('../ast/literal');
+const { compare } = require('../ast/node-utils');
+const { generateId } = require('../ast/node');
 
 const operations = {
     '+': (a, b) => a + b,
@@ -38,8 +39,10 @@ function doTransform(selection, newMath) {
         const replacement = first.clone();
         for (let i = 0; i < rest.length; i += 2) {
             const operator = rest[i].operator;
-            const operand = rest[i + 1].value;
-            replacement.value = operations[operator](replacement.value, operand);
+            // TODO: moving parsing of the number into the operation
+            const operand = parseFloat(rest[i + 1].value);
+            replacement.value = operations[operator](parseFloat(replacement.value), operand);
+            replacement.id = generateId();
         }
 
         parent.replace(first, replacement);

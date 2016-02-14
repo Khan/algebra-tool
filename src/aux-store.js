@@ -12,19 +12,7 @@ const initialState = {
         {
             text: '2x+5=10',
             math: parser.parse('2x+5=10')
-        },
-        //{
-        //    text: '2x+5=10',
-        //    insertedText: {
-        //        "4": "-5",
-        //        "7": "-5"
-        //    }
-        //},
-        //{
-        //    text: '2x+5-5=10-5',
-        //    math: parser.parse('2x+5-5=10-5'),
-        //    selection: null
-        //}
+        }
     ],
     activeStep: 0
 };
@@ -34,6 +22,8 @@ console.log(initialState.steps[6]);
 const reducer = (state = initialState, action) => {
     const activeStep = state.steps[state.activeStep];
     const newInsertedText = {};
+    const newMath = activeStep.math.clone();
+    let maxId = 0;
 
     switch (action.type) {
         case 'SELECT_STEP':
@@ -50,16 +40,24 @@ const reducer = (state = initialState, action) => {
 
             return { ...state, steps };
         case 'SIMPLE_OPERATION':
+            // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
+            // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
             const equalIndex = activeStep.text.indexOf('=');
-            const newMath = activeStep.math.clone();
 
             // TODO: reduce for tree traversal
-            let maxId = 0;
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
 
             if (equalIndex) {
                 const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
-                newMath.root = op(newMath.root, new Placeholder());
+                const placeholder = new Placeholder();
+                // TODO: remove this hack once we can edit the placeholder using the keyboard
+                if (action.operator === '-') {
+                    placeholder.text = '5';
+                }
+                if (action.operator === '/') {
+                    placeholder.text = '2';
+                }
+                newMath.root = op(newMath.root, placeholder);
             }
 
             const newActiveStep = {
@@ -70,7 +68,7 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                steps: [...state.steps.slice(0, state.activeStep), newActiveStep, ...state.steps.slice(state.activeStep + 1)]
+                steps: [newActiveStep, ...state.steps]
             };
         case 'INSERT_NUMBER':
             for (const [k, v] of Object.entries(activeStep.insertedText)) {
@@ -103,38 +101,36 @@ const reducer = (state = initialState, action) => {
                     ...state.steps.slice(state.activeStep + 1)]
             };
         case 'ACCEPT_STEP':
-            const step = state.steps[state.activeStep];
-
-            let text = "";
-
-            let start = 0;
-            for (let end of Object.keys(step.insertedText)) {
-                text += step.text.substring(start, end);
-                text += step.insertedText[end];
-                start = end;
-            }
-
-            text += step.text.substring(start, step.text.length);
+            traverseNode(newMath, node => {
+                if (node.type === 'Placeholder') {
+                    // TODO: try/catch and provide feedback if math isn't valid
+                    const value = parser.parse(node.text).root;
+                    console.log(value);
+                    node.parent.replace(node, value);
+                }
+            });
 
             return {
                 ...state,
                 steps: [
-                    ...state.steps.slice(0, state.activeStep + 1),
-                    { text }
-                ],
-                activeStep: state.activeStep + 1
+                    {
+                        ...activeStep,
+                        math: newMath,
+                        maxId: Infinity
+                    },
+                    ...state.steps
+                ]
             };
         case 'ADD_STEP':
             return {
                 ...state,
                 steps: [
-                    ...state.steps,
                     {
                         text: '',
-                        math: action.math
-                    }
-                ],
-                activeStep: state.activeStep + 1
+                        math: action.math,
+                    },
+                    ...state.steps,
+                ]
             };
         default:
             return state;

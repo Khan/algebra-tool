@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 
-import Parser from '../parser';
 import transforms from '../transforms';
 
-import StaticMath from './static-math';
 import MathRenderer from './math-renderer';
 import Selection from './selection';
 import { findNode } from '../ast/node-utils';
 import auxStore from './../aux-store';
 
-const parser = new Parser();
 
 class MenuItem extends Component {
     handleTouchStart = e => {
@@ -108,7 +105,6 @@ class TextLine extends Component {
 
         this.state = {
             menu: null,
-            selection: null
         };
     }
 
@@ -143,49 +139,21 @@ class TextLine extends Component {
                 type: 'SELECT_MATH',
                 selection: selection
             });
-
-            //this.setState({
-            //    selection: selection,
-            //    menu: <Menu items={items} onTap={this.handleTap} />
-            //});
         } else {
-
             auxStore.dispatch({
                 type: 'SELECT_MATH',
                 selection: null
             });
-            //this.setState({
-            //    selection: null,
-            //    menu: null
-            //});
         }
     };
 
     render() {
-        const { text, math, maxId, insertedText, selection, active } = this.props;
+        const { math, maxId, selection, active } = this.props;
 
         const spanStyle = {
             fontSize: 26,
             fontFamily: 'helvetica-light',
         };
-
-        const textRanges = [];
-
-        let start = 0;
-        for (let end of Object.keys(insertedText)) {
-            textRanges.push({
-                text: text.substring(start, end),
-            });
-            textRanges.push({
-                text: insertedText[end],
-                type: 'insertion'
-            });
-            start = end;
-        }
-
-        textRanges.push({
-            text: text.substring(start, text.length),
-        });
 
         const animate = false;
         const transitionStyle = animate ? {
@@ -210,19 +178,6 @@ class TextLine extends Component {
             ...transitionStyle
         };
 
-        const selectionStyle = {
-            borderRadius: 4,
-            border: 'solid 2px',
-            paddingLeft: 2,
-            paddingRight: 2,
-            color: 'blue'
-        };
-
-        const insertionStyle = {
-            textDecoration: 'underline',
-            color: 'rgb(0, 192, 192)'
-        };
-
         const items = Object.keys(transforms).filter(key => {
             const transform = transforms[key];
             return selection && transform.canTransform(selection);
@@ -233,29 +188,13 @@ class TextLine extends Component {
         return <div>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
-                    {!math && textRanges.map(
-                        (range, i) => {
-                            const style = {...spanStyle};
-                            if (range.type === 'insertion') {
-                                Object.assign(style, insertionStyle);
-                            } else if (range.type === 'selection') {
-                                Object.assign(style, selectionStyle);
-                            }
-                            const text = range.text
-                                .replace(/\//g, '÷')
-                                .replace(/\-/g, '–')
-                                .replace(/\*/g, '·');
-                            return <span style={style} key={i}>{text}</span>;
-                        }
-                    )}
-                    {math &&
                     <MathRenderer
                         maxId={maxId}
                         fontSize={26}
                         math={math}
                         active={active}
                         onSelectionChange={this.handleSelectionChange}
-                    />}
+                    />
                 </div>
             </div>
             {active && menu}

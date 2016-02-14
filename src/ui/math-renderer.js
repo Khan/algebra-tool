@@ -229,10 +229,11 @@ class MathRenderer extends Component {
 
     getRelativeCoordinates(touch) {
         const container = this.refs.container;
-        const scrollTop = getScrollTop(container);
+        const clientRect = container.getBoundingClientRect();
+        //const scrollTop = getScrollTop(container);
 
-        const x = touch.pageX - container.offsetLeft;
-        const y = touch.pageY - container.offsetTop + scrollTop;
+        const x = touch.pageX - clientRect.left;
+        const y = touch.pageY - clientRect.top;
 
         return { x, y };
     }

@@ -67,6 +67,8 @@ class AuxApp extends Component {
             flexGrow: 1,
             overflow: 'scroll',
             background: '#EEE',
+            display: 'flex',
+            flexDirection: 'column-reverse'
         };
 
         const lineStyle = {
@@ -81,18 +83,20 @@ class AuxApp extends Component {
         //    <StaticMath fontSize={26} active={true} math={math} width={65} height={60} />
         //</div>;
 
+        const length = this.props.steps.length;
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
-                <div style={{height:180}}></div>
+                <div style={{height:180,flexShrink:0}}></div>
                 {this.props.steps.map((line, i) =>
                     <TextLine
                         {...line}
-                        key={i}
+                        key={i === 0 ? 0 : length - i}
                         onClick={e => this.select(i, e.target)}
                         active={this.props.activeStep === i}
                     />)
                 }
-                <div style={{height:180}}></div>
+                <div style={{height:180,flexShrink:0}}></div>
             </div>
             <NewKeypad />
         </div>;
