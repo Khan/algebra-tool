@@ -79,13 +79,14 @@ class MathRenderer extends Component {
             if (currentLayout !== nextLayout) {
                 const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
 
-                canvas.width = nextLayout.bounds.width;
-                canvas.height = nextLayout.bounds.height;
+                canvas.width = animatedLayout.bounds.width;
+                canvas.height = animatedLayout.bounds.height;
 
                 let t = 0;
                 // TODO: add some way to be notified of when the animation completes
                 animatedLayout.callback = () => {
-                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.width = animatedLayout.bounds.width;
+                    canvas.height = animatedLayout.bounds.height;
                     this.drawLayout(context, animatedLayout);
                     t += 0.035;
                 };

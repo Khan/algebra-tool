@@ -85,6 +85,8 @@ class AnimatedLayout {
         this.startLayout = startLayout;
         this.endLayout = endLayout;
 
+        this.currentLayout = startLayout;
+
         const startIds = startLayout.children.map(layout => layout.id);
         const endIds = endLayout.children.map(layout => layout.id);
 
@@ -169,11 +171,16 @@ class AnimatedLayout {
             } else if (transition.type === 'lerp') {
 
                 const layout = lerpLayout(this.startLayout, this.endLayout, transition.ids, easeCubic(this.t));
+                layout.padding = 6;
+                layout.padding = 6;
+                this.currentLayout = layout;
                 layout.render(ctx);
 
                 this.t += 0.035;
 
             } else if (transition.type === 'fade-in') {
+                this.currentLayout = this.endLayout;
+
                 ctx.save();
                 ctx.translate(this.endLayout.x, this.endLayout.y);
 
@@ -197,7 +204,7 @@ class AnimatedLayout {
     }
 
     get bounds() {
-        return this.endLayout.bounds;
+        return this.currentLayout.bounds;
     }
 }
 
