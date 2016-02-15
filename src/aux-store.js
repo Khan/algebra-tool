@@ -35,7 +35,7 @@ const reducer = (state = initialState, action) => {
             const steps = [...state.steps];
             steps.splice(state.activeStep, 1, {
                 ...activeStep,
-                selection: action.selection
+                selections: action.selections,
             });
 
             return { ...state, steps };
@@ -122,16 +122,15 @@ const reducer = (state = initialState, action) => {
                 ]
             };
         case 'ADD_STEP':
-            return {
-                ...state,
-                steps: [
-                    {
-                        text: '',
-                        math: action.math,
-                    },
-                    ...state.steps,
-                ]
-            };
+            const steps2 = [
+                {
+                    text: '',
+                    math: action.math,
+                },
+                ...state.steps,
+            ];
+            console.log(steps2);
+            return { ...state, steps: steps2 };
         default:
             return state;
     }

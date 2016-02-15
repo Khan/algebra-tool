@@ -98,6 +98,7 @@ class Menu extends Component {
 class TextLine extends Component {
     static defaultProps = {
         insertedText: {},
+        selections: [],
     };
 
     constructor() {
@@ -110,7 +111,12 @@ class TextLine extends Component {
 
     handleTap = item => {
         const transform = transforms[item];
-        const { math, selection } = this.props;
+        const { math, selections } = this.props;
+        const [selection] = selections;
+
+        if (!selection) {
+            return;
+        }
 
         const newMath = math.clone();
 
@@ -131,24 +137,23 @@ class TextLine extends Component {
         });
     };
 
-    handleSelectionChange = selections => {
-        if (selections.length === 1) {
-            const [selection] = selections;
+    showMenu = () => {
+        const { selections } = this.props;
 
-            auxStore.dispatch({
-                type: 'SELECT_MATH',
-                selection: selection
-            });
-        } else {
-            auxStore.dispatch({
-                type: 'SELECT_MATH',
-                selection: null
-            });
-        }
+        const items = Object.keys(transforms).filter(key => {
+            const transform = transforms[key];
+            const [selection] = selections;
+            return selection && transform.canTransform(selection);
+        });
+
+        const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
+
+        this.setState({ menu });
     };
 
     render() {
-        const { math, maxId, selection, active } = this.props;
+        const { math, maxId, selections, active } = this.props;
+        const { menu } = this.state;
 
         const spanStyle = {
             fontSize: 26,
@@ -178,13 +183,6 @@ class TextLine extends Component {
             ...transitionStyle
         };
 
-        const items = Object.keys(transforms).filter(key => {
-            const transform = transforms[key];
-            return selection && transform.canTransform(selection);
-        });
-
-        const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
-
         return <div>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
@@ -193,7 +191,8 @@ class TextLine extends Component {
                         fontSize={26}
                         math={math}
                         active={active}
-                        onSelectionChange={this.handleSelectionChange}
+                        selections={selections}
+                        showMenu={this.showMenu}
                     />
                 </div>
             </div>

@@ -16,19 +16,12 @@ class Glyph {
     }
 
     render(ctx, maxId, k = 1.0) {
-        // TODO when we flatten group all of the items with the same fontSize
-        //if (this.id && RenderOptions.bounds) {
-        //    ctx.strokeStyle = 'red';
-        //    const bounds = this.bounds;
-        //    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        //}
-
         // TODO: ensure that this.id is never undefined
         const id = this.id && (this.id.includes(':') ? this.id.split(':')[0] : this.id);
 
         if (id > maxId) {
-            ctx.fillStyle = `rgba(0,192,192,${k})`;
-            ctx.strokeStyle = `rgba(0,192,192,${k})`;
+            ctx.fillStyle = `rgba(0,208,208,${k})`;
+            ctx.strokeStyle = `rgba(0,208,208,${k})`;
         }
 
         ctx.font = this.font.toStyle();

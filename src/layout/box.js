@@ -11,8 +11,8 @@ export default class Box {
         const id = this.id.includes(':') ? this.id.split(':')[0] : this.id;
 
         if (id > maxId) {
-            ctx.fillStyle = `rgba(0,192,192,${k})`;
-            ctx.strokeStyle = `rgba(0,192,192,${k})`;
+            ctx.fillStyle = `rgba(0,208,208,${k})`;
+            ctx.strokeStyle = `rgba(0,208,208,${k})`;
         }
 
         if (this.stroke) {

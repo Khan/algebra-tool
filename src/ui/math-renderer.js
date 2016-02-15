@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
 
-//import Menu from './menu';
-//import transforms from '../transforms.js';
-
 import Rect from '../layout/rect';
 import { createFlatLayout } from '../layout/layout.js';
 import { findNode, traverseNode } from '../ast/node-utils';
 import AnimatedLayout from '../layout/animated-layout';
 import { roundRect, fillCircle } from './canvas-util';
 import Selection from './selection';
+import auxStore from './../aux-store';
 
-const transforms = {};
-
-// TODO: generalize to find all ancestors that can be scrolled
-function getScrollTop(node) {
-    while (node != null) {
-        if (node.scrollHeight !== node.offsetHeight) {
-            return node.scrollTop;
-        }
-        node = node.parentElement;
-    }
-    return 0;
-}
 
 class MathRenderer extends Component {
     constructor() {
@@ -29,8 +15,6 @@ class MathRenderer extends Component {
 
         this.state = {
             context: null,
-            menu: null,
-            selections: [],
             layout: null,
         };
     }
@@ -39,10 +23,12 @@ class MathRenderer extends Component {
         color: 'black',
         fontSize: 60,
         maxId: Infinity,
+        selections: [],
     };
 
     componentDidMount() {
-        const { fontSize, math } = this.props;
+        const { fontSize, math, selections } = this.props;
+
         const layout = createFlatLayout(math, fontSize, 6);
         const bounds = layout.bounds;
 
@@ -51,6 +37,10 @@ class MathRenderer extends Component {
         canvas.height = bounds.height;
 
         const context = canvas.getContext('2d');
+
+        if (selections.length > 0) {
+            this.drawSelection(context, selections, null, layout);
+        }
 
         this.drawLayout(context, layout);
 
@@ -77,10 +67,11 @@ class MathRenderer extends Component {
             const currentLayout = this.state.layout;
             const nextLayout = nextState.layout;
 
-            const { selections, hitNode } = nextState;
+            const { hitNode } = nextState;
+            const { selections } = nextProps;
 
             if (selections.length > 0) {
-                this.drawSelection(selections, hitNode, nextLayout, nextState);
+                this.drawSelection(context, selections, hitNode, nextLayout);
             }
 
             context.fillStyle = nextProps.color;
@@ -106,6 +97,7 @@ class MathRenderer extends Component {
         }
     }
 
+    // TODO: get rid of the need for hitNode
     getSelectionHighlights(layout, selections, hitNode) {
         const layoutDict = {};
 
@@ -152,9 +144,7 @@ class MathRenderer extends Component {
         currentLayout.render(context, maxId);
     }
 
-    drawSelection(selections, hitNode, layout, nextState) {
-        const { context } = this.state;
-
+    drawSelection(context, selections, hitNode, layout) {
         const highlights = this.getSelectionHighlights(layout, selections, hitNode);
         const padding = 4;
 
@@ -177,56 +167,6 @@ class MathRenderer extends Component {
         }
     }
 
-    performTransform(selections, transform) {
-        this.props.onClick(selections, transform, () => {
-            this.setState({
-                menu: null,
-                selections: [],
-            });
-        });
-    }
-
-    getMenu(layout, newSelections, hitNode) {
-        // TODO: reverse the order of map and filter
-        // that way canTransform can return the name of the action and filter
-        // can filter out everything that returns an empty string
-        const items = Object.values(transforms)
-            .filter(transform => {
-                if (newSelections.length === 1) {
-                    return transform.canTransform(newSelections[0]);
-                } else if (transform.hasOwnProperty('canTransformNodes')) {
-                    return transform.canTransformNodes(newSelections);
-                }
-            })
-            .map(transform => {
-                let label = transform.label;
-                if (transform.hasOwnProperty('getLabel')) {
-                    label = transform.getLabel(newSelections[0]);
-                }
-                return {
-                    label,
-                    action: () => {
-                        this.setState({ menu: null });
-                        this.performTransform(newSelections, transform);
-                    }
-                }
-            });
-
-        const highlights = this.getSelectionHighlights(layout, newSelections, hitNode);
-
-        const pos = { x:Infinity, y:Infinity };
-        for (const {bounds} of highlights) {
-            const x = (bounds.left + bounds.right) / 2;
-            const y = bounds.top - 10;
-            if (y < pos.y) {
-                pos.x = x;
-                pos.y = y;
-            }
-        }
-
-        return items.length > 0 ? <Menu position={pos} items={items}/> : null;
-    }
-
     getRelativeCoordinates(touch) {
         const container = this.refs.container;
         const clientRect = container.getBoundingClientRect();
@@ -244,8 +184,8 @@ class MathRenderer extends Component {
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
-        const { math } = this.props;
-        const { layout, selections } = this.state;
+        const { math, selections } = this.props;
+        const { layout } = this.state;
         const hitNode = layout.hitTest(x, y);
 
         // TODO: check if the click is inside a highlight
@@ -263,7 +203,11 @@ class MathRenderer extends Component {
             // reject growing to including any of the existing selections
 
             if (!mathNode) {
-                this.setState({ menu: null, selections: [] });
+                auxStore.dispatch({
+                    type: 'SELECT_MATH',
+                    selections: []
+                });
+
                 return;
             }
 
@@ -279,8 +223,12 @@ class MathRenderer extends Component {
                 }
             }
 
+            auxStore.dispatch({
+                type: 'SELECT_MATH',
+                selections: newSelections
+            });
+
             this.setState({
-                selections: newSelections,
                 hitNode,
                 mouse: 'down',
             });
@@ -298,8 +246,8 @@ class MathRenderer extends Component {
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
-        const { math } = this.props;
-        const { layout, selections } = this.state;
+        const { math, selections } = this.props;
+        const { layout } = this.state;
 
         const hitNode = layout.hitTest(x, y);
 
@@ -323,8 +271,9 @@ class MathRenderer extends Component {
                     return;
                 }
 
-                this.setState({
-                    selections: [...prevSels, selection],
+                auxStore.dispatch({
+                    type: 'SELECT_MATH',
+                    selections: [...prevSels, selection]
                 });
             }
         } else {
@@ -339,33 +288,23 @@ class MathRenderer extends Component {
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
-        const { layout, selections, mouse, scrolling } = this.state;
+        const { layout, mouse, scrolling } = this.state;
         const hitNode = layout.hitTest(x, y);
 
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
         if (mouse === 'down') {
-            let menu = null;
-
-            if (selections.length > 0) {
-                const {layout} = this.state;
-                const hitNode = layout.hitTest(x, y);
-                // used to position the menu by the selection
-                // menu = this.getMenu(layout, selections, hitNode);
-            }
-
             if (!hitNode && !scrolling) {
-                this.setState({ selections: [] });
-                if (this.props.onSelectionChange) {
-                    this.props.onSelectionChange([]);
-                }
+                auxStore.dispatch({
+                    type: 'SELECT_MATH',
+                    selections: []
+                });
             } else {
-                if (this.props.onSelectionChange) {
-                    this.props.onSelectionChange(selections);
+                if (this.props.showMenu) {
+                    this.props.showMenu();
                 }
             }
 
             this.setState({
-                menu,
                 mouse: 'up',
                 scrolling: false,
             });
@@ -373,8 +312,6 @@ class MathRenderer extends Component {
     };
 
     render() {
-        const { menu } = this.state;
-
         return <div>
             <div
                 ref="container"
@@ -382,7 +319,6 @@ class MathRenderer extends Component {
                 onTouchMove={this.handleTouchMove}
                 onTouchEnd={this.handleTouchEnd}
             ></div>
-            {menu}
         </div>;
     }
 }

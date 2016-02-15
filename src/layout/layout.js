@@ -34,8 +34,8 @@ class Layout {
         }
 
         if (this.id > maxId) {
-            ctx.fillStyle = 'rgb(0,192,192)';
-            ctx.strokeStyle = 'rgb(0,192,192)';
+            ctx.fillStyle = 'rgb(0,208,208)';
+            ctx.strokeStyle = 'rgb(0,208,208)';
         }
 
         for (const child of this.children) {
