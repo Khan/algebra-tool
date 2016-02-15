@@ -206,6 +206,13 @@ class AnimatedLayout {
 
     get bounds() {
         // TODO: check if the intermediary bounds' dimensions are smaller than either the start or end
+        // FIXME: this is a hacky way to ensure that replacement animations don't transition to a layout without a deominator
+        // ideally we should identify those changes where none of the lerp id nodes change
+        const startBounds = this.startLayout.bounds;
+        const endBounds = this.endLayout.bounds;
+        if (startBounds.width === endBounds.width && startBounds.height === endBounds.height) {
+            return endBounds;
+        }
         return this.currentLayout.bounds;
     }
 }
