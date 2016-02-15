@@ -73,7 +73,7 @@ class NewKeypad extends Component {
         //&#x232B;
         //&#x2610;/&#x2610;
 
-        return <div style={{marginTop:1}}>
+        return <div style={{marginTop:1, flexShrink:0}}>
             <div style={rowStyle}>
                 <Button {...topRowColor}>...</Button>
                 <Button {...topRowColor}>&nbsp;</Button>

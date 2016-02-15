@@ -185,7 +185,7 @@ class TextLine extends Component {
             ...transitionStyle
         };
 
-        return <div style={{ position: 'relative' }}>
+        return <div style={{ position: 'relative', flexShrink: 0 }}>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
                     <MathRenderer

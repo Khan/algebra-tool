@@ -8,8 +8,10 @@ import auxStore from './aux-store';
 const container = document.getElementById('app-container');
 
 window.onload = () => {
-    const provider = <Provider store={auxStore}>
-        <AuxApp />
-    </Provider>;
-    ReactDOM.render(provider, container);
+    setTimeout(() => {
+        const provider = <Provider store={auxStore}>
+            <AuxApp />
+        </Provider>;
+        ReactDOM.render(provider, container);
+    }, 50);
 };

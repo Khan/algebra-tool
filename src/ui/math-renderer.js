@@ -185,6 +185,8 @@ class MathRenderer extends Component {
 
         const touch = e.changedTouches[0];
 
+        console.log(touch);
+
         const { x, y } = this.getRelativeCoordinates(touch);
         const { math, selections } = this.props;
         const { layout } = this.state;
