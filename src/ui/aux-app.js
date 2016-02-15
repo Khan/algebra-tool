@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import NewKeypad from './new-keypad';
 import TextLine from './text-line';
+import MathRenderer from './math-renderer';
 import auxStore from './../aux-store';
-import StaticMath from './static-math';
 import Parser from '../parser';
 
 const parser = new Parser();
@@ -18,6 +18,10 @@ function easeQuadratic(t) {
 }
 
 class AuxApp extends Component {
+    static defaultProps = {
+        goal: parser.parse('x = 5/2')
+    };
+
     select = (step, target) => {
         const {offsetHeight, scrollTop} = this.refs.container;
         const center = target.offsetTop - scrollTop + target.offsetHeight / 2;
@@ -78,10 +82,26 @@ class AuxApp extends Component {
 
         const math = parser.parse('x = 5/2');
 
-        //const goal = <div style={{...lineStyle, paddingLeft: 20, marginTop: 5, marginBottom: 5}}>
-        //    <div style={{float:'left', height: 60, lineHeight: '60px'}}>Goal: </div>
-        //    <StaticMath fontSize={26} active={true} math={math} width={65} height={60} />
-        //</div>;
+        const goalStyle = {
+            ...lineStyle,
+            display: 'flex',
+            flexDirection: 'row',
+            paddingLeft: 20,
+            paddingRight: 20,
+            marginTop: 10,
+            marginBottom: 10,
+            flexShrink: 0,
+        };
+
+        const goal = <div style={goalStyle}>
+            <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>Goal:</div>
+            <div style={{ margin: 'auto' }}>
+                <MathRenderer
+                    fontSize={26}
+                    math={this.props.goal}
+                />
+            </div>
+        </div>;
 
         const length = this.props.steps.length;
 
@@ -98,6 +118,7 @@ class AuxApp extends Component {
                 }
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
+            {goal}
             <NewKeypad />
         </div>;
     }

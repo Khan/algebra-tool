@@ -35,6 +35,7 @@ class MathRenderer extends Component {
         const canvas = document.createElement('canvas');
         canvas.width = bounds.width;
         canvas.height = bounds.height;
+        canvas.style.display = 'block';
 
         const context = canvas.getContext('2d');
 
