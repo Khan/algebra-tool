@@ -112,20 +112,19 @@ class TextLine extends Component {
     handleTap = item => {
         const transform = transforms[item];
         const { math, selections } = this.props;
-        const [selection] = selections;
-
-        if (!selection) {
-            return;
-        }
-
         const newMath = math.clone();
 
-        // TODO: send the selection and the math AST and let the transform take care of this
-        const first = findNode(newMath, selection.first.id);
-        const last = findNode(newMath, selection.last.id);
-        const newSelection = new Selection(first, last);
+        const newSelections = selections.map(selection => {
+            const first = findNode(newMath, selection.first.id);
+            const last = findNode(newMath, selection.last.id);
+            return new Selection(first, last);
+        });
 
-        transform.doTransform(newSelection);
+        if (transform.canTransformNodes) {
+            transform.transformNodes(newSelections);
+        } else {
+            transform.doTransform(newSelections[0]);
+        }
 
         auxStore.dispatch({
             type: 'ADD_STEP',
@@ -142,6 +141,9 @@ class TextLine extends Component {
 
         const items = Object.keys(transforms).filter(key => {
             const transform = transforms[key];
+            if (transform.canTransformNodes) {
+                return transform.canTransformNodes(selections);
+            }
             const [selection] = selections;
             return selection && transform.canTransform(selection);
         });

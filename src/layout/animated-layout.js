@@ -104,6 +104,7 @@ class AnimatedLayout {
         }
 
         if (lerpIds.length > 0) {
+            // TODO: check if all of the positions are the same
             this.transitions.push({
                 type: 'lerp',
                 ids: lerpIds
@@ -204,6 +205,7 @@ class AnimatedLayout {
     }
 
     get bounds() {
+        // TODO: check if the intermediary bounds' dimensions are smaller than either the start or end
         return this.currentLayout.bounds;
     }
 }
