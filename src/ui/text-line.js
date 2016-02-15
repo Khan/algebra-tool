@@ -148,7 +148,7 @@ class TextLine extends Component {
 
         const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
 
-        this.setState({ menu });
+        this.setState({ menu: <div style={{position: 'absolute', width:'100%'}}>{menu}</div> });
     };
 
     render() {
@@ -183,7 +183,7 @@ class TextLine extends Component {
             ...transitionStyle
         };
 
-        return <div>
+        return <div style={{ position: 'relative' }}>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
                     <MathRenderer
