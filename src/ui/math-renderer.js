@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Cursor from './cursor';
+
 import Rect from '../layout/rect';
 import { createFlatLayout } from '../layout/layout.js';
 import { findNode, traverseNode } from '../ast/node-utils';
@@ -322,15 +324,8 @@ class MathRenderer extends Component {
 
         const { cursor, fontSize, math } = this.props;
 
-        const style = {
-            id: 'cursor',
-            position: 'absolute',
-            width: 2,
-            height: fontSize,
-            backgroundColor: 'rgb(0, 208, 208)'
-        };
-
-        const cursorDivs = [];
+        // max number of cursors support is 2
+        const cursors = [];
 
         if (cursor) {
             const placeholders = [];
@@ -342,20 +337,23 @@ class MathRenderer extends Component {
 
             for (const placeholder of placeholders) {
                 const layout = this.state.layout;
-                const cursorStyle = {...style};
+
+                let x = 0;
+                let y = 0;
+
                 for (const node of layout.children) {
                     if (node.id === placeholder.id) {
-                        let x = node.x + 20;
+                        x = node.x + 20;
                         for (const glyph of node.children) {
                             x += glyph.advance;
                         }
-                        cursorStyle.left = x;
+
                         // 6 is padding built into the canvas rendering
                         // -15 is padding above the container
-                        cursorStyle.top = node.y + 6 - 15;
+                        y = node.y + 6 - 15;
                     }
                 }
-                cursorDivs.push(<div style={cursorStyle}></div>);
+                cursors.push(<Cursor x={x} y={y} width={2} height={fontSize} />);
             }
         }
 
@@ -365,8 +363,8 @@ class MathRenderer extends Component {
             onTouchMove={this.handleTouchMove}
             onTouchEnd={this.handleTouchEnd}
         >
-            {cursorDivs[0] && cursorDivs[0]}
-            {cursorDivs[1] && cursorDivs[1]}
+            {cursors[0]}
+            {cursors[1]}
         </div>;
     }
 }
