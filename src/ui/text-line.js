@@ -154,7 +154,7 @@ class TextLine extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active } = this.props;
+        const { math, maxId, selections, active, cursor } = this.props;
         const { menu } = this.state;
 
         const spanStyle = {
@@ -195,6 +195,7 @@ class TextLine extends Component {
                         active={active}
                         selections={selections}
                         showMenu={this.showMenu}
+                        cursor={cursor}
                     />
                 </div>
             </div>

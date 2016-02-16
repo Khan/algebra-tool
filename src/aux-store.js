@@ -50,20 +50,16 @@ const reducer = (state = initialState, action) => {
             if (equalIndex) {
                 const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
                 const placeholder = new Placeholder();
-                // TODO: remove this hack once we can edit the placeholder using the keyboard
-                if (action.operator === '-') {
-                    placeholder.text = '5';
-                }
-                if (action.operator === '/') {
-                    placeholder.text = '2';
-                }
                 newMath.root = op(newMath.root, placeholder);
             }
+
+            console.log(maxId);
 
             const newActiveStep = {
                 ...activeStep,
                 math: newMath,
-                maxId: maxId
+                maxId: maxId,
+                cursor: true,
             };
 
             return {
@@ -71,19 +67,25 @@ const reducer = (state = initialState, action) => {
                 steps: [newActiveStep, ...state.steps]
             };
         case 'INSERT_NUMBER':
-            for (const [k, v] of Object.entries(activeStep.insertedText)) {
-                newInsertedText[k] = v + action.number;
-            }
+            traverseNode(newMath, node => {
+                if (node.type === 'Placeholder') {
+                    node.text += action.number;
+                    console.log(`node.id = ${node.id}`);
+                }
+            });
+
+            console.log(`maxId = ${activeStep.maxId}`);
 
             return {
                 ...state,
                 steps: [
-                    ...state.steps.slice(0, state.activeStep),
                     {
                         ...activeStep,
-                        insertedText: newInsertedText
+                        math: newMath,
+                        cusror: true,
                     },
-                    ...state.steps.slice(state.activeStep + 1)]
+                    ...state.steps.slice(1)
+                ]
             };
         case 'BACKSPACE':
             for (const [k, v] of Object.entries(activeStep.insertedText)) {
@@ -110,15 +112,24 @@ const reducer = (state = initialState, action) => {
                 }
             });
 
+            console.log(newMath.toString());
+
+            // TODO: only the active step can have a cursor
             return {
                 ...state,
                 steps: [
                     {
                         ...activeStep,
                         math: newMath,
-                        maxId: Infinity
+                        maxId: Infinity,
+                        cursor: false,
                     },
-                    ...state.steps
+                    ...state.steps.map(step => {
+                        return {
+                            ...step,
+                            cursor: false
+                        }
+                    })
                 ]
             };
         case 'ADD_STEP':

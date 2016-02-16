@@ -48,6 +48,9 @@ class Layout {
     }
 
     get bounds() {
+        if (this.children.length === 0) {
+            return new Rect(this.x - this.padding, this.y - this.padding, 2 * this.padding, 2 * this.padding);
+        }
         const bounds = Rect.union(this.children.map(child => child.bounds));
         bounds.x += this.x;
         bounds.y += this.y;

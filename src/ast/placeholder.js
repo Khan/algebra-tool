@@ -4,7 +4,7 @@ export default class Placeholder extends Node {
     constructor() {
         super();
         this.type = 'Placeholder';
-        this.text = "5";
+        this.text = '';
     }
 
     toString() {

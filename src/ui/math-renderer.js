@@ -27,7 +27,7 @@ class MathRenderer extends Component {
     };
 
     componentDidMount() {
-        const { fontSize, math, selections } = this.props;
+        const { fontSize, math, selections, maxId } = this.props;
 
         const layout = createFlatLayout(math, fontSize, 6);
         const bounds = layout.bounds;
@@ -43,7 +43,7 @@ class MathRenderer extends Component {
             this.drawSelection(context, selections, null, layout);
         }
 
-        this.drawLayout(context, layout);
+        this.drawLayout(context, layout, maxId);
 
         this.refs.container.appendChild(canvas);
 
@@ -69,7 +69,7 @@ class MathRenderer extends Component {
             const nextLayout = nextState.layout;
 
             const { hitNode } = nextState;
-            const { selections } = nextProps;
+            const { selections, maxId } = nextProps;
 
             if (selections.length > 0) {
                 this.drawSelection(context, selections, hitNode, nextLayout);
@@ -78,23 +78,29 @@ class MathRenderer extends Component {
             context.fillStyle = nextProps.color;
 
             if (currentLayout !== nextLayout) {
-                const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
+                if (this.props.cursor) {
+                    canvas.width = nextLayout.bounds.width;
+                    canvas.height = nextLayout.bounds.height;
+                    this.drawLayout(context, nextLayout, maxId);
+                } else {
+                    const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
 
-                canvas.width = animatedLayout.bounds.width;
-                canvas.height = animatedLayout.bounds.height;
-
-                let t = 0;
-                // TODO: add some way to be notified of when the animation completes
-                animatedLayout.callback = () => {
                     canvas.width = animatedLayout.bounds.width;
                     canvas.height = animatedLayout.bounds.height;
-                    this.drawLayout(context, animatedLayout);
-                    t += 0.035;
-                };
 
-                animatedLayout.start();
+                    let t = 0;
+                    // TODO: add some way to be notified of when the animation completes
+                    animatedLayout.callback = () => {
+                        canvas.width = animatedLayout.bounds.width;
+                        canvas.height = animatedLayout.bounds.height;
+                        this.drawLayout(context, animatedLayout, maxId);
+                        t += 0.035;
+                    };
+
+                    animatedLayout.start();
+                }
             } else {
-                this.drawLayout(context, currentLayout);
+                this.drawLayout(context, currentLayout, maxId);
             }
         }
     }
@@ -140,9 +146,8 @@ class MathRenderer extends Component {
         return highlights;
     }
 
-    drawLayout(context, currentLayout) {
+    drawLayout(context, currentLayout, maxId) {
         context.fillStyle = 'rgb(0, 0, 0)';
-        const { maxId } = this.props;
         currentLayout.render(context, maxId);
     }
 
@@ -184,8 +189,6 @@ class MathRenderer extends Component {
         if (!this.props.active) return;
 
         const touch = e.changedTouches[0];
-
-        console.log(touch);
 
         const { x, y } = this.getRelativeCoordinates(touch);
         const { math, selections } = this.props;
@@ -316,13 +319,54 @@ class MathRenderer extends Component {
     };
 
     render() {
-        return <div>
-            <div
-                ref="container"
-                onTouchStart={this.handleTouchStart}
-                onTouchMove={this.handleTouchMove}
-                onTouchEnd={this.handleTouchEnd}
-            ></div>
+
+        const { cursor, fontSize, math } = this.props;
+
+        const style = {
+            id: 'cursor',
+            position: 'absolute',
+            width: 2,
+            height: fontSize,
+            backgroundColor: 'rgb(0, 208, 208)'
+        };
+
+        const cursorDivs = [];
+
+        if (cursor) {
+            const placeholders = [];
+            traverseNode(math.root, node => {
+                if (node.type === 'Placeholder') {
+                    placeholders.push(node);
+                }
+            });
+
+            for (const placeholder of placeholders) {
+                const layout = this.state.layout;
+                const cursorStyle = {...style};
+                for (const node of layout.children) {
+                    if (node.id === placeholder.id) {
+                        let x = node.x + 20;
+                        for (const glyph of node.children) {
+                            x += glyph.advance;
+                        }
+                        cursorStyle.left = x;
+                        // 6 is padding built into the canvas rendering
+                        // -15 is padding above the container
+                        cursorStyle.top = node.y + 6 - 15;
+                    }
+                }
+                cursorDivs.push(<div style={cursorStyle}></div>);
+            }
+        }
+
+        return <div
+            ref="container"
+            onTouchStart={this.handleTouchStart}
+            onTouchMove={this.handleTouchMove}
+            onTouchEnd={this.handleTouchEnd}
+        >
+            {cursorDivs[0] && cursorDivs[0]}
+            {cursorDivs[1] && cursorDivs[1]}
         </div>;
     }
 }
