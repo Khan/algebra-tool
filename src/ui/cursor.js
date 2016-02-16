@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 
+const cursors = [];
+
+let visibility = true;
+
+const update = () => {
+    return setTimeout(() => {
+        visibility = !visibility;
+        cursors.forEach(cursor => cursor.updateVisibility(visibility));
+        update();
+    }, 500);
+};
+
+update();
 
 class Cursor extends Component {
     state = {
         visibility: true,
-        delay: 500,
         timeout: null
     };
 
@@ -17,19 +29,16 @@ class Cursor extends Component {
     };
 
     componentDidMount() {
-        const { delay } = this.state;
-        const timeout = setTimeout(() => this.updateVisibility(), delay);
-        this.setState({ timeout });
-    }
-
-    updateVisibility() {
-        const { visibility, delay } = this.state;
-        const timeout = setTimeout(() => this.updateVisibility(), delay);
-        this.setState({ visibility: !visibility, timeout });
+        cursors.push(this);
     }
 
     componentWillUnmount() {
-        clearTimeout(this.state.timeout);
+        const index = cursors.indexOf(this);
+        cursors.splice(index, 1);
+    }
+
+    updateVisibility(visibility) {
+        this.setState({ visibility });
     }
 
     render() {
