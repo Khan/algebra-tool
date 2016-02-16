@@ -56,7 +56,13 @@ class MathRenderer extends Component {
         if (this.props.math !== nextProps.math) {
             const { fontSize, math } = nextProps;
             const layout = createFlatLayout(math, fontSize, 6);
-            this.setState({ layout });
+            let shouldShowCursor = false;
+            traverseNode(math.root, node => {
+                if (node.type === 'Placeholder') {
+                    shouldShowCursor = true;
+                }
+            });
+            this.setState({ layout, shouldShowCursor });
         }
     }
 
@@ -70,7 +76,7 @@ class MathRenderer extends Component {
             const currentLayout = this.state.layout;
             const nextLayout = nextState.layout;
 
-            const { hitNode } = nextState;
+            const { hitNode, shouldShowCursor } = nextState;
             const { selections, maxId } = nextProps;
 
             if (selections.length > 0) {
@@ -80,6 +86,8 @@ class MathRenderer extends Component {
             context.fillStyle = nextProps.color;
 
             if (currentLayout !== nextLayout) {
+                // if the cursor is showing don't animate because we're in the
+                // process of typing something in
                 if (this.props.cursor) {
                     canvas.width = nextLayout.bounds.width;
                     canvas.height = nextLayout.bounds.height;
@@ -94,7 +102,10 @@ class MathRenderer extends Component {
                             this.drawLayout(context, animatedLayout, maxId);
                         },
                         () => {
-                            console.log('finished animating');
+                            if (shouldShowCursor) {
+                                auxStore.dispatch({ type: 'SHOW_CURSOR' });
+                            }
+                            // else hide the cursor
                         });
 
                     animatedLayout.start();

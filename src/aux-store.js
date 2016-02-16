@@ -50,16 +50,27 @@ const reducer = (state = initialState, action) => {
                 newMath.root = op(newMath.root, placeholder);
             }
 
-            const newActiveStep = {
-                ...activeStep,
-                math: newMath,
-                maxId: maxId,
-                cursor: true,
-            };
-
             return {
                 ...state,
-                steps: [newActiveStep, ...state.steps]
+                steps: [
+                    {
+                        ...activeStep,
+                        math: newMath,
+                        maxId: maxId,
+                    },
+                    ...state.steps
+                ]
+            };
+        case 'SHOW_CURSOR':
+            return {
+                ...state,
+                steps: [
+                    {
+                        ...activeStep,
+                        cursor: true,
+                    },
+                    ...state.steps.slice(1)
+                ]
             };
         case 'INSERT_NUMBER':
             traverseNode(newMath, node => {
