@@ -19,7 +19,6 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     const activeStep = state.steps[state.activeStep];
-    const newInsertedText = {};
     const newMath = activeStep.math.clone();
     let maxId = 0;
 
@@ -81,19 +80,26 @@ const reducer = (state = initialState, action) => {
                 ]
             };
         case 'BACKSPACE':
-            for (const [k, v] of Object.entries(activeStep.insertedText)) {
-                newInsertedText[k] = v.slice(0, v.length - 1);
-            }
+            traverseNode(newMath, node => {
+                if (node.type === 'Placeholder') {
+                    if (node.text === '') {
+                        // TODO: think about how to undo the operation
+                    } else {
+                        node.text = node.text.slice(0, node.text.length - 1);
+                    }
+                }
+            });
 
             return {
                 ...state,
                 steps: [
-                    ...state.steps.slice(0, state.activeStep),
                     {
                         ...activeStep,
-                        insertedText: newInsertedText
+                        math: newMath,
+                        cusror: true,
                     },
-                    ...state.steps.slice(state.activeStep + 1)]
+                    ...state.steps.slice(1)
+                ]
             };
         case 'ACCEPT_STEP':
             traverseNode(newMath, node => {
