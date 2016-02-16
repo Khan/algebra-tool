@@ -85,19 +85,17 @@ class MathRenderer extends Component {
                     canvas.height = nextLayout.bounds.height;
                     this.drawLayout(context, nextLayout, maxId);
                 } else {
-                    const animatedLayout = new AnimatedLayout(currentLayout, nextLayout);
-
-                    canvas.width = animatedLayout.bounds.width;
-                    canvas.height = animatedLayout.bounds.height;
-
-                    let t = 0;
-                    // TODO: add some way to be notified of when the animation completes
-                    animatedLayout.callback = () => {
-                        canvas.width = animatedLayout.bounds.width;
-                        canvas.height = animatedLayout.bounds.height;
-                        this.drawLayout(context, animatedLayout, maxId);
-                        t += 0.035;
-                    };
+                    const animatedLayout = new AnimatedLayout(
+                        currentLayout,
+                        nextLayout,
+                        () => {
+                            canvas.width = animatedLayout.bounds.width;
+                            canvas.height = animatedLayout.bounds.height;
+                            this.drawLayout(context, animatedLayout, maxId);
+                        },
+                        () => {
+                            console.log('finished animating');
+                        });
 
                     animatedLayout.start();
                 }

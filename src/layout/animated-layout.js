@@ -81,9 +81,8 @@ function difference(a, b) {
 }
 
 class AnimatedLayout {
-    constructor(startLayout, endLayout) {
-        this.startLayout = startLayout;
-        this.endLayout = endLayout;
+    constructor(startLayout, endLayout, updateCallback, completionCallback) {
+        Object.assign(this, { startLayout, endLayout, updateCallback, completionCallback });
 
         this.currentLayout = startLayout;
 
@@ -126,18 +125,26 @@ class AnimatedLayout {
 
     update() {
         if (this.t < 1) {
-            this.callback();
+            if (this.updateCallback) {
+                this.updateCallback();
+            }
 
             requestAnimationFrame(() => this.update());
         } else {
             this.t = 1.0;
-            this.callback();
+            if (this.updateCallback) {
+                this.updateCallback();
+            }
 
             this.transitions.shift();
 
             if (this.transitions.length > 0) {
                 this.t = 0;
                 requestAnimationFrame(() => this.update());
+            } else {
+                if (this.completionCallback) {
+                    this.completionCallback();
+                }
             }
         }
     }
