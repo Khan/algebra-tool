@@ -58,7 +58,6 @@ class Menu extends Component {
     };
 
     handleTap = item => {
-        console.log(item);
         if (this.props.onTap) {
             this.props.onTap(item);
         }

@@ -83,8 +83,6 @@ class StaticMath extends Component {
 
         const layoutNode = layout.hitTest(x, y);
         if (layoutNode) {
-            console.log(layoutNode);
-
             const selections = new Set(this.state.selections);
             if (selections.has(layoutNode.id)) {
                 selections.delete(layoutNode.id);

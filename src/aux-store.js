@@ -17,8 +17,6 @@ const initialState = {
     activeStep: 0
 };
 
-console.log(initialState.steps[6]);
-
 const reducer = (state = initialState, action) => {
     const activeStep = state.steps[state.activeStep];
     const newInsertedText = {};
@@ -53,8 +51,6 @@ const reducer = (state = initialState, action) => {
                 newMath.root = op(newMath.root, placeholder);
             }
 
-            console.log(maxId);
-
             const newActiveStep = {
                 ...activeStep,
                 math: newMath,
@@ -70,11 +66,8 @@ const reducer = (state = initialState, action) => {
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
                     node.text += action.number;
-                    console.log(`node.id = ${node.id}`);
                 }
             });
-
-            console.log(`maxId = ${activeStep.maxId}`);
 
             return {
                 ...state,
@@ -107,12 +100,9 @@ const reducer = (state = initialState, action) => {
                 if (node.type === 'Placeholder') {
                     // TODO: try/catch and provide feedback if math isn't valid
                     const value = parser.parse(node.text).root;
-                    console.log(value);
                     node.parent.replace(node, value);
                 }
             });
-
-            console.log(newMath.toString());
 
             // TODO: only the active step can have a cursor
             return {
@@ -140,7 +130,6 @@ const reducer = (state = initialState, action) => {
                 },
                 ...state.steps,
             ];
-            console.log(steps2);
             return { ...state, steps: steps2 };
         default:
             return state;
