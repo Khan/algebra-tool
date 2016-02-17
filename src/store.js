@@ -9,12 +9,9 @@ import params from './params';
 const parser = new Parser();
 
 const initialState = {
-    steps: [
-        {
-            text: '2x+5=10',
-            math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10')
-        }
-    ],
+    steps: [{
+        math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10')
+    }],
     activeStep: 0
 };
 
@@ -40,12 +37,11 @@ const reducer = (state = initialState, action) => {
         case 'SIMPLE_OPERATION':
             // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
-            const equalIndex = activeStep.text.indexOf('=');
 
             // TODO: reduce for tree traversal
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
 
-            if (equalIndex) {
+            if (activeStep.math.root.type === 'Equation') {
                 const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
