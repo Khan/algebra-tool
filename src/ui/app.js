@@ -6,20 +6,14 @@ import Step from './step';
 import MathRenderer from './math-renderer';
 import store from './../store';
 import Parser from '../parser';
+import params from '../params';
 
 const parser = new Parser();
 
-function easeCubic(t) {
-    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-}
-
-function easeQuadratic(t) {
-    return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-}
 
 class AuxApp extends Component {
     static defaultProps = {
-        goal: parser.parse('x = 5/2')
+        goal: params.end ? parser.parse(params.end) : parser.parse('x = 5/2')
     };
 
     select = step => {

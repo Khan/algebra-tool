@@ -4,6 +4,7 @@ import Parser from './parser';
 import Placeholder from './ast/placeholder';
 import { add, sub, mul, div } from './operations';
 import { traverseNode } from './ast/node-utils';
+import params from './params';
 
 const parser = new Parser();
 
@@ -11,7 +12,7 @@ const initialState = {
     steps: [
         {
             text: '2x+5=10',
-            math: parser.parse('2x+5=10')
+            math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10')
         }
     ],
     activeStep: 0
