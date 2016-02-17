@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import NewKeypad from './new-keypad';
+import Keypad from './keypad';
 import Step from './step';
 import MathRenderer from './math-renderer';
 import store from './../store';
@@ -94,7 +94,7 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {goal}
-            <NewKeypad />
+            <Keypad />
         </div>;
     }
 }
