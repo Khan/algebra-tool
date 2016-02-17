@@ -4,5 +4,7 @@ module.exports = {
     cancel_factor: require('./transforms/cancel-factor.js'),
     eliminate_div_by_one: require('./transforms/eliminate-div-by-one.js'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
-    rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction')
+    rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction'),
+    distribute_forwards: require('./transforms/distribute-forwards'),
+    distribute_backwards: require('./transforms/distribute-backwards'),
 };
