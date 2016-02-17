@@ -73,7 +73,7 @@ function doTransform(selections) {
             if (a.prev) {
                 a.parent.remove(a.prev);
             }
-            if (aSel.type === 'single') {
+            if (aSel.length === 1) {
                 a.parent.remove(a);
             } else {
                 a.parent.removeSelection(a);
@@ -93,7 +93,7 @@ function doTransform(selections) {
             if (b.prev) {
                 b.parent.remove(b.prev);
             }
-            if (bSel.type === 'single') {
+            if (bSel.length === 1) {
                 b.parent.remove(b);
             } else {
                 b.parent.removeSelection(b);

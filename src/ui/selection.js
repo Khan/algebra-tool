@@ -6,10 +6,6 @@ class Selection {
         Object.assign(this, { first, last });
     }
 
-    get type() {
-        return this.first === this.last ? 'single' : 'range';
-    }
-
     *[Symbol.iterator]() {
         // TODO: check if they have the same parent
         let node = this.first;
@@ -30,13 +26,9 @@ class Selection {
     }
 
     includes(node) {
-        if (this.type === 'single') {
-            return findNode(this.first, node.id);
-        } else {
-            for (const child of this) {
-                if (findNode(child, node.id)) {
-                    return true;
-                }
+        for (const child of this) {
+            if (findNode(child, node.id)) {
+                return true;
             }
         }
         return false;
@@ -121,7 +113,7 @@ class Selection {
     }
 
     toExpression() {
-        if (this.type === 'single') {
+        if (this.length === 1) {
             return this.first;
         } else {
             if (this.first.parent.type === 'Product' && this.first.parent === this.last.parent) {
