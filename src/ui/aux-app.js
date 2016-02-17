@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import NewKeypad from './new-keypad';
-import TextLine from './text-line';
+import Step from './step';
 import MathRenderer from './math-renderer';
 import auxStore from './../aux-store';
 import Parser from '../parser';
@@ -22,30 +22,7 @@ class AuxApp extends Component {
         goal: parser.parse('x = 5/2')
     };
 
-    select = (step, target) => {
-        const {offsetHeight, scrollTop} = this.refs.container;
-        const center = target.offsetTop - scrollTop + target.offsetHeight / 2;
-        // TODO: take into account the offsetTop of the container
-
-        const currentScrollTop = scrollTop;
-        const futureScrollTop = Math.max(0, scrollTop - (offsetHeight / 2 - center));
-
-        let t = 0;
-
-        const animate = () => {
-            if (t < 1) {
-                t = Math.min(t + 0.05, 1);
-                const u = easeQuadratic(t);
-                this.refs.container.scrollTop =
-                    parseInt(u * futureScrollTop + (1 - u) * currentScrollTop);
-
-                requestAnimationFrame(animate);
-            }
-        };
-
-        // TODO: only animate the scrollTop if the item is partially off-screen
-        //requestAnimationFrame(animate);
-
+    select = step => {
         auxStore.dispatch({
             type: 'SELECT_STEP',
             step: step
@@ -80,8 +57,6 @@ class AuxApp extends Component {
             fontSize: 26,
         };
 
-        const math = parser.parse('x = 5/2');
-
         const goalStyle = {
             ...lineStyle,
             display: 'flex',
@@ -109,10 +84,10 @@ class AuxApp extends Component {
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
                 {this.props.steps.map((line, i) =>
-                    <TextLine
+                    <Step
                         {...line}
                         key={i === 0 ? 0 : length - i}
-                        onClick={e => this.select(i, e.target)}
+                        onClick={e => this.select(i)}
                         active={this.props.activeStep === i}
                     />)
                 }

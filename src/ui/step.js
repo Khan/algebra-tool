@@ -3,98 +3,13 @@ import React, { Component } from 'react';
 import transforms from '../transforms';
 
 import MathRenderer from './math-renderer';
+import Menu from './menu';
 import Selection from './selection';
 import { findNode } from '../ast/node-utils';
 import auxStore from './../aux-store';
 
 
-class MenuItem extends Component {
-    handleTouchStart = e => {
-
-    };
-
-    handleTouchMove = e => {
-
-    };
-
-    handleTouchEnd = e => {
-        if (this.props.onTap) {
-            this.props.onTap(this.props.item);
-        }
-    };
-
-    render() {
-        const { item } = this.props;
-
-        const sepColor = '#CCC';
-
-        const itemStyle = {
-            borderTop: `solid 1px ${sepColor}`,
-            padding: 10
-        };
-
-        return <li
-            style={itemStyle}
-            onTouchStart={this.handleTouchStart}
-            onTouchMove={this.handleTouchMove}
-            onTouchEnd={this.handleTouchEnd}
-        >
-            {item}
-        </li>;
-    }
-}
-
-class Menu extends Component {
-    handleTouchStart = e => {
-
-    };
-
-    handleTouchMove = e => {
-        e.preventDefault();
-    };
-
-    handleTouchEnd = e => {
-
-    };
-
-    handleTap = item => {
-        if (this.props.onTap) {
-            this.props.onTap(item);
-        }
-    };
-
-    render() {
-        const { items } = this.props;
-
-        const sepColor = '#CCC';
-
-        const listStyle = {
-            listStyleType: 'none',
-            padding: 0,
-            margin: 0,
-            borderBottom: `solid 1px ${sepColor}`
-        };
-
-        const menuStyle = {
-            background: '#EEE',
-            fontFamily: 'helvetica-light',
-        };
-
-        return <div
-            style={menuStyle}
-            onTouchStart={this.handleTouchStart}
-            onTouchMove={this.handleTouchMove}
-            onTouchEnd={this.handleTouchEnd}
-        >
-            <ul style={listStyle}>
-                {items.map(item =>
-                    <MenuItem key={item} item={item} onTap={this.handleTap} />)}
-            </ul>
-        </div>;
-    }
-}
-
-class TextLine extends Component {
+class Step extends Component {
     static defaultProps = {
         insertedText: {},
         selections: [],
@@ -156,11 +71,6 @@ class TextLine extends Component {
         const { math, maxId, selections, active, cursor } = this.props;
         const { menu } = this.state;
 
-        const spanStyle = {
-            fontSize: 26,
-            fontFamily: 'helvetica-light',
-        };
-
         const animate = false;
         const transitionStyle = animate ? {
             transitionProperty: 'background-color',
@@ -203,4 +113,4 @@ class TextLine extends Component {
     }
 }
 
-export { TextLine as default };
+export { Step as default };
