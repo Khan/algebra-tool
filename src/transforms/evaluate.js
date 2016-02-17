@@ -12,7 +12,10 @@ const operations = {
     '/': (a, b) => a / b,
 };
 
-function canTransform(selection) {
+function canTransform(selections) {
+    if (selections.length !== 1) return false;
+
+    let selection = selections[0];
     if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
         selection = selection.first;
     }
@@ -25,8 +28,11 @@ function canTransform(selection) {
     return false;
 }
 
-function doTransform(selection, newMath) {
-    if (canTransform(selection)) {
+function doTransform(selections, userInput) {
+    if (canTransform(selections)) {
+        if (selections.length !== 1) return false;
+
+        let selection = selections[0];
         if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
             selection = selection.first;
         }

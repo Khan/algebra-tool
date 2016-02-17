@@ -1,18 +1,14 @@
 const { Literal } = require('../ast.js');
 const { compare } = require('../ast/node-utils.js');
 
-function canTransform(node) {
-    // can't do anything with a single node
-    return false;
-}
-
+// helper function
 function replace(parent, propName, newChild) {
     delete parent[propName].parent;
     parent[propName] = newChild;
     newChild.parent = parent;
 }
 
-function canTransformNodes(selections) {
+function canTransform(selections) {
     if (selections.length === 2) {
         const [aSel, bSel] = selections;
         let aFrac = null;
@@ -56,8 +52,8 @@ function canTransformNodes(selections) {
 }
 
 // TODO: remove denominator if it's a 1
-function transformNodes(selections) {
-    if (canTransformNodes(selections)) {
+function doTransform(selections) {
+    if (canTransform(selections)) {
         const [aSel, bSel] = selections;
         const a = aSel.toExpression();
         const b = bSel.toExpression();
@@ -141,6 +137,5 @@ function transformNodes(selections) {
 module.exports = {
     label: 'cancel',
     canTransform,
-    canTransformNodes,
-    transformNodes
+    doTransform,
 };

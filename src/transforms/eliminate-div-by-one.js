@@ -1,15 +1,15 @@
-function canTransform(selection) {
-    if (selection.type === 'range') {
-        return false;
-    }
-    const node = selection.first;
+function canTransform(selections) {
+    if (selections.length !== 1) return false;
+    if (selections[0].type === 'range') return false;
+
+    const node = selections[0].first;
     return node.type === 'Literal' && parseFloat(node.value) === 1 &&
         node.parent.type === 'Fraction' && node.parent.denominator === node;
 }
 
-function doTransform(selection) {
-    if (canTransform(selection)) {
-        const node = selection.first;
+function doTransform(selections) {
+    if (canTransform(selections)) {
+        const node = selections[0].first;
         const { parent } = node;
 
         parent.parent.replace(parent, parent.numerator);

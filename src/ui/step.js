@@ -10,7 +10,6 @@ import transforms from '../transforms';
 
 class Step extends Component {
     static defaultProps = {
-        insertedText: {},
         selections: [],
     };
 
@@ -33,10 +32,8 @@ class Step extends Component {
             return new Selection(first, last);
         });
 
-        if (transform.canTransformNodes) {
-            transform.transformNodes(newSelections);
-        } else {
-            transform.doTransform(newSelections[0]);
+        if (transform.canTransform(newSelections)) {
+            transform.doTransform(newSelections);
         }
 
         store.dispatch({
@@ -52,14 +49,8 @@ class Step extends Component {
     showMenu = () => {
         const { selections } = this.props;
 
-        const items = Object.keys(transforms).filter(key => {
-            const transform = transforms[key];
-            if (transform.canTransformNodes) {
-                return transform.canTransformNodes(selections);
-            }
-            const [selection] = selections;
-            return selection && transform.canTransform(selection);
-        });
+        const items = Object.keys(transforms).filter(
+            key => transforms[key].canTransform(selections));
 
         const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
 
