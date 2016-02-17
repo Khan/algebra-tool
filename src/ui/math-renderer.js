@@ -11,14 +11,10 @@ import store from './../store';
 
 
 class MathRenderer extends Component {
-    constructor() {
-        super();
-
-        this.state = {
-            context: null,
-            layout: null,
-        };
-    }
+    state = {
+        context: null,
+        layout: null,
+    };
 
     static defaultProps = {
         color: 'black',
@@ -377,4 +373,4 @@ class MathRenderer extends Component {
     }
 }
 
-module.exports = MathRenderer;
+export { MathRenderer as default };

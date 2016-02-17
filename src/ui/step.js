@@ -9,17 +9,13 @@ import transforms from '../transforms';
 
 
 class Step extends Component {
+    state = {
+        menu: null
+    };
+
     static defaultProps = {
         selections: [],
     };
-
-    constructor() {
-        super();
-
-        this.state = {
-            menu: null,
-        };
-    }
 
     handleTap = item => {
         const transform = transforms[item];

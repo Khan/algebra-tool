@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 
-export default class Button extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            active: false
-        }
-    }
+class Button extends Component {
+    state = {
+        active: false
+    };
 
     static defaultProps = {
         color: '#099',
@@ -57,3 +53,5 @@ export default class Button extends Component {
         </div>;
     }
 }
+
+export { Button as default };
