@@ -8,7 +8,9 @@ class Button extends Component {
     static defaultProps = {
         color: '#099',
         activeColor: '#066',
+        fontSize: 22,
         width: 44,
+        height: 32,
         onTap: () => {},
         text: 'white'
     };
@@ -24,24 +26,21 @@ class Button extends Component {
     };
 
     render() {
-        const {bgColor, bgActive, text, transparent, width} = this.props;
+        const {bgColor, bgActive, text, transparent, width, height, fontSize} = this.props;
 
         const color = this.state.active ? bgActive : bgColor;
 
         const style = {
-            fontSize: 22,
             display: 'inline-block',
+            fontSize: fontSize,
             width: width,
-            height: 32,
+            height: height,
             backgroundColor: transparent ? 'white' : color,
             color: text,
-            lineHeight: '32px',
+            lineHeight: `${height}px`,
             textAlign: 'center',
-            //borderRadius: 4,
             marginLeft: 1,
-            fontFamily: 'helvetica-light',
-            boxSizing: 'border-box',
-            border: transparent ? '2px solid' : 'none'
+            fontFamily: 'helvetica-light'
         };
 
         return <div
