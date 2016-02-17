@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 
 import Button from './button';
-import auxStore from './../aux-store';
+import store from './../store';
 
 class NewKeypad extends Component {
     handleNumber = key => {
-        auxStore.dispatch({
+        store.dispatch({
             type: 'INSERT_NUMBER',
             number: key
         });
     };
 
     handleBackspace = () =>
-        auxStore.dispatch({
+        store.dispatch({
             type: 'BACKSPACE'
         });
 
     handleOperator = operator =>
-        auxStore.dispatch({
+        store.dispatch({
             type: 'SIMPLE_OPERATION',
             operator: operator
         });
 
     handleEnter = () =>
-        auxStore.dispatch({
+        store.dispatch({
             type: 'ACCEPT_STEP'
         });
 

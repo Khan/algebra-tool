@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 
 import Cursor from './cursor';
-
 import Rect from '../layout/rect';
 import { createFlatLayout } from '../layout/layout.js';
 import { findNode, traverseNode } from '../ast/node-utils';
 import AnimatedLayout from '../layout/animated-layout';
 import { roundRect, fillCircle } from './canvas-util';
 import Selection from './selection';
-import auxStore from './../aux-store';
+import store from './../store';
 
 
 class MathRenderer extends Component {
@@ -103,7 +102,7 @@ class MathRenderer extends Component {
                         },
                         () => {
                             if (shouldShowCursor) {
-                                auxStore.dispatch({ type: 'SHOW_CURSOR' });
+                                store.dispatch({ type: 'SHOW_CURSOR' });
                             }
                             // else hide the cursor
                         });
@@ -221,7 +220,7 @@ class MathRenderer extends Component {
             // reject growing to including any of the existing selections
 
             if (!mathNode) {
-                auxStore.dispatch({
+                store.dispatch({
                     type: 'SELECT_MATH',
                     selections: []
                 });
@@ -241,7 +240,7 @@ class MathRenderer extends Component {
                 }
             }
 
-            auxStore.dispatch({
+            store.dispatch({
                 type: 'SELECT_MATH',
                 selections: newSelections
             });
@@ -289,7 +288,7 @@ class MathRenderer extends Component {
                     return;
                 }
 
-                auxStore.dispatch({
+                store.dispatch({
                     type: 'SELECT_MATH',
                     selections: [...prevSels, selection]
                 });
@@ -312,7 +311,7 @@ class MathRenderer extends Component {
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
         if (mouse === 'down') {
             if (!hitNode && !scrolling) {
-                auxStore.dispatch({
+                store.dispatch({
                     type: 'SELECT_MATH',
                     selections: []
                 });

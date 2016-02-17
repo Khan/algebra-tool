@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
-import transforms from '../transforms';
-
 import MathRenderer from './math-renderer';
 import Menu from './menu';
 import Selection from './selection';
 import { findNode } from '../ast/node-utils';
-import auxStore from './../aux-store';
+import store from './../store';
+import transforms from '../transforms';
 
 
 class Step extends Component {
@@ -40,7 +39,7 @@ class Step extends Component {
             transform.doTransform(newSelections[0]);
         }
 
-        auxStore.dispatch({
+        store.dispatch({
             type: 'ADD_STEP',
             math: newMath
         });

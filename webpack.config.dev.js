@@ -4,15 +4,10 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'source-map',
     entry: {
-        main: [
+        index: [
             'webpack-dev-server/client?http://localhost:3000',
             'webpack/hot/only-dev-server',
-            './src/main'
-        ],
-        aux: [
-            'webpack-dev-server/client?http://localhost:3000',
-            'webpack/hot/only-dev-server',
-            './src/aux'
+            './src/index'
         ]
     },
     output: {

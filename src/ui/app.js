@@ -1,71 +1,102 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Keypad from './keypad';
-import StaticMath from './static-math';
+import NewKeypad from './new-keypad';
+import Step from './step';
 import MathRenderer from './math-renderer';
+import store from './../store';
+import Parser from '../parser';
 
-class App extends Component {
+const parser = new Parser();
+
+function easeCubic(t) {
+    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+}
+
+function easeQuadratic(t) {
+    return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+class AuxApp extends Component {
+    static defaultProps = {
+        goal: parser.parse('x = 5/2')
+    };
+
+    select = step => {
+        store.dispatch({
+            type: 'SELECT_STEP',
+            step: step
+        });
+    };
+
+    componentDidMount() {
+        const {offsetHeight, scrollHeight} = this.refs.container;
+
+        if (scrollHeight > offsetHeight) {
+            this.refs.container.scrollTop = scrollHeight - offsetHeight;
+        }
+    }
+
     render() {
-        const width = window.innerWidth;
-        const fontSize = 30;
-        const height = 80;
-        const math = this.props.currentLine;
-
         const style = {
             display: 'flex',
             flexDirection: 'column',
             height: '100vh',
         };
 
-        const keypadStyle = {
-            flexGrow: 0,
-            flexShrink: 1
-        };
-
         const containerStyle = {
             flexGrow: 1,
-            overflow: 'scroll'
+            overflow: 'scroll',
+            background: '#EEE',
+            display: 'flex',
+            flexDirection: 'column-reverse'
         };
 
-        const typing = location.search.includes('typing');
+        const lineStyle = {
+            fontFamily: 'Helvetica-Light',
+            fontSize: 26,
+        };
 
-        // TODO: develop a more robust way of getting the scrollTop
+        const goalStyle = {
+            ...lineStyle,
+            display: 'flex',
+            flexDirection: 'row',
+            paddingLeft: 20,
+            paddingRight: 20,
+            marginTop: 10,
+            marginBottom: 10,
+            flexShrink: 0,
+        };
+
+        const goal = <div style={goalStyle}>
+            <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>Goal:</div>
+            <div style={{ margin: 'auto' }}>
+                <MathRenderer
+                    fontSize={26}
+                    math={this.props.goal}
+                />
+            </div>
+        </div>;
+
+        const length = this.props.steps.length;
+
         return <div style={style}>
-            <div style={containerStyle}>
-                {typing && <StaticMath
-                    fontSize={fontSize}
-                    math={math}
-                    width={width}
-                    height={height}
-                />}
-                {typing && <StaticMath
-                    fontSize={fontSize}
-                    math={math}
-                    width={width}
-                    height={height}
-                />}
-                {typing && <StaticMath
-                    active={true}
-                    fontSize={fontSize}
-                    math={math}
-                    width={width}
-                    height={height}
-                />}
-                {!typing && <MathRenderer
-                    ref='renderer'
-                    color={'black'}
-                    fontSize={fontSize}
-                    width={width}
-                    height={380}
-                    math={math}
-                />}
+            <div style={containerStyle} ref="container">
+                <div style={{height:180,flexShrink:0}}></div>
+                {this.props.steps.map((line, i) =>
+                    <Step
+                        {...line}
+                        key={i === 0 ? 0 : length - i}
+                        onClick={e => this.select(i)}
+                        active={this.props.activeStep === i}
+                    />)
+                }
+                <div style={{height:180,flexShrink:0}}></div>
             </div>
-            <div style={keypadStyle}>
-                <Keypad />
-            </div>
+            {goal}
+            <NewKeypad />
         </div>;
     }
 }
 
-module.exports = connect(state => state)(App);
+module.exports = connect(state => state)(AuxApp);
