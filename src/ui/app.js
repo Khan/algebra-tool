@@ -57,16 +57,17 @@ class AuxApp extends Component {
             flexDirection: 'row',
             paddingLeft: 20,
             paddingRight: 20,
-            marginTop: 10,
-            marginBottom: 10,
+            marginTop: 5,
+            marginBottom: 5,
             flexShrink: 0,
+            fontSize: 20,
         };
 
         const goal = <div style={goalStyle}>
             <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>Goal:</div>
             <div style={{ margin: 'auto' }}>
                 <MathRenderer
-                    fontSize={26}
+                    fontSize={20}
                     math={this.props.goal}
                 />
             </div>
