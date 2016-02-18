@@ -12,7 +12,7 @@ function removeExtraParens(expr) {
     }
 
     let removalList = [];
-    for (let child of expr) {
+    for (let child of expr.children) {
         if (child.type === 'Expression') {
             if (child.prev == null || child.prev.operator === '+') {
                 removalList.push(child);
@@ -21,7 +21,7 @@ function removeExtraParens(expr) {
     }
 
     for (let removal of removalList) {
-        for (let child of removal) {
+        for (let child of removal.children) {
             child.parent = expr;
         }
         removal.first.prev = removal.prev;

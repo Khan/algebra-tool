@@ -5,8 +5,8 @@ function canTransform(selections) {
     if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
         selection = selection.first;
     }
-    if (selection.length === 3) {
-        const [first, operator, ] = selection;
+    if (selection.children && selection.children.length === 3) {
+        const [first, operator, ] = selection.children;
 
         if (operator.operator === '-') {
             return false;
@@ -26,7 +26,7 @@ function doTransform(selections) {
         if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
             selection = selection.first;
         }
-        const { first, last } = selection;
+        const { first, last } = selection.children;
         const operator = first.next;
         const parent = operator.parent;
         parent.remove(first);

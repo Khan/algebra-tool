@@ -15,7 +15,7 @@ function doTransform(selections) {
         const node = selections[0].first;
         const expr = node.prev.prev;
         const terms = [];
-        for (const child of expr) {
+        for (const child of expr.children) {
             if (child.type !== 'Operator') {
                 terms.push(child);
             }

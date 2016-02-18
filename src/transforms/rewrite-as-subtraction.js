@@ -26,8 +26,12 @@ function canTransform(selections) {
     if (selections.length !== 1) return false;
 
     let selection = selections[0];
-    if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
-        selection = selection.first;
+    if (selection.length === 1) {
+        if (selection.first.type === 'Expression') {
+            selection = selection.first.children;
+        } else if (selection.first.type === 'Product') {
+            selection = selection.first;
+        }
     }
     if (selection.length === 3) {
         const [ , operator, last] = selection;
@@ -40,8 +44,12 @@ function doTransform(selections) {
     if (canTransform(selections)) {
         let selection = selections[0];
 
-        if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
-            selection = selection.first;
+        if (selection.length === 1) {
+            if (selection.first.type === 'Expression') {
+                selection = selection.first.children;
+            } else if (selection.first.type === 'Product') {
+                selection = selection.first;
+            }
         }
         const [ , operator, last] = selection;
         const parent = last.parent;

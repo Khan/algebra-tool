@@ -3,7 +3,14 @@ import f from 'functify';
 function findNode(node, id) {
     if (node.id === id) {
         return node;
-    } else if (["Expression", "Product"].includes(node.type)) {
+    } else if (node.type === 'Expression') {
+        for (const child of node.children) {
+            const result = findNode(child, id);
+            if (result) {
+                return result;
+            }
+        }
+    } else if (node.type === 'Product') {
         for (const child of node) {
             const result = findNode(child, id);
             if (result) {
@@ -32,7 +39,11 @@ function findNode(node, id) {
 
 function traverseNode(node, callback) {
     callback(node);
-    if (["Expression", "Product"].includes(node.type)) {
+    if (node.type === 'Expression') {
+        for (const child of node.children) {
+            traverseNode(child, callback);
+        }
+    } else if (node.type === 'Product') {
         for (const child of node) {
             traverseNode(child, callback);
         }
@@ -123,7 +134,7 @@ const evaluate = function(node, dict = {}) {
         let result = 0;
         let op = '+';
 
-        for (const child of node) {
+        for (const child of node.children) {
             if (child.type === 'Operator') {
                 op = child.operator;
             } else {

@@ -255,7 +255,7 @@ function createLayout(node, fontSize) {
 
         const layouts = [];
 
-        for (const child of node) {
+        for (const child of node.children) {
             const childLayout = createLayout(child, fontSize);
 
             if (child.type === "Operator") {

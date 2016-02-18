@@ -6,8 +6,12 @@ function canTransform(selections) {
     if (selections.length !== 1) return false;
 
     let selection = selections[0];
-    if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
-        selection = selection.first;
+    if (selection.length === 1) {
+        if (selection.first.type === 'Expression') {
+            selection = selection.first.children;
+        } else if (selection.first.type === 'Product') {
+            selection = selection.first;
+        }
     }
     if (selection.length === 3) {
         // can't do selection[1].operator b/c selection is an iterator
@@ -21,8 +25,12 @@ function doTransform(selections) {
     if (canTransform(selections)) {
         let selection = selections[0];
 
-        if (selection.length === 1 && ['Expression', 'Product'].includes(selection.first.type)) {
-            selection = selection.first;
+        if (selection.length === 1) {
+            if (selection.first.type === 'Expression') {
+                selection = selection.first.children;
+            } else if (selection.first.type === 'Product') {
+                selection = selection.first;
+            }
         }
         const [ , operator, last] = selection;
         const parent = operator.parent;

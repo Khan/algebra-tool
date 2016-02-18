@@ -67,6 +67,8 @@ const reducer = (state = initialState, action) => {
                 newMath.root = op(newMath.root, placeholder);
             }
 
+            console.log(newMath.toString());
+
             return {
                 ...state,
                 steps: [
@@ -134,9 +136,11 @@ const reducer = (state = initialState, action) => {
                 if (node.type === 'Placeholder') {
                     // TODO: try/catch and provide feedback if math isn't valid
                     const value = parser.parse(node.text).root;
+                    console.log(value);
                     node.parent.replace(node, value);
                 }
             });
+            console.log(newMath.toString());
 
             // TODO: only the active step can have a cursor
             return {
