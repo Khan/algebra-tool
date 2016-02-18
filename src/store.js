@@ -41,6 +41,26 @@ const reducer = (state = initialState, action) => {
             // TODO: reduce for tree traversal
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
 
+            if (activeStep.cursor) {
+                traverseNode(newMath, node => {
+                    if (node.type === 'Placeholder') {
+                        node.text += action.operator;
+                    }
+                });
+
+                return {
+                    ...state,
+                    steps: [
+                        {
+                            ...activeStep,
+                            math: newMath,
+                            cusror: true,
+                        },
+                        ...state.steps.slice(1)
+                    ]
+                };
+            }
+
             if (activeStep.math.root.type === 'Equation') {
                 const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
                 const placeholder = new Placeholder();
