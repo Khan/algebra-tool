@@ -16,9 +16,9 @@ class MenuItem extends Component {
     };
 
     render() {
-        const { item } = this.props;
+        const { label } = this.props;
 
-        const sepColor = '#CCC';
+        const sepColor = '#666';
 
         const itemStyle = {
             borderTop: `solid 1px ${sepColor}`,
@@ -31,7 +31,7 @@ class MenuItem extends Component {
             onTouchMove={this.handleTouchMove}
             onTouchEnd={this.handleTouchEnd}
         >
-            {item}
+            {label}
         </li>;
     }
 }
@@ -49,16 +49,10 @@ class Menu extends Component {
 
     };
 
-    handleTap = item => {
-        if (this.props.onTap) {
-            this.props.onTap(item);
-        }
-    };
-
     render() {
         const { items } = this.props;
 
-        const sepColor = '#CCC';
+        const sepColor = '#666';
 
         const listStyle = {
             listStyleType: 'none',
@@ -68,8 +62,9 @@ class Menu extends Component {
         };
 
         const menuStyle = {
-            background: '#EEE',
-            fontFamily: 'helvetica',
+            background: '#444',
+            fontFamily: 'helvetica-light',
+            color: 'white'
         };
 
         return <div
@@ -80,7 +75,12 @@ class Menu extends Component {
         >
             <ul style={listStyle}>
                 {items.map(item =>
-                    <MenuItem key={item} item={item} onTap={this.handleTap} />)}
+                    <MenuItem
+                        key={item.label}
+                        label={item.label}
+                        onTap={() => this.props.onTap(item)}
+                    />)
+                }
             </ul>
         </div>;
     }

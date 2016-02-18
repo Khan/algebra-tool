@@ -312,6 +312,9 @@ class MathRenderer extends Component {
                     type: 'SELECT_MATH',
                     selections: []
                 });
+                if (this.props.hideMenu) {
+                    this.props.hideMenu();
+                }
             } else {
                 if (this.props.showMenu) {
                     this.props.showMenu();

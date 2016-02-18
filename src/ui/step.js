@@ -17,8 +17,7 @@ class Step extends Component {
         selections: [],
     };
 
-    handleTap = item => {
-        const transform = transforms[item];
+    handleTap = transform => {
         const { math, selections } = this.props;
         const newMath = math.clone();
 
@@ -45,12 +44,16 @@ class Step extends Component {
     showMenu = () => {
         const { selections } = this.props;
 
-        const items = Object.keys(transforms).filter(
-            key => transforms[key].canTransform(selections));
+        const items = Object.values(transforms).filter(
+            transform => transform.canTransform(selections));
 
         const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
 
         this.setState({ menu: <div style={{position: 'absolute', width:'100%'}}>{menu}</div> });
+    };
+
+    hideMenu = () => {
+        this.setState({ menu: null });
     };
 
     render() {
@@ -90,6 +93,7 @@ class Step extends Component {
                         active={active}
                         selections={selections}
                         showMenu={this.showMenu}
+                        hideMenu={this.hideMenu}
                         cursor={cursor}
                     />
                 </div>

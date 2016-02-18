@@ -52,7 +52,7 @@ function doTransform(selections) {
 }
 
 module.exports = {
-    label: 'rewrite as subtraction',
+    label: 'change to subtraction',
     canTransform,
     doTransform
 };
