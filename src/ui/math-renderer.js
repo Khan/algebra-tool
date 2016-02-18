@@ -132,8 +132,9 @@ class MathRenderer extends Component {
             const layouts = [];
 
             for (const node of selection) {
-                if (node.type === 'Equation' && hitNode.text === "=") {
-                    layouts.push(hitNode);
+                if (node.type === 'Equation') {
+                    // TODO: handle the case if there's more than one in the array
+                    layouts.push(layoutDict[node.id][0]);
                 } else {
                     traverseNode(node, (node) => {
                         if (layoutDict.hasOwnProperty(node.id)) {

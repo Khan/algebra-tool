@@ -7,4 +7,6 @@ module.exports = {
     rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction'),
     distribute_forwards: require('./transforms/distribute-forwards'),
     distribute_backwards: require('./transforms/distribute-backwards'),
+    swap_sides: require('./transforms/swap-sides'),
+    commute: require('./transforms/commute')
 };
