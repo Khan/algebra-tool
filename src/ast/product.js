@@ -1,24 +1,24 @@
 import f from 'functify';
 
-import { generateId } from './node';
-import ListNode from './list-node';
+import Node, { generateId } from './node';
+import List from './list';
 
-export default class Product extends ListNode {
+export default class Product extends Node {
     constructor(...nodes) {
         super();
         this.type = 'Product';
-        this.append(...nodes);
+        this.children = new List(this, ...nodes);
     }
 
     toString() {
-        return `${this.type}:${super.toString()}`;
+        return `${this.type}:${this.children.toString()}`;
     }
 
     clone(uniqueId = false) {
         const copy = Object.create(Product.prototype);
         copy.type = this.type;
         copy.id = uniqueId ? generateId() : this.id;
-        copy.append(...f(this).map(x => x.clone(uniqueId)));
+        copy.children = new List(copy, ...f(this.children).map(x => x.clone(uniqueId)));
         return copy;
     }
 
@@ -52,6 +52,39 @@ export default class Product extends ListNode {
                 }
             }
         }
+    }
+
+    // TODO: create a class decorator to specify which methods to proxy
+    insertAfter(newNode, referenceNode) {
+        this.children.insertAfter(newNode, referenceNode);
+    }
+
+    insertBefore(newNode, referenceNode) {
+        this.children.insertBefore(newNode, referenceNode);
+    }
+
+    remove(node) {
+        this.children.remove(node);
+    }
+
+    replace(node, value) {
+        this.children.replace(node, value);
+    }
+
+    get first() {
+        return this.children.first;
+    }
+
+    set first(value) {
+        this.children.first = value;
+    }
+
+    get last() {
+        return this.children.last;
+    }
+
+    set last(value) {
+        this.children.last = value;
     }
 
     // TODO have a validate method

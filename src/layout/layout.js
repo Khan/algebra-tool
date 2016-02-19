@@ -369,7 +369,7 @@ function createLayout(node, fontSize) {
 
         const layouts = [];
 
-        for (let child of node) {
+        for (let child of node.children) {
             // TODO: handle multiple numbers and numbers that come in the middle
             if (child.type === "Expression" || child.type === "Product") {
                 const lParen = new Glyph("(", font);

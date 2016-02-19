@@ -16,12 +16,8 @@ function canTransform(selections) {
     if (selections.length !== 1) return false;
 
     let selection = selections[0];
-    if (selection.length === 1) {
-        if (selection.first.type === 'Expression') {
-            selection = selection.first.children;
-        } else if (selection.first.type === 'Product') {
-            selection = selection.first;
-        }
+    if (['Expression', 'Product'].includes(selection.first.type) && selection.length === 1) {
+        selection = selection.first.children;
     }
     if (selection.length >= 3 && selection.first.type === 'Literal' && selection.last.type == 'Literal' && ['Expression', 'Product'].includes(selection.first.parent.type)) {
         if (selection.first.prev && selection.first.prev.operator === '-') {
@@ -37,12 +33,8 @@ function doTransform(selections, userInput) {
         if (selections.length !== 1) return false;
 
         let selection = selections[0];
-        if (selection.length === 1) {
-            if (selection.first.type === 'Expression') {
-                selection = selection.first.children;
-            } else if (selection.first.type === 'Product') {
-                selection = selection.first;
-            }
+        if (['Expression', 'Product'].includes(selection.first.type) && selection.length === 1) {
+            selection = selection.first.children;
         }
         const [first, ...rest] = selection;
         const parent = first.parent;

@@ -44,7 +44,7 @@ function doTransform(selections) {
             parent.remove(node);
         }
 
-        if (parent.length === 1) {
+        if (parent.children.length === 1) {
             if (parent.parent) {
                 parent.parent.replace(parent, parent.first);
             }

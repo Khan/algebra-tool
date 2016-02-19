@@ -11,7 +11,7 @@ function findNode(node, id) {
             }
         }
     } else if (node.type === 'Product') {
-        for (const child of node) {
+        for (const child of node.children) {
             const result = findNode(child, id);
             if (result) {
                 return result;
@@ -44,7 +44,7 @@ function traverseNode(node, callback) {
             traverseNode(child, callback);
         }
     } else if (node.type === 'Product') {
-        for (const child of node) {
+        for (const child of node.children) {
             traverseNode(child, callback);
         }
     } else if (node.type === "Equation") {
@@ -123,7 +123,7 @@ const evaluate = function(node, dict = {}) {
     } else if (node.type === 'Product') {
         let result = 1;
 
-        for (const child of node) {
+        for (const child of node.children) {
             if (child.type !== 'Operator') {
                 result = result * evaluate(child, dict);
             }

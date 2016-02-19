@@ -65,7 +65,7 @@ class Selection {
             }
         }
 
-        if (parent.type === 'Expression' && findNode(parent, mathNode.id)) {
+        if (['Expression', 'Product'].includes(parent.type) && findNode(parent, mathNode.id)) {
             const children = parent.children;
 
             // handles the case of selection a number times a fraction
@@ -99,39 +99,6 @@ class Selection {
             // if we've selected all terms in the expression or all
             // factors in the product, select the parent instead
             if (this.first === children.first && this.last === children.last) {
-                this.first = parent;
-                this.last = parent;
-            }
-        } else if (parent.type === 'Product' && findNode(parent, mathNode.id)) {
-            // handles the case of selection a number times a fraction
-            for (const node of parent) {
-                if (node !== mathNode && findNode(node, mathNode.id)) {
-                    mathNode = node;
-                }
-            }
-
-            if (parent.indexOf(mathNode) < parent.indexOf(this.first)) {
-                this.first = mathNode;
-            }
-
-            if (parent.indexOf(mathNode) > parent.indexOf(this.last)) {
-                this.last = mathNode;
-            }
-
-            // expand selection to include operands if necessary
-            if (this.first !== this.last) {
-                if (this.first.type === 'Operator') {
-                    this.first = this.first.prev;
-                }
-
-                if (this.last.type === 'Operator') {
-                    this.last = this.last.next;
-                }
-            }
-
-            // if we've selected all terms in the expression or all
-            // factors in the product, select the parent instead
-            if (this.first === parent.first && this.last === parent.last) {
                 this.first = parent;
                 this.last = parent;
             }
