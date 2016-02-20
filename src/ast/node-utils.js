@@ -251,7 +251,7 @@ const deepEqual = function(node1, node2) {
     } else if (type === 'Identifier') {
         return node1.name === node2.name;
     } else if (type === 'Literal') {
-        return node1.value === node2.value;
+        return parseFloat(node1.value) === parseFloat(node2.value);
     } else if (type === 'Math') {
         return deepEqual(node1.root, node2.root);
     }

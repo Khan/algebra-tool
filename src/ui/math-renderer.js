@@ -193,7 +193,7 @@ class MathRenderer extends Component {
     }
 
     handleTouchStart = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
 
         const touch = e.changedTouches[0];
 
@@ -202,7 +202,7 @@ class MathRenderer extends Component {
     };
 
     handleTouchMove = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
         if (this.state.mouse !== 'down') return;
 
         const touch = e.changedTouches[0];
@@ -212,7 +212,7 @@ class MathRenderer extends Component {
     };
 
     handleTouchEnd = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
 
         e.preventDefault();
         const touch = e.changedTouches[0];
@@ -222,20 +222,20 @@ class MathRenderer extends Component {
     };
 
     handleMouseDown = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
         const { x, y } = this.getRelativeCoordinates(e);
         this.handlePointerStart(x, y, e);
     };
 
     handleMouseMove = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
         if (this.state.mouse !== 'down') return;
         const { x, y } = this.getRelativeCoordinates(e);
         this.handlePointerMove(x, y);
     };
 
     handleMouseUp = e => {
-        if (!this.props.active) return;
+        if (!this.props.active || this.props.cursor) return;
         e.preventDefault();
         const { x, y } = this.getRelativeCoordinates(e);
         this.handlePointerEnd(x, y);
