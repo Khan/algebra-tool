@@ -42,7 +42,8 @@ class AuxApp extends Component {
 
         const containerStyle = {
             flexGrow: 1,
-            overflow: 'scroll',
+            overflowY: 'scroll',
+            overflowX: 'hidden',
             background: '#EEE',
             display: 'flex',
             flexDirection: 'column-reverse'
