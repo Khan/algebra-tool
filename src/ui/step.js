@@ -114,13 +114,14 @@ class Step extends Component {
                         color: '#FFF'
                     }}
                 >
-                    You got it!
+                    You made it, yay!
                     <button
                         style={{
                             position: 'absolute',
                             right: 0,
                             fontSize: 22,
-                            backgroundColor: '#BBB',
+                            backgroundColor: '#2F0',
+                            color: '#444',
                             border: 'none',
                             borderRadius: 4,
                         }}
