@@ -75,6 +75,7 @@ const reducer = (state = initialState, action) => {
                         ...activeStep,
                         math: newMath,
                         maxId: maxId,
+                        cursor: true,
                     },
                     ...state.steps
                 ]

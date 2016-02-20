@@ -83,7 +83,7 @@ class MathRenderer extends Component {
             if (currentLayout !== nextLayout) {
                 // if the cursor is showing don't animate because we're in the
                 // process of typing something in
-                if (this.props.cursor) {
+                if (nextProps.cursor) {
                     canvas.width = nextLayout.bounds.width;
                     canvas.height = nextLayout.bounds.height;
                     this.drawLayout(context, nextLayout, maxId);
