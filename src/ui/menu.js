@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 
 class MenuItem extends Component {
-    handleTouchStart = e => {
-
+    handleTouchEnd = () => {
+        if (this.props.onTap) {
+            this.props.onTap(this.props.item);
+        }
     };
 
-    handleTouchMove = e => {
-
-    };
-
-    handleTouchEnd = e => {
+    handleClick = () => {
         if (this.props.onTap) {
             this.props.onTap(this.props.item);
         }
@@ -27,9 +25,8 @@ class MenuItem extends Component {
 
         return <li
             style={itemStyle}
-            onTouchStart={this.handleTouchStart}
-            onTouchMove={this.handleTouchMove}
             onTouchEnd={this.handleTouchEnd}
+            onClick={this.handleClick}
         >
             {label}
         </li>;
@@ -58,7 +55,8 @@ class Menu extends Component {
             listStyleType: 'none',
             padding: 0,
             margin: 0,
-            borderBottom: `solid 1px ${sepColor}`
+            borderBottom: `solid 1px ${sepColor}`,
+            cursor: 'default'
         };
 
         const menuStyle = {

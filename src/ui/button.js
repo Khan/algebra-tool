@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 class Button extends Component {
     state = {
-        active: false
+        active: false,
+        mousedown: false,
     };
 
     static defaultProps = {
@@ -22,6 +23,10 @@ class Button extends Component {
 
     handleTouchEnd = () => {
         this.setState({ active: false });
+        this.props.onTap(this.props.children);
+    };
+
+    handleClick = () => {
         this.props.onTap(this.props.children);
     };
 
@@ -47,6 +52,7 @@ class Button extends Component {
             style={style}
             onTouchStart={this.handleTouchStart}
             onTouchEnd={this.handleTouchEnd}
+            onClick={this.handleClick}
         >
             {this.props.children}
         </div>;
