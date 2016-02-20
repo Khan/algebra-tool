@@ -103,19 +103,19 @@ function doTransform(selections) {
             }
         }
 
-        if (frac.numerator.type === 'Product' && frac.numerator.length === 0) {
+        if (frac.numerator.type === 'Product' && frac.numerator.children.length === 0) {
             replace(frac, 'numerator', new Literal(1));
         }
 
-        if (frac.denominator.type === 'Product' && frac.denominator.length === 0) {
+        if (frac.denominator.type === 'Product' && frac.denominator.children.length === 0) {
             replace(frac, 'denominator', new Literal(1));
         }
 
-        if (frac.numerator.type === 'Product' && frac.numerator.length === 1) {
+        if (frac.numerator.type === 'Product' && frac.numerator.children.length === 1) {
             replace(frac, 'numerator', frac.numerator.first);
         }
 
-        if (frac.denominator.type === 'Product' && frac.denominator.length === 1) {
+        if (frac.denominator.type === 'Product' && frac.denominator.children.length === 1) {
             replace(frac, 'denominator', frac.denominator.first);
         }
 
