@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import Parser from './parser';
 import Placeholder from './ast/placeholder';
 import { add, sub, mul, div } from './operations';
-import { traverseNode } from './ast/node-utils';
+import { traverseNode, deepEqual } from './ast/node-utils';
 import params from './params';
 
 const parser = new Parser();
@@ -12,7 +12,8 @@ const initialState = {
     steps: [{
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10')
     }],
-    activeStep: 0
+    activeStep: 0,
+    goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
 };
 
 const reducer = (state = initialState, action) => {
@@ -66,8 +67,6 @@ const reducer = (state = initialState, action) => {
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
             }
-
-            console.log(newMath.toString());
 
             return {
                 ...state,
@@ -136,11 +135,9 @@ const reducer = (state = initialState, action) => {
                 if (node.type === 'Placeholder') {
                     // TODO: try/catch and provide feedback if math isn't valid
                     const value = parser.parse(node.text).root;
-                    console.log(value);
                     node.parent.replace(node, value);
                 }
             });
-            console.log(newMath.toString());
 
             // TODO: only the active step can have a cursor
             return {
@@ -161,14 +158,16 @@ const reducer = (state = initialState, action) => {
                 ]
             };
         case 'ADD_STEP':
-            const steps2 = [
+            const finished = deepEqual(state.goal, action.math);
+
+            return { ...state, steps: [
                 {
                     text: '',
                     math: action.math,
+                    finished: finished,
                 },
                 ...state.steps,
-            ];
-            return { ...state, steps: steps2 };
+            ]};
         default:
             return state;
     }

@@ -224,4 +224,47 @@ const compare = function(left, right) {
     return compareRanges(Array.from(identifiers));
 };
 
-export { findNode, traverseNode, getLeafNodes, getPath, findCommonAncestor, compare };
+const deepEqual = function(node1, node2) {
+    if (node1.type !== node2.type) {
+        return false;
+    }
+
+    const type = node1.type;
+
+    if (type === 'Expression' || type === 'Product') {
+        for (const [child1, child2] of f.zip(node1.children, node2.children)) {
+            if (!deepEqual(child1, child2)) {
+                return false;
+            }
+        }
+        return true;
+    } else if (type === 'Equation') {
+        return deepEqual(node1.left, node2.left) &&
+            deepEqual(node1.right, node2.right);
+    } else if (type === 'Fraction') {
+        return deepEqual(node1.numerator, node2.numerator) &&
+            deepEqual(node1.denominator, node2.denominator);
+    } else if (type === 'Negation') {
+        return deepEqual(node1.value, node2.value);
+    } else if (type === 'Operator') {
+        return node1.operator === node2.operator;
+    } else if (type === 'Identifier') {
+        return node1.name === node2.name;
+    } else if (type === 'Literal') {
+        return node1.value === node2.value;
+    } else if (type === 'Math') {
+        return deepEqual(node1.root, node2.root);
+    }
+
+    return false;
+};
+
+export {
+    findNode,
+    traverseNode,
+    getLeafNodes,
+    getPath,
+    findCommonAncestor,
+    compare,
+    deepEqual
+};

@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 import Keypad from './keypad';
 import Step from './step';
 import MathRenderer from './math-renderer';
 import store from './../store';
-import Parser from '../parser';
-import params from '../params';
-
-const parser = new Parser();
 
 
 class AuxApp extends Component {
-    static defaultProps = {
-        goal: params.end ? parser.parse(params.end) : parser.parse('x = 5/2')
+    static propTypes = {
+        goal: PropTypes.any.isRequired,
+        steps: PropTypes.arrayOf(PropTypes.any).isRequired,
+        activeStep: PropTypes.number.isRequired,
     };
 
     select = step => {

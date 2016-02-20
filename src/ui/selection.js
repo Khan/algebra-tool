@@ -75,8 +75,6 @@ class Selection {
                 }
             }
 
-            console.log(`mathNode = ${mathNode.toString()}`);
-
             if (children.indexOf(mathNode) < children.indexOf(this.first)) {
                 this.first = mathNode;
             }

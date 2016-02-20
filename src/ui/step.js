@@ -57,7 +57,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor } = this.props;
+        const { math, maxId, selections, active, cursor, finished } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -99,6 +99,34 @@ class Step extends Component {
                 </div>
             </div>
             {active && menu}
+            {finished && <div
+                    style={{
+                        position: 'absolute',
+                        width:'100%',
+                        borderLeft: 'solid 20px #444',
+                        borderRight: 'solid 20px #444',
+                        boxSizing: 'border-box',
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        fontFamily: 'helvetica-light',
+                        fontSize: 26,
+                        backgroundColor: '#444',
+                        color: '#FFF'
+                    }}
+                >
+                    You got it!
+                    <button
+                        style={{
+                            position: 'absolute',
+                            right: 0,
+                            fontSize: 22,
+                            backgroundColor: '#BBB',
+                            border: 'none',
+                            borderRadius: 4,
+                        }}
+                    >next</button>
+                </div>
+            }
         </div>;
     }
 }
