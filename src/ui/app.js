@@ -35,7 +35,9 @@ class AuxApp extends Component {
         const style = {
             display: 'flex',
             flexDirection: 'column',
-            height: '100vh',
+            height: this.props.height,
+            width: this.props.width,
+            backgroundColor: 'white'
         };
 
         const containerStyle = {
@@ -89,7 +91,7 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {goal}
-            <Keypad />
+            <Keypad width={this.props.width}/>
         </div>;
     }
 }

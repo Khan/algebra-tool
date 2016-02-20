@@ -36,7 +36,7 @@ class Keypad extends Component {
     };
 
     render() {
-        const width = window.innerWidth;
+        const width = this.props.width;
         const margin = 1;
         const buttonWidth = ((width - margin) / 6) - margin;
 
