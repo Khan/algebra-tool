@@ -144,10 +144,15 @@ class MathRenderer extends Component {
                 }
             }
 
-            highlights.push({
+            const highlight = {
                 shape: layouts.length === 1 && layouts[0].circle ? 'circle' : 'rect',
                 bounds: Rect.union(layouts.map(layout => layout.bounds)),
-            });
+            };
+            if (highlight.shape === 'rect') {
+                // add some extra padding around skinny symbols such as '1'
+                highlight.bounds.width = Math.max(highlight.bounds.width, 9);
+            }
+            highlights.push(highlight);
         });
 
         return highlights;
