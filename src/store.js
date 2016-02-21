@@ -159,16 +159,26 @@ const reducer = (state = initialState, action) => {
                 ]
             };
         case 'ADD_STEP':
-            const finished = deepEqual(state.goal, action.math);
-
             return { ...state, steps: [
                 {
                     text: '',
                     math: action.math,
-                    finished: finished,
                 },
                 ...state.steps,
             ]};
+        case 'CHECK_ANSWER':
+            const finished = deepEqual(state.goal, activeStep.math);
+
+            return {
+                ...state,
+                steps: [
+                    {
+                        ...activeStep,
+                        finished: finished
+                    },
+                    ...state.steps.slice(1)
+                ]
+            };
         default:
             return state;
     }

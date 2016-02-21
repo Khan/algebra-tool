@@ -100,7 +100,7 @@ class MathRenderer extends Component {
                             if (shouldShowCursor) {
                                 store.dispatch({ type: 'SHOW_CURSOR' });
                             }
-                            // else hide the cursor
+                            store.dispatch({ type: 'CHECK_ANSWER' });
                         });
 
                     animatedLayout.start();
