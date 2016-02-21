@@ -170,10 +170,6 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 steps: [
                     ...state.steps,
-                    {
-                        maxId: activeStep.maxId,
-                        math: activeStep.math.clone(),
-                    }
                 ],
                 activeStep: {
                     ...activeStep,
@@ -188,8 +184,9 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps,
                     {
-                        // TODO: clone selections?
-                        selections: activeStep.selections,
+                        // TODO: store the selections and the transform used
+                        // selections: activeStep.selections,
+                        selections: [],
                         math: activeStep.math.clone(),
                     },
                 ],
