@@ -77,11 +77,14 @@ class AuxApp extends Component {
         const history = [];
 
         this.props.steps.forEach((step, i, steps) => {
-            const active = step.active || i > 0 && steps[i - 1].active;
+            const previousActive = i > 0 && steps[i - 1].active;
+            const active = step.active || previousActive;
+            const maxId = previousActive && i > 0 && steps[i - 1].action && steps[i - 1].action.maxId || Infinity;
             history.push(<Step
                 {...step}
                 onClick={() => this.select(i)}
                 key={i}
+                maxId={maxId}
                 active={active}
             />);
 

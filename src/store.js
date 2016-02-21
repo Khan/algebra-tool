@@ -182,6 +182,7 @@ const reducer = (state = initialState, action) => {
 
             const lastStep = state.steps[state.steps.length - 1];
             const previousSteps = state.steps.slice(0, state.steps.length - 1);
+            console.log(`activeStep.maxId = ${activeStep.maxId}`);
 
             return {
                 ...state,
@@ -191,9 +192,10 @@ const reducer = (state = initialState, action) => {
                         ...lastStep,
                         action: {
                             ...lastStep.action,
-                            value: value.clone()
-                        }
-                    }
+                            value: value.clone(),
+                            maxId: activeStep.maxId,
+                        },
+                    },
                 ],
                 activeStep: {
                     ...activeStep,
