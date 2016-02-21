@@ -23,11 +23,40 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
         case 'SELECT_STEP':
-            return state;
-            // return {
-            //     ...state,
-            //     activeStep: action.step,
-            // };
+            if (action.step === -1) {
+                return {
+                    ...state,
+                    steps: [
+                        ...state.steps.map(step => {
+                            return {
+                                ...step,
+                                active: false,
+                            };
+                        }),
+                    ],
+                };
+            }
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, action.step).map(step => {
+                        return {
+                            ...step,
+                            active: false,
+                        };
+                    }),
+                    {
+                        ...state.steps[action.step],
+                        active: true
+                    },
+                    ...state.steps.slice(action.step + 1).map(step => {
+                        return {
+                            ...step,
+                            active: false,
+                        };
+                    }),
+                ],
+            };
         case 'SELECT_MATH':
             return {
                 ...state,

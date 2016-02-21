@@ -14,8 +14,11 @@ class AuxApp extends Component {
         activeStep: PropTypes.any.isRequired,
     };
 
-    select = () => {
-        store.dispatch({ type: 'SELECT_STEP' });
+    select = i => {
+        store.dispatch({
+            type: 'SELECT_STEP',
+            step: i
+        });
     };
 
     componentDidMount() {
@@ -77,13 +80,14 @@ class AuxApp extends Component {
                 {this.props.steps.map((step, i) =>
                     <Step
                         {...step}
+                        onClick={() => this.select(i)}
                         key={i}
-                        active={false}
+                        active={step.active}
                     />)
                 }
                 {<Step
                     {...this.props.activeStep}
-                    onClick={this.select}
+                    onClick={() => this.select(-1)}
                     active={true}
                     key="activeStep"
                 />}
