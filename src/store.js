@@ -9,32 +9,33 @@ import params from './params';
 const parser = new Parser();
 
 const initialState = {
-    steps: [{
-        math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10')
-    }],
-    activeStep: 0,
+    steps: [],
+    activeStep: {
+        math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
+    },
     goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
 };
 
 const reducer = (state = initialState, action) => {
-    const activeStep = state.steps[state.activeStep];
+    const activeStep = state.activeStep;
     const newMath = activeStep.math.clone();
     let maxId = 0;
 
     switch (action.type) {
         case 'SELECT_STEP':
+            return state;
+            // return {
+            //     ...state,
+            //     activeStep: action.step,
+            // };
+        case 'SELECT_MATH':
             return {
                 ...state,
-                activeStep: action.step,
+                activeStep: {
+                    ...activeStep,
+                    selections: action.selections
+                }
             };
-        case 'SELECT_MATH':
-            const steps = [...state.steps];
-            steps.splice(state.activeStep, 1, {
-                ...activeStep,
-                selections: action.selections,
-            });
-
-            return { ...state, steps };
         case 'SIMPLE_OPERATION':
             // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
@@ -51,14 +52,12 @@ const reducer = (state = initialState, action) => {
 
                 return {
                     ...state,
-                    steps: [
-                        {
-                            ...activeStep,
-                            math: newMath,
-                            cusror: true,
-                        },
-                        ...state.steps.slice(1)
-                    ]
+                    activeStep: {
+                        ...activeStep,
+                        math: newMath,
+                        maxId: activeStep.maxId,
+                        cursor: true,
+                    },
                 };
             }
 
@@ -70,14 +69,17 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
+                activeStep: {
+                    ...activeStep,
+                    math: newMath,
+                    maxId: maxId,
+                    cursor: true,
+                },
                 steps: [
+                    ...state.steps,
                     {
-                        ...activeStep,
-                        math: newMath,
-                        maxId: maxId,
-                        cursor: true,
-                    },
-                    ...state.steps
+                        math: activeStep.math.clone()
+                    }
                 ]
             };
         case 'SHOW_CURSOR':
@@ -100,14 +102,11 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                steps: [
-                    {
-                        ...activeStep,
-                        math: newMath,
-                        cusror: true,
-                    },
-                    ...state.steps.slice(1)
-                ]
+                activeStep: {
+                    ...activeStep,
+                    math: newMath,
+                    cusror: true,
+                },
             };
         case 'BACKSPACE':
             traverseNode(newMath, node => {
@@ -122,14 +121,11 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                steps: [
-                    {
-                        ...activeStep,
-                        math: newMath,
-                        cusror: true,
-                    },
-                    ...state.steps.slice(1)
-                ]
+                activeStep: {
+                    ...activeStep,
+                    math: newMath,
+                    cusror: true,
+                },
             };
         case 'ACCEPT_STEP':
             traverseNode(newMath, node => {
@@ -140,44 +136,49 @@ const reducer = (state = initialState, action) => {
                 }
             });
 
-            // TODO: only the active step can have a cursor
+
             return {
                 ...state,
                 steps: [
+                    ...state.steps,
                     {
-                        ...activeStep,
-                        math: newMath,
-                        maxId: Infinity,
-                        cursor: false,
-                    },
-                    ...state.steps.map(step => {
-                        return {
-                            ...step,
-                            cursor: false
-                        }
-                    })
-                ]
+                        maxId: activeStep.maxId,
+                        math: activeStep.math.clone(),
+                    }
+                ],
+                activeStep: {
+                    ...activeStep,
+                    math: newMath,
+                    maxId: Infinity,
+                    cursor: false,
+                },
             };
         case 'ADD_STEP':
-            return { ...state, steps: [
-                {
-                    text: '',
+            return {
+                ...state,
+                steps: [
+                    ...state.steps,
+                    {
+                        // TODO: clone selections?
+                        selections: activeStep.selections,
+                        math: activeStep.math.clone(),
+                    },
+                ],
+                activeStep: {
+                    ...activeStep,
                     math: action.math,
-                },
-                ...state.steps,
-            ]};
+                    selections: [],
+                }
+            };
         case 'CHECK_ANSWER':
             const finished = deepEqual(state.goal, activeStep.math);
 
             return {
                 ...state,
-                steps: [
-                    {
-                        ...activeStep,
-                        finished: finished
-                    },
-                    ...state.steps.slice(1)
-                ]
+                activeStep: {
+                    ...activeStep,
+                    finished: finished
+                },
             };
         default:
             return state;

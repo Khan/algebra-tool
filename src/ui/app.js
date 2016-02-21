@@ -11,14 +11,11 @@ class AuxApp extends Component {
     static propTypes = {
         goal: PropTypes.any.isRequired,
         steps: PropTypes.arrayOf(PropTypes.any).isRequired,
-        activeStep: PropTypes.number.isRequired,
+        activeStep: PropTypes.any.isRequired,
     };
 
-    select = step => {
-        store.dispatch({
-            type: 'SELECT_STEP',
-            step: step
-        });
+    select = () => {
+        store.dispatch({ type: 'SELECT_STEP' });
     };
 
     componentDidMount() {
@@ -44,7 +41,7 @@ class AuxApp extends Component {
             overflowX: 'hidden',
             background: '#EEE',
             display: 'flex',
-            flexDirection: 'column-reverse'
+            flexDirection: 'column'
         };
 
         const lineStyle = {
@@ -74,19 +71,22 @@ class AuxApp extends Component {
             </div>
         </div>;
 
-        const length = this.props.steps.length;
-
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
-                {this.props.steps.map((line, i) =>
+                {this.props.steps.map((step, i) =>
                     <Step
-                        {...line}
-                        key={i === 0 ? 0 : length - i}
-                        onClick={e => this.select(i)}
-                        active={this.props.activeStep === i}
+                        {...step}
+                        key={i}
+                        active={false}
                     />)
                 }
+                {<Step
+                    {...this.props.activeStep}
+                    onClick={this.select}
+                    active={true}
+                    key="activeStep"
+                />}
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {goal}
