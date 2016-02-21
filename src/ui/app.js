@@ -74,19 +74,50 @@ class AuxApp extends Component {
             </div>
         </div>;
 
+        const history = [];
+
+        this.props.steps.forEach((step, i, steps) => {
+            const active = step.active || i > 0 && steps[i - 1].active;
+            history.push(<Step
+                {...step}
+                onClick={() => this.select(i)}
+                key={i}
+                active={active}
+            />);
+
+            const style = {
+                backgroundColor: '#444',
+                color: 'white',
+                fontFamily: 'helvetica-light',
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 15,
+                paddingBottom: 15,
+            };
+
+            if (step.active && step.action) {
+                // TODO: handle nodes other than Literals
+                if (step.action.value) {
+                    const value = step.action.value.value;
+                    const message = {
+                        '+': `Add ${value} to both sides`,
+                        '-': `Subtract ${value} from both sides`,
+                        '*': `Multiply both sides by ${value}`,
+                        '/': `Divide both sides by ${value}`,
+                    }[step.action.operation];
+
+                    history.push(<div key="action" style={style}>{message}</div>);
+                } else if (step.action.transform) {
+                    const message = step.action.transform.label;
+                    history.push(<div key="action" style={style}>{message}</div>);
+                }
+            }
+        });
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
-                {this.props.steps.map((step, i, steps) => {
-                    const active = step.active || i > 0 && steps[i - 1].active;
-                    return <Step
-                        {...step}
-                        onClick={() => this.select(i)}
-                        key={i}
-                        active={active}
-                    />;
-                    })
-                }
+                {history}
                 {<Step
                     {...this.props.activeStep}
                     onClick={() => this.select(-1)}

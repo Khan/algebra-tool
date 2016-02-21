@@ -33,7 +33,8 @@ class Step extends Component {
 
         store.dispatch({
             type: 'ADD_STEP',
-            math: newMath
+            math: newMath,
+            transform: transform,
         });
 
         this.setState({

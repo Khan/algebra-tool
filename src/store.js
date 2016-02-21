@@ -107,7 +107,12 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps,
                     {
-                        math: activeStep.math.clone()
+                        math: activeStep.math.clone(),
+                        action: {
+                            type: 'INSERT',
+                            operation: action.operator,
+                            value: null
+                        }
                     }
                 ]
             };
@@ -157,19 +162,29 @@ const reducer = (state = initialState, action) => {
                 },
             };
         case 'ACCEPT_STEP':
+            let value = null;
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
                     // TODO: try/catch and provide feedback if math isn't valid
-                    const value = parser.parse(node.text).root;
+                    value = parser.parse(node.text).root;
                     node.parent.replace(node, value);
                 }
             });
 
+            const lastStep = state.steps[state.steps.length - 1];
+            const previousSteps = state.steps.slice(0, state.steps.length - 1);
 
             return {
                 ...state,
                 steps: [
-                    ...state.steps,
+                    ...previousSteps,
+                    {
+                        ...lastStep,
+                        action: {
+                            ...lastStep.action,
+                            value: value.clone()
+                        }
+                    }
                 ],
                 activeStep: {
                     ...activeStep,
@@ -188,6 +203,10 @@ const reducer = (state = initialState, action) => {
                         // selections: activeStep.selections,
                         selections: [],
                         math: activeStep.math.clone(),
+                        action: {
+                            type: 'TRANSFORM',
+                            transform: action.transform,
+                        }
                     },
                 ],
                 activeStep: {
