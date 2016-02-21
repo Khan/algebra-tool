@@ -121,7 +121,7 @@ class AuxApp extends Component {
                 {<Step
                     {...this.props.activeStep}
                     onClick={() => this.select(-1)}
-                    active={true}
+                    active={this.props.activeStep.active || this.props.steps[this.props.steps.length - 1].active}
                     key="activeStep"
                 />}
                 <div style={{height:180,flexShrink:0}}></div>

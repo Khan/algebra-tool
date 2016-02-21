@@ -12,6 +12,7 @@ const initialState = {
     steps: [],
     activeStep: {
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
+        active: true,
     },
     goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
 };
@@ -34,10 +35,18 @@ const reducer = (state = initialState, action) => {
                             };
                         }),
                     ],
+                    activeStep: {
+                        ...activeStep,
+                        active: true,
+                    },
                 };
             }
             return {
                 ...state,
+                activeStep: {
+                    ...activeStep,
+                    active: false,
+                },
                 steps: [
                     ...state.steps.slice(0, action.step).map(step => {
                         return {
