@@ -77,13 +77,15 @@ class AuxApp extends Component {
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
-                {this.props.steps.map((step, i) =>
-                    <Step
+                {this.props.steps.map((step, i, steps) => {
+                    const active = step.active || i > 0 && steps[i - 1].active;
+                    return <Step
                         {...step}
                         onClick={() => this.select(i)}
                         key={i}
-                        active={step.active}
-                    />)
+                        active={active}
+                    />;
+                    })
                 }
                 {<Step
                     {...this.props.activeStep}
