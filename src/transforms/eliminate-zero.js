@@ -5,7 +5,7 @@ function canTransform(selections) {
     if (selections[0].length > 1) return false;
 
     const node = selections[0].first;
-    if (node.type === 'Literal' && node.value === 0) {
+    if (node.type === 'Literal' && parseFloat(node.value) === 0) {
         if (node.next && node.prev) {
             return ['+','-'].includes(node.prev.operator) && ['+','-'].includes(node.next.operator);
         } else if (node.next) {

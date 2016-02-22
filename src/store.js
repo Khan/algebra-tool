@@ -3,8 +3,9 @@ import { createStore } from 'redux';
 import Parser from './parser';
 import Placeholder from './ast/placeholder';
 import { add, sub, mul, div } from './operations';
-import { traverseNode, deepEqual } from './ast/node-utils';
+import { traverseNode, deepEqual, findNode } from './ast/node-utils';
 import params from './params';
+import Selection from './ui/selection';
 
 const parser = new Parser();
 
@@ -19,7 +20,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     const currentStep = state.currentStep;
-    const newMath = currentStep.math.clone();
+    const newMath = currentStep.userInput ? currentStep.userInput.math.clone() : currentStep.math.clone();
     let maxId = 0;
 
     switch (action.type) {
@@ -143,14 +144,27 @@ const reducer = (state = initialState, action) => {
                 }
             });
 
-            return {
-                ...state,
-                currentStep: {
-                    ...currentStep,
-                    math: newMath,
-                    cusror: true,
-                },
-            };
+            if (currentStep.userInput) {
+                return {
+                    ...state,
+                    currentStep: {
+                        ...currentStep,
+                        userInput: {
+                            ...currentStep.userInput,
+                            math: newMath,
+                        },
+                    },
+                };
+            } else {
+                return {
+                    ...state,
+                    currentStep: {
+                        ...currentStep,
+                        math: newMath,
+                        cusror: true,
+                    },
+                };
+            }
         case 'BACKSPACE':
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
@@ -162,14 +176,27 @@ const reducer = (state = initialState, action) => {
                 }
             });
 
-            return {
-                ...state,
-                currentStep: {
-                    ...currentStep,
-                    math: newMath,
-                    cusror: true,
-                },
-            };
+            if (currentStep.userInput) {
+                return {
+                    ...state,
+                    currentStep: {
+                        ...currentStep,
+                        userInput: {
+                            ...currentStep.userInput,
+                            math: newMath,
+                        },
+                    },
+                };
+            } else {
+                return {
+                    ...state,
+                    currentStep: {
+                        ...currentStep,
+                        math: newMath,
+                        cusror: true,
+                    },
+                };
+            }
         case 'ACCEPT_STEP':
             let value = null;
             traverseNode(newMath, node => {
@@ -180,29 +207,69 @@ const reducer = (state = initialState, action) => {
                 }
             });
 
-            const lastStep = state.steps[state.steps.length - 1];
-            const previousSteps = state.steps.slice(0, state.steps.length - 1);
+            if (currentStep.userInput) {
+                const selections = state.currentStep.selections;
+                const { transform } = state.currentStep.userInput;
 
-            return {
-                ...state,
-                steps: [
-                    ...previousSteps,
-                    {
-                        ...lastStep,
-                        action: {
-                            ...lastStep.action,
-                            value: value.clone(),
-                            maxId: currentStep.maxId,
+                const newNewMath = currentStep.math.clone();
+
+                const newSelections = selections.map(selection => {
+                    const first = findNode(newNewMath, selection.first.id);
+                    const last = findNode(newNewMath, selection.last.id);
+                    return new Selection(first, last);
+                });
+
+                if (transform.canTransform(newSelections)) {
+                    console.log(newMath.root.right.toString());
+                    console.log(newSelections[0].toExpression().toString());
+                    transform.doTransform(newSelections, newMath.root.right.clone());
+                }
+
+                return {
+                    ...state,
+                    steps: [
+                        ...state.steps,
+                        {
+                            selections: [],
+                            math: currentStep.math.clone(),
+                            action: {
+                                type: 'TRANSFORM',
+                                transform: transform,
+                                selections: selections,
+                            },
                         },
+                    ],
+                    currentStep: {
+                        math: newNewMath,
+                        selections: [],
+                        active: true,
+                    }
+                };
+            } else {
+                const lastStep = state.steps[state.steps.length - 1];
+                const previousSteps = state.steps.slice(0, state.steps.length - 1);
+
+                return {
+                    ...state,
+                    steps: [
+                        ...previousSteps,
+                        {
+                            ...lastStep,
+                            action: {
+                                ...lastStep.action,
+                                value: value.clone(),
+                                maxId: currentStep.maxId,
+                            },
+                        },
+                    ],
+                    currentStep: {
+                        ...currentStep,
+                        math: newMath,
+                        maxId: Infinity,
+                        cursor: false,
                     },
-                ],
-                currentStep: {
-                    ...currentStep,
-                    math: newMath,
-                    maxId: Infinity,
-                    cursor: false,
-                },
-            };
+                };
+            }
         case 'ADD_STEP':
             return {
                 ...state,

@@ -118,7 +118,7 @@ class Step extends Component {
                     cursor={true}
                     color={'white'}
                 />
-            </div>
+            </div>;
         }
 
         return <div style={{ position: 'relative', flexShrink: 0 }}>
