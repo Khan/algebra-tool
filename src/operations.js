@@ -43,7 +43,7 @@ function removeExtraParens(expr) {
 
 function removeExtraProductParens(prod) {
     let removalList = [];
-    for (let child of prod) {
+    for (let child of prod.children) {
         if (child.type === 'Product') {
             removalList.push(child);
         }
