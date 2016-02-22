@@ -82,12 +82,15 @@ class AuxApp extends Component {
             const previousActive = i > 0 && steps[i - 1].active;
             const active = step.active || previousActive;
             const maxId = previousActive && i > 0 && steps[i - 1].action && steps[i - 1].action.maxId || Infinity;
+            const selections = step.active && step.action && step.action.selections || [];
+
             history.push(<Step
                 {...step}
                 onClick={() => this.select(i)}
                 key={i}
                 maxId={maxId}
                 active={active}
+                selections={selections}
             />);
 
             const style = {

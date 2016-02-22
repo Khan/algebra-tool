@@ -214,7 +214,8 @@ const reducer = (state = initialState, action) => {
                         action: {
                             type: 'TRANSFORM',
                             transform: action.transform,
-                        }
+                            selections: currentStep.selections,
+                        },
                     },
                 ],
                 currentStep: {
