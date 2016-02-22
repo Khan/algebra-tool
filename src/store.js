@@ -10,7 +10,7 @@ const parser = new Parser();
 
 const initialState = {
     steps: [],
-    activeStep: {
+    currentStep: {
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
         active: true,
     },
@@ -18,8 +18,8 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-    const activeStep = state.activeStep;
-    const newMath = activeStep.math.clone();
+    const currentStep = state.currentStep;
+    const newMath = currentStep.math.clone();
     let maxId = 0;
 
     switch (action.type) {
@@ -35,16 +35,16 @@ const reducer = (state = initialState, action) => {
                             };
                         }),
                     ],
-                    activeStep: {
-                        ...activeStep,
+                    currentStep: {
+                        ...currentStep,
                         active: true,
                     },
                 };
             }
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     active: false,
                 },
                 steps: [
@@ -69,8 +69,8 @@ const reducer = (state = initialState, action) => {
         case 'SELECT_MATH':
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     selections: action.selections
                 }
             };
@@ -81,7 +81,7 @@ const reducer = (state = initialState, action) => {
             // TODO: reduce for tree traversal
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
 
-            if (activeStep.cursor) {
+            if (currentStep.cursor) {
                 traverseNode(newMath, node => {
                     if (node.type === 'Placeholder') {
                         node.text += action.operator;
@@ -90,16 +90,16 @@ const reducer = (state = initialState, action) => {
 
                 return {
                     ...state,
-                    activeStep: {
-                        ...activeStep,
+                    currentStep: {
+                        ...currentStep,
                         math: newMath,
-                        maxId: activeStep.maxId,
+                        maxId: currentStep.maxId,
                         cursor: true,
                     },
                 };
             }
 
-            if (activeStep.math.root.type === 'Equation') {
+            if (currentStep.math.root.type === 'Equation') {
                 const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
@@ -107,8 +107,8 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     math: newMath,
                     maxId: maxId,
                     cursor: true,
@@ -116,7 +116,7 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps,
                     {
-                        math: activeStep.math.clone(),
+                        math: currentStep.math.clone(),
                         action: {
                             type: 'INSERT',
                             operation: action.operator,
@@ -130,7 +130,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 steps: [
                     {
-                        ...activeStep,
+                        ...currentStep,
                         cursor: true,
                     },
                     ...state.steps.slice(1)
@@ -145,8 +145,8 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     math: newMath,
                     cusror: true,
                 },
@@ -164,8 +164,8 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     math: newMath,
                     cusror: true,
                 },
@@ -182,7 +182,6 @@ const reducer = (state = initialState, action) => {
 
             const lastStep = state.steps[state.steps.length - 1];
             const previousSteps = state.steps.slice(0, state.steps.length - 1);
-            console.log(`activeStep.maxId = ${activeStep.maxId}`);
 
             return {
                 ...state,
@@ -193,12 +192,12 @@ const reducer = (state = initialState, action) => {
                         action: {
                             ...lastStep.action,
                             value: value.clone(),
-                            maxId: activeStep.maxId,
+                            maxId: currentStep.maxId,
                         },
                     },
                 ],
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     math: newMath,
                     maxId: Infinity,
                     cursor: false,
@@ -210,29 +209,27 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps,
                     {
-                        // TODO: store the selections and the transform used
-                        // selections: activeStep.selections,
                         selections: [],
-                        math: activeStep.math.clone(),
+                        math: currentStep.math.clone(),
                         action: {
                             type: 'TRANSFORM',
                             transform: action.transform,
                         }
                     },
                 ],
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     math: action.math,
                     selections: [],
                 }
             };
         case 'CHECK_ANSWER':
-            const finished = deepEqual(state.goal, activeStep.math);
+            const finished = deepEqual(state.goal, currentStep.math);
 
             return {
                 ...state,
-                activeStep: {
-                    ...activeStep,
+                currentStep: {
+                    ...currentStep,
                     finished: finished
                 },
             };

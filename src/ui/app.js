@@ -11,7 +11,7 @@ class AuxApp extends Component {
     static propTypes = {
         goal: PropTypes.any.isRequired,
         steps: PropTypes.arrayOf(PropTypes.any).isRequired,
-        activeStep: PropTypes.any.isRequired,
+        currentStep: PropTypes.any.isRequired,
     };
 
     select = i => {
@@ -127,10 +127,10 @@ class AuxApp extends Component {
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
-                    {...this.props.activeStep}
+                    {...this.props.currentStep}
                     onClick={() => this.select(-1)}
-                    active={this.props.activeStep.active || this.props.steps[this.props.steps.length - 1].active}
-                    key="activeStep"
+                    active={this.props.currentStep.active || this.props.steps[this.props.steps.length - 1].active}
+                    key="currentStep"
                 />}
                 {history}
                 <div style={{height:180,flexShrink:0}}></div>
