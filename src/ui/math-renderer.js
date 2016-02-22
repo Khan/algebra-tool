@@ -92,8 +92,8 @@ class MathRenderer extends Component {
                         currentLayout,
                         nextLayout,
                         () => {
-                            canvas.width = animatedLayout.bounds.width;
-                            canvas.height = animatedLayout.bounds.height;
+                            canvas.width = animatedLayout.bounds.right;
+                            canvas.height = animatedLayout.bounds.bottom;
                             this.drawLayout(context, animatedLayout, maxId);
                         },
                         () => {

@@ -44,7 +44,9 @@ class AuxApp extends Component {
             overflowX: 'hidden',
             background: '#EEE',
             display: 'flex',
-            flexDirection: 'column'
+            // use column-reverse so that the current step is always first so
+            // it doesn't change position
+            flexDirection: 'column-reverse'
         };
 
         const lineStyle = {
@@ -117,16 +119,20 @@ class AuxApp extends Component {
             }
         });
 
+        // reverse the history so it appears in the correct order since
+        // flex-direction is column-reverse
+        history.reverse();
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
-                {history}
                 {<Step
                     {...this.props.activeStep}
                     onClick={() => this.select(-1)}
                     active={this.props.activeStep.active || this.props.steps[this.props.steps.length - 1].active}
                     key="activeStep"
                 />}
+                {history}
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {goal}
