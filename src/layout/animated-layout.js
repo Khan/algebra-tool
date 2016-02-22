@@ -153,7 +153,9 @@ class AnimatedLayout {
         return null;
     }
 
-    render(ctx, maxId) {
+    render(ctx, options) {
+        const { maxId } = options;
+
         const transition = this.transitions[0];
         if (transition) {
 

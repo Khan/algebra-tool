@@ -160,7 +160,7 @@ class MathRenderer extends Component {
 
     drawLayout(context, currentLayout, maxId) {
         context.fillStyle = 'rgb(0, 0, 0)';
-        currentLayout.render(context, maxId);
+        currentLayout.render(context, { maxId });
     }
 
     drawSelection(context, selections, hitNode, layout) {

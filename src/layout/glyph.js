@@ -15,7 +15,9 @@ class Glyph {
         this.font = font;
     }
 
-    render(ctx, maxId, k = 1.0) {
+    render(ctx, options = {}) {
+        const { maxId = Infinity, k = 1.0 } = options;
+
         // TODO: ensure that this.id is never undefined
         const id = this.id && (this.id.includes(':') ? this.id.split(':')[0] : this.id);
 

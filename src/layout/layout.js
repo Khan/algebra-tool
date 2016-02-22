@@ -23,7 +23,8 @@ class Layout {
         Object.assign(this, {children, atomic});
     }
 
-    render(ctx, maxId) {
+    render(ctx, options = {}) {
+        const { maxId = Infinity } = options;
 
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -39,7 +40,7 @@ class Layout {
         }
 
         for (const child of this.children) {
-            child.render(ctx, maxId);
+            child.render(ctx, options);
         }
 
         ctx.fillStyle = 'black';

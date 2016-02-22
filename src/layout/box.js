@@ -7,7 +7,8 @@ export default class Box {
         this.selectable = true;
     }
 
-    render(ctx, maxId, k = 1.0) {
+    render(ctx, options = {}) {
+        const { maxId = Infinity, k = 1.0 } = options;
         const id = this.id.includes(':') ? this.id.split(':')[0] : this.id;
 
         if (id > maxId) {
