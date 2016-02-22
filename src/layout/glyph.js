@@ -30,8 +30,8 @@ class Glyph {
         ctx.fillText(this.text, this.x, this.y);
 
         if (id > maxId) {
-            ctx.fillStyle = 'black';
-            ctx.strokeStyle = 'black';
+            ctx.fillStyle = options.color;
+            ctx.strokeStyle = options.color;
         }
     }
 

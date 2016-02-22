@@ -43,8 +43,8 @@ class Layout {
             child.render(ctx, options);
         }
 
-        ctx.fillStyle = 'black';
-        ctx.strokeStyle = 'black';
+        ctx.fillStyle = options.color
+        ctx.strokeStyle = options.color;
         ctx.restore();
     }
 

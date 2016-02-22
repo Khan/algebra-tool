@@ -24,7 +24,7 @@ class MathRenderer extends Component {
     };
 
     componentDidMount() {
-        const { fontSize, math, selections, maxId } = this.props;
+        const { fontSize, math, selections, maxId, color } = this.props;
 
         const layout = createFlatLayout(math, fontSize, 6);
         const bounds = layout.bounds;
@@ -40,7 +40,7 @@ class MathRenderer extends Component {
             this.drawSelection(context, selections, null, layout);
         }
 
-        this.drawLayout(context, layout, maxId);
+        this.drawLayout(context, layout, { maxId, color });
 
         this.refs.container.appendChild(canvas);
 
@@ -80,13 +80,15 @@ class MathRenderer extends Component {
 
             context.fillStyle = nextProps.color;
 
+            const options = { maxId, color: nextProps.color };
+
             if (currentLayout !== nextLayout) {
                 // if the cursor is showing don't animate because we're in the
                 // process of typing something in
                 if (nextProps.cursor) {
                     canvas.width = nextLayout.bounds.width;
                     canvas.height = nextLayout.bounds.height;
-                    this.drawLayout(context, nextLayout, maxId);
+                    this.drawLayout(context, nextLayout, options);
                 } else {
                     const animatedLayout = new AnimatedLayout(
                         currentLayout,
@@ -94,7 +96,7 @@ class MathRenderer extends Component {
                         () => {
                             canvas.width = animatedLayout.bounds.right;
                             canvas.height = animatedLayout.bounds.bottom;
-                            this.drawLayout(context, animatedLayout, maxId);
+                            this.drawLayout(context, animatedLayout, options);
                         },
                         () => {
                             if (shouldShowCursor) {
@@ -106,7 +108,7 @@ class MathRenderer extends Component {
                     animatedLayout.start();
                 }
             } else {
-                this.drawLayout(context, currentLayout, maxId);
+                this.drawLayout(context, currentLayout, options);
             }
         }
     }
@@ -158,9 +160,10 @@ class MathRenderer extends Component {
         return highlights;
     }
 
-    drawLayout(context, currentLayout, maxId) {
-        context.fillStyle = 'rgb(0, 0, 0)';
-        currentLayout.render(context, { maxId });
+    drawLayout(context, currentLayout, options) {
+        const { color = 'black' } = options;
+        context.fillStyle = color;
+        currentLayout.render(context, options);
     }
 
     drawSelection(context, selections, hitNode, layout) {

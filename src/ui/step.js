@@ -116,6 +116,7 @@ class Step extends Component {
                     fontSize={26}
                     active={true}
                     cursor={true}
+                    color={'white'}
                 />
             </div>
         }

@@ -22,8 +22,8 @@ export default class Box {
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
 
-        ctx.fillStyle = 'black';
-        ctx.strokeStyle = 'black';
+        ctx.fillStyle = options.color;
+        ctx.strokeStyle = options.color;
     }
 
     get bounds() {
