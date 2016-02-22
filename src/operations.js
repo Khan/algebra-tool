@@ -50,7 +50,7 @@ function removeExtraProductParens(prod) {
     }
 
     for (let removal of removalList) {
-        for (let child of removal) {
+        for (let child of removal.children) {
             child.parent = prod;
         }
         removal.first.prev = removal.prev;
