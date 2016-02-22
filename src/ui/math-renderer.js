@@ -372,7 +372,7 @@ class MathRenderer extends Component {
         // max number of cursors support is 2
         const cursors = [];
 
-        if (cursor) {
+        if (cursor && this.state.layout) {
             const placeholders = [];
             traverseNode(math.root, node => {
                 if (node.type === 'Placeholder') {

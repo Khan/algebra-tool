@@ -234,6 +234,28 @@ const reducer = (state = initialState, action) => {
                     finished: finished
                 },
             };
+        case 'GET_USER_INPUT':
+            console.log(action);
+            const selection = action.selections[0];
+            const math = parser.parse('a=b');
+            const left = selection.toExpression();
+            const right = new Placeholder();
+            math.root.left = left;
+            left.parent = math.root;
+            math.root.right = right;
+            right.parent = math.root;
+
+            return {
+                ...state,
+                currentStep: {
+                    ...currentStep,
+                    userInput: {
+                        transform: action.transform,
+                        value: '',
+                        math: math,
+                    }
+                },
+            };
         default:
             return state;
     }

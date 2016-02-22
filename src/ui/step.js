@@ -27,15 +27,23 @@ class Step extends Component {
             return new Selection(first, last);
         });
 
-        if (transform.canTransform(newSelections)) {
-            transform.doTransform(newSelections);
-        }
+        if (transform.needsUserInput) {
+            store.dispatch({
+                type: 'GET_USER_INPUT',
+                transform: transform,
+                selections: selections,
+            });
+        } else {
+            if (transform.canTransform(newSelections)) {
+                transform.doTransform(newSelections);
+            }
 
-        store.dispatch({
-            type: 'ADD_STEP',
-            math: newMath,
-            transform: transform,
-        });
+            store.dispatch({
+                type: 'ADD_STEP',
+                math: newMath,
+                transform: transform,
+            });
+        }
 
         this.setState({
             menu: null
@@ -58,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, finished } = this.props;
+        const { math, maxId, selections, active, cursor, finished, userInput } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -69,10 +77,10 @@ class Step extends Component {
         } : null;
 
         const lineStyle = {
+            ...transitionStyle,
             paddingTop: 15,
             paddingBottom: 15,
             paddingLeft: 20,
-            ...transitionStyle
         };
 
         if (active) {
@@ -83,6 +91,34 @@ class Step extends Component {
             opacity: active ? 1.0 : 0.5,
             ...transitionStyle
         };
+
+        let input = null;
+
+        if (userInput) {
+            const inputStyle = {
+                position: 'absolute',
+                width:'100%',
+                backgroundColor: '#444',
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 15,
+                paddingBottom: 15,
+                fontFamily: 'helvetica-light',
+                color: 'white',
+                fontSize: 18,
+            };
+
+            // TODO: instead of using and <input> field, create a MathRenderer
+            // with an equation with a Placeholder node on the right
+            input = <div style={inputStyle}>
+                <MathRenderer
+                    math={userInput.math}
+                    fontSize={26}
+                    active={true}
+                    cursor={true}
+                />
+            </div>
+        }
 
         return <div style={{ position: 'relative', flexShrink: 0 }}>
             <div style={lineStyle} onClick={this.props.onClick}>
@@ -99,6 +135,7 @@ class Step extends Component {
                     />
                 </div>
             </div>
+            {input}
             {active && menu}
             {finished && <div
                     style={{
