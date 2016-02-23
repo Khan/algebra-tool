@@ -22,10 +22,8 @@ const reducer = (state = initialState, action) => {
     const currentStep = state.steps[state.currentIndex];
     const newMath = currentStep.userInput ? currentStep.userInput.math.clone() : currentStep.math.clone();
     const lastStep = state.steps[state.steps.length - 1];
-    const previousSteps = state.steps.slice(0, state.steps.length - 1);
+    const previousSteps = state.steps.slice(0, state.currentIndex);
     let maxId = 0;
-
-    console.log(action);
 
     switch (action.type) {
         case 'SELECT_STEP':
@@ -113,7 +111,12 @@ const reducer = (state = initialState, action) => {
             }
 
             if (currentStep.math.root.type === 'Equation') {
-                const op = { '+': add, '-': sub, '*': mul, '/': div }[action.operator];
+                const op = {
+                    '+': add,
+                    '-': sub,
+                    '*': mul,
+                    '/': div
+                }[action.operator];
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
             }
@@ -123,7 +126,7 @@ const reducer = (state = initialState, action) => {
                 currentIndex: state.currentIndex + 1,
                 activeIndex: state.activeIndex + 1,
                 steps: [
-                    ...state.steps,
+                    ...state.steps.slice(0, state.currentIndex + 1),
                     {
                         math: newMath,
                         maxId: maxId,
@@ -233,7 +236,7 @@ const reducer = (state = initialState, action) => {
 
             if (currentStep.userInput) {
                 const selections = currentStep.selections;
-                const { transform } = currentStep.userInput;
+                const {transform} = currentStep.userInput;
 
                 const newNewMath = currentStep.math.clone();
 
@@ -292,8 +295,6 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...previousSteps,
                     {
-                        ...lastStep,
-                        selections: [],
                         math: currentStep.math.clone(),
                         action: {
                             type: 'TRANSFORM',
@@ -302,9 +303,7 @@ const reducer = (state = initialState, action) => {
                         },
                     },
                     {
-                        ...currentStep,
                         math: action.math,
-                        selections: [],
                     },
                 ],
                 activeIndex: state.activeIndex + 1,
@@ -349,6 +348,18 @@ const reducer = (state = initialState, action) => {
                     },
                     ...state.steps.slice(state.currentIndex + 1)
                 ],
+            };
+        case 'UNDO':
+            return {
+                ...state,
+                currentIndex: Math.max(0, state.currentIndex - 1),
+                activeIndex: Math.max(0, state.currentIndex - 1),
+            };
+        case 'REDO':
+            return {
+                ...state,
+                currentIndex: Math.min(state.currentIndex + 1, state.steps.length - 1),
+                activeIndex: Math.min(state.currentIndex + 1, state.steps.length - 1),
             };
         default:
             return state;
