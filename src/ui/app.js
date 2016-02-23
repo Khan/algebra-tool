@@ -11,7 +11,8 @@ class AuxApp extends Component {
     static propTypes = {
         goal: PropTypes.any.isRequired,
         steps: PropTypes.arrayOf(PropTypes.any).isRequired,
-        currentStep: PropTypes.any.isRequired,
+        currentIndex: PropTypes.number.isRequired,
+        activeIndex: PropTypes.number.isRequired,
     };
 
     select = i => {
@@ -30,6 +31,10 @@ class AuxApp extends Component {
     }
 
     render() {
+        const { steps, currentIndex, activeIndex } = this.props;
+        const currentStep = steps[currentIndex];
+        const previousSteps = steps.slice(0, currentIndex);
+
         const style = {
             display: 'flex',
             flexDirection: 'column',
@@ -78,9 +83,9 @@ class AuxApp extends Component {
 
         const history = [];
 
-        this.props.steps.forEach((step, i, steps) => {
-            const previousActive = i > 0 && steps[i - 1].active;
-            const active = step.active || previousActive;
+        previousSteps.forEach((step, i, steps) => {
+            const previousActive = i - 1 === activeIndex;
+            const active = activeIndex === i || previousActive;
             const maxId = previousActive && i > 0 && steps[i - 1].action && steps[i - 1].action.maxId || Infinity;
             const selections = step.active && step.action && step.action.selections || [];
 
@@ -130,9 +135,9 @@ class AuxApp extends Component {
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
-                    {...this.props.currentStep}
+                    {...currentStep}
                     onClick={() => this.select(-1)}
-                    active={this.props.currentStep.active || this.props.steps[this.props.steps.length - 1].active}
+                    active={activeIndex >= previousSteps.length - 1}
                     key="currentStep"
                 />}
                 {history}

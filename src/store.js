@@ -10,18 +10,22 @@ import Selection from './ui/selection';
 const parser = new Parser();
 
 const initialState = {
-    steps: [],
-    currentStep: {
+    steps: [{
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
-        active: true,
-    },
+    }],
+    currentIndex: 0,
+    activeIndex: 0,
     goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
 };
 
 const reducer = (state = initialState, action) => {
-    const currentStep = state.currentStep;
+    const currentStep = state.steps[state.currentIndex];
     const newMath = currentStep.userInput ? currentStep.userInput.math.clone() : currentStep.math.clone();
+    const lastStep = state.steps[state.steps.length - 1];
+    const previousSteps = state.steps.slice(0, state.steps.length - 1);
     let maxId = 0;
+
+    console.log(action);
 
     switch (action.type) {
         case 'SELECT_STEP':
@@ -70,10 +74,14 @@ const reducer = (state = initialState, action) => {
         case 'SELECT_MATH':
             return {
                 ...state,
-                currentStep: {
-                    ...currentStep,
-                    selections: action.selections
-                }
+                steps: [
+                    ...state.steps.slice(0, state.currentIndex),
+                    {
+                        ...currentStep,
+                        selections: action.selections,
+                    },
+                    ...state.steps.slice(state.currentIndex + 1)
+                ],
             };
         case 'SIMPLE_OPERATION':
             // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
@@ -91,12 +99,16 @@ const reducer = (state = initialState, action) => {
 
                 return {
                     ...state,
-                    currentStep: {
-                        ...currentStep,
-                        math: newMath,
-                        maxId: currentStep.maxId,
-                        cursor: true,
-                    },
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            math: newMath,
+                            maxId: currentStep.maxId,
+                            cursor: true,
+                        },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
                 };
             }
 
@@ -108,33 +120,31 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                currentStep: {
-                    ...currentStep,
-                    math: newMath,
-                    maxId: maxId,
-                    cursor: true,
-                },
+                currentIndex: state.currentIndex + 1,
+                activeIndex: state.activeIndex + 1,
                 steps: [
                     ...state.steps,
                     {
-                        math: currentStep.math.clone(),
+                        math: newMath,
+                        maxId: maxId,
                         action: {
                             type: 'INSERT',
                             operation: action.operator,
                             value: null
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             };
         case 'SHOW_CURSOR':
             return {
                 ...state,
                 steps: [
+                    ...state.steps.slice(0, state.currentIndex),
                     {
                         ...currentStep,
                         cursor: true,
                     },
-                    ...state.steps.slice(1)
+                    ...state.steps.slice(state.currentIndex + 1)
                 ]
             };
         case 'INSERT_NUMBER':
@@ -147,22 +157,29 @@ const reducer = (state = initialState, action) => {
             if (currentStep.userInput) {
                 return {
                     ...state,
-                    currentStep: {
-                        ...currentStep,
-                        userInput: {
-                            ...currentStep.userInput,
-                            math: newMath,
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            userInput: {
+                                ...currentStep.userInput,
+                                math: newMath,
+                            },
                         },
-                    },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
                 };
             } else {
                 return {
                     ...state,
-                    currentStep: {
-                        ...currentStep,
-                        math: newMath,
-                        cusror: true,
-                    },
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            math: newMath,
+                        },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
                 };
             }
         case 'BACKSPACE':
@@ -179,22 +196,29 @@ const reducer = (state = initialState, action) => {
             if (currentStep.userInput) {
                 return {
                     ...state,
-                    currentStep: {
-                        ...currentStep,
-                        userInput: {
-                            ...currentStep.userInput,
-                            math: newMath,
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            userInput: {
+                                ...currentStep.userInput,
+                                math: newMath,
+                            },
                         },
-                    },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
                 };
             } else {
                 return {
                     ...state,
-                    currentStep: {
-                        ...currentStep,
-                        math: newMath,
-                        cusror: true,
-                    },
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            math: newMath,
+                        },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
                 };
             }
         case 'ACCEPT_STEP':
@@ -208,8 +232,8 @@ const reducer = (state = initialState, action) => {
             });
 
             if (currentStep.userInput) {
-                const selections = state.currentStep.selections;
-                const { transform } = state.currentStep.userInput;
+                const selections = currentStep.selections;
+                const { transform } = currentStep.userInput;
 
                 const newNewMath = currentStep.math.clone();
 
@@ -220,15 +244,13 @@ const reducer = (state = initialState, action) => {
                 });
 
                 if (transform.canTransform(newSelections)) {
-                    console.log(newMath.root.right.toString());
-                    console.log(newSelections[0].toExpression().toString());
                     transform.doTransform(newSelections, newMath.root.right.clone());
                 }
 
                 return {
                     ...state,
                     steps: [
-                        ...state.steps,
+                        ...previousSteps,
                         {
                             selections: [],
                             math: currentStep.math.clone(),
@@ -238,44 +260,39 @@ const reducer = (state = initialState, action) => {
                                 selections: selections,
                             },
                         },
+                        {
+                            math: newNewMath,
+                            selections: [],
+                            active: true,
+                        },
                     ],
-                    currentStep: {
-                        math: newNewMath,
-                        selections: [],
-                        active: true,
-                    }
+                    activeIndex: state.activeIndex + 1,
+                    currentIndex: state.currentIndex + 1,
                 };
             } else {
-                const lastStep = state.steps[state.steps.length - 1];
-                const previousSteps = state.steps.slice(0, state.steps.length - 1);
-
                 return {
                     ...state,
                     steps: [
                         ...previousSteps,
                         {
-                            ...lastStep,
+                            math: newMath,
+                            cursor: false,
                             action: {
                                 ...lastStep.action,
                                 value: value.clone(),
-                                maxId: currentStep.maxId,
+                                maxId: Infinity,
                             },
                         },
-                    ],
-                    currentStep: {
-                        ...currentStep,
-                        math: newMath,
-                        maxId: Infinity,
-                        cursor: false,
-                    },
+                    ]
                 };
             }
         case 'ADD_STEP':
             return {
                 ...state,
                 steps: [
-                    ...state.steps,
+                    ...previousSteps,
                     {
+                        ...lastStep,
                         selections: [],
                         math: currentStep.math.clone(),
                         action: {
@@ -284,22 +301,28 @@ const reducer = (state = initialState, action) => {
                             selections: currentStep.selections,
                         },
                     },
+                    {
+                        ...currentStep,
+                        math: action.math,
+                        selections: [],
+                    },
                 ],
-                currentStep: {
-                    ...currentStep,
-                    math: action.math,
-                    selections: [],
-                }
+                activeIndex: state.activeIndex + 1,
+                currentIndex: state.currentIndex + 1,
             };
         case 'CHECK_ANSWER':
             const finished = deepEqual(state.goal, currentStep.math);
 
             return {
                 ...state,
-                currentStep: {
-                    ...currentStep,
-                    finished: finished
-                },
+                steps: [
+                    ...state.steps.slice(0, state.currentIndex),
+                    {
+                        ...currentStep,
+                        finished: finished,
+                    },
+                    ...state.steps.slice(state.currentIndex + 1)
+                ],
             };
         case 'GET_USER_INPUT':
             console.log(action);
@@ -314,14 +337,18 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                currentStep: {
-                    ...currentStep,
-                    userInput: {
-                        transform: action.transform,
-                        value: '',
-                        math: math,
-                    }
-                },
+                steps: [
+                    ...state.steps.slice(0, state.currentIndex),
+                    {
+                        ...currentStep,
+                        userInput: {
+                            transform: action.transform,
+                            value: '',
+                            math: math,
+                        },
+                    },
+                    ...state.steps.slice(state.currentIndex + 1)
+                ],
             };
         default:
             return state;
