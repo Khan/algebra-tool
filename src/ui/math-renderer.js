@@ -28,13 +28,28 @@ class MathRenderer extends Component {
 
         const layout = createFlatLayout(math, fontSize, 6);
         const bounds = layout.bounds;
+        const { width, height } = bounds;
 
         const canvas = document.createElement('canvas');
-        canvas.width = bounds.width;
-        canvas.height = bounds.height;
+        canvas.width = width;
+        canvas.height = height;
         canvas.style.display = 'block';
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
 
         const context = canvas.getContext('2d');
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const backingStoreRatio = context.webkitBackingStorePixelRatio ||
+            context.mozBackingStorePixelRatio ||
+            context.msBackingStorePixelRatio ||
+            context.oBackingStorePixelRatio ||
+            context.backingStorePixelRatio || 1;
+
+        const ratio = devicePixelRatio / backingStoreRatio;
+
+        canvas.width = ratio * canvas.width;
+        canvas.height = ratio * canvas.height;
+        context.scale(ratio, ratio);
 
         if (selections.length > 0) {
             this.drawSelection(context, selections, null, layout);
@@ -44,7 +59,7 @@ class MathRenderer extends Component {
 
         this.refs.container.appendChild(canvas);
 
-        this.setState({ context, layout });
+        this.setState({ context, layout, ratio });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,7 +77,7 @@ class MathRenderer extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        const { context } = this.state;
+        const { context, ratio } = this.state;
 
         if (context) {
             const canvas = context.canvas;
@@ -86,16 +101,22 @@ class MathRenderer extends Component {
                 // if the cursor is showing don't animate because we're in the
                 // process of typing something in
                 if (nextProps.cursor) {
-                    canvas.width = nextLayout.bounds.width;
-                    canvas.height = nextLayout.bounds.height;
+                    canvas.width = ratio * nextLayout.bounds.width;
+                    canvas.height = ratio * nextLayout.bounds.height;
+                    canvas.style.width = `${nextLayout.bounds.right}px`;
+                    canvas.style.height = `${nextLayout.bounds.bottom}px`;
+                    context.scale(ratio, ratio);
                     this.drawLayout(context, nextLayout, options);
                 } else {
                     const animatedLayout = new AnimatedLayout(
                         currentLayout,
                         nextLayout,
                         () => {
-                            canvas.width = animatedLayout.bounds.right;
-                            canvas.height = animatedLayout.bounds.bottom;
+                            canvas.width = ratio * animatedLayout.bounds.right;
+                            canvas.height = ratio * animatedLayout.bounds.bottom;
+                            canvas.style.width = `${animatedLayout.bounds.right}px`;
+                            canvas.style.height = `${animatedLayout.bounds.bottom}px`;
+                            context.scale(ratio, ratio);
                             this.drawLayout(context, animatedLayout, options);
                         },
                         () => {
