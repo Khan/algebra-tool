@@ -138,12 +138,13 @@ class AuxApp extends Component {
                     {...currentStep}
                     onClick={() => this.select(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
+                    current={activeIndex === currentIndex && !currentStep.userInput}
                     key="currentStep"
                 />}
                 {history}
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
-            {goal}
+            {false && goal}
             <Keypad width={this.props.width}/>
         </div>;
     }

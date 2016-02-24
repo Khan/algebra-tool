@@ -66,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, finished, userInput } = this.props;
+        const { math, maxId, selections, active, cursor, finished, userInput, current } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -128,7 +128,7 @@ class Step extends Component {
                         maxId={maxId}
                         fontSize={26}
                         math={math}
-                        active={active}
+                        active={current}
                         selections={selections}
                         showMenu={this.showMenu}
                         hideMenu={this.hideMenu}
