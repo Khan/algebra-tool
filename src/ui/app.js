@@ -40,7 +40,8 @@ class AuxApp extends Component {
             flexDirection: 'column',
             height: this.props.height,
             width: this.props.width,
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            position: 'relative',
         };
 
         const containerStyle = {
