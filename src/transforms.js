@@ -1,4 +1,5 @@
 module.exports = {
+    add_fractions: require('./transforms/add-fractions.js'),
     cancel_factor: require('./transforms/cancel-factor.js'),
     commute: require('./transforms/commute'),
     distribute_backwards: require('./transforms/distribute-backwards'),
