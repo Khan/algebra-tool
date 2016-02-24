@@ -47,7 +47,7 @@ export default class Product extends Node {
 
                 let duplicateOperator = null;
                 let i = 0;
-                for (const node of this) {
+                for (const node of this.children) {
                     if (i++ % 2 === 0 && node.type === 'Operator') {
                         if (!duplicateOperator) {
                             duplicateOperator = node;
