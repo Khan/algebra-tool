@@ -14,6 +14,14 @@ export default class Power extends Node {
         return `[${this.type}:${this.base}^${this.exponent}]`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            base: this.base.toJSON(),
+            exponent: this.exponent.toJSON(),
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Power.prototype);
         copy.type = this.type;

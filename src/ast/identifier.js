@@ -13,6 +13,13 @@ export default class Identifier extends Node {
         return `${this.type}:${this.name}`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            name: this.name,
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Identifier.prototype);
         copy.type = this.type;

@@ -11,6 +11,13 @@ export default class Placeholder extends Node {
         return `${this.type}:${this.name}`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            text: this.text,
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Placeholder.prototype);
         copy.type = this.type;

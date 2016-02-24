@@ -12,6 +12,13 @@ export default class Negation extends Node {
         return `[${this.type}:${this.value}]`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            value: this.value.toJSON(),
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Negation.prototype);
         copy.id = uniqueId ? generateId() : this.id;
