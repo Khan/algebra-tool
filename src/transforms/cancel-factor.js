@@ -1,5 +1,6 @@
-const { Literal } = require('../ast.js');
-const { compare } = require('../ast/node-utils.js');
+import { Literal } from '../ast';
+import { compare } from '../ast/node-utils';
+import params from '../params'
 
 // helper function
 function replace(parent, propName, newChild) {
@@ -16,9 +17,6 @@ function canTransform(selections) {
 
         const a = aSel.toExpression();
         const b = bSel.toExpression();
-
-        console.log(a.toString());
-        console.log(b.toString());
 
         // TODO: proxy .first on selection to selection.first.parent
         if (a.parent.type === 'Fraction') {
@@ -119,8 +117,10 @@ function doTransform(selections) {
             replace(frac, 'denominator', frac.denominator.first);
         }
 
-        if (frac.denominator.type === 'Literal' && frac.denominator.value === 1) {
-            frac.parent.replace(frac, frac.numerator);
+        if (params.eliminateDivByOne) {
+            if (frac.denominator.type === 'Literal' && parseFloat(frac.denominator.value) === 1) {
+                frac.parent.replace(frac, frac.numerator);
+            }
         }
     }
 }
