@@ -3,7 +3,7 @@ import { createStore } from 'redux';
 import Parser from './parser';
 import Placeholder from './ast/placeholder';
 import { add, sub, mul, div } from './operations';
-import { traverseNode, deepEqual, findNode } from './ast/node-utils';
+import { traverseNode, deepEqual, findNode, compare } from './ast/node-utils';
 import params from './params';
 import Selection from './ui/selection';
 
@@ -129,6 +129,7 @@ const reducer = (state = initialState, action) => {
                             userInput: {
                                 ...currentStep.userInput,
                                 math: newMath,
+                                incorrect: false,
                             },
                         },
                         ...state.steps.slice(state.currentIndex + 1)
@@ -168,6 +169,7 @@ const reducer = (state = initialState, action) => {
                             userInput: {
                                 ...currentStep.userInput,
                                 math: newMath,
+                                incorrect: false,
                             },
                         },
                         ...state.steps.slice(state.currentIndex + 1)
@@ -208,32 +210,49 @@ const reducer = (state = initialState, action) => {
                     return new Selection(first, last);
                 });
 
-                if (transform.canTransform(newSelections)) {
-                    transform.doTransform(newSelections, newMath.root.right.clone());
-                }
+                if (compare(newMath.root.left, newMath.root.right)) {
+                    if (transform.canTransform(newSelections)) {
+                        transform.doTransform(newSelections, newMath.root.right.clone());
+                    }
 
-                return {
-                    ...state,
-                    steps: [
-                        ...previousSteps,
-                        {
-                            selections: [],
-                            math: currentStep.math.clone(),
-                            action: {
-                                type: 'TRANSFORM',
-                                transform: transform,
-                                selections: selections,
+                    return {
+                        ...state,
+                        steps: [
+                            ...previousSteps,
+                            {
+                                selections: [],
+                                math: currentStep.math.clone(),
+                                action: {
+                                    type: 'TRANSFORM',
+                                    transform: transform,
+                                    selections: selections,
+                                },
                             },
-                        },
-                        {
-                            math: newNewMath,
-                            selections: [],
-                            active: true,
-                        },
-                    ],
-                    activeIndex: state.activeIndex + 1,
-                    currentIndex: state.currentIndex + 1,
-                };
+                            {
+                                math: newNewMath,
+                                selections: [],
+                                active: true,
+                            },
+                        ],
+                        activeIndex: state.activeIndex + 1,
+                        currentIndex: state.currentIndex + 1,
+                    };
+                } else {
+                    return {
+                        ...state,
+                        steps: [
+                            ...state.steps.slice(0, state.currentIndex),
+                            {
+                                ...currentStep,
+                                userInput: {
+                                    ...currentStep.userInput,
+                                    incorrect: true,
+                                },
+                            },
+                            ...state.steps.slice(state.currentIndex + 1)
+                        ],
+                    };
+                }
             } else {
                 return {
                     ...state,

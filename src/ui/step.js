@@ -99,13 +99,11 @@ class Step extends Component {
                 position: 'absolute',
                 width:'100%',
                 backgroundColor: '#444',
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 15,
-                paddingBottom: 15,
+                border: 'solid 10px #444',
                 fontFamily: 'helvetica-light',
                 color: 'white',
                 fontSize: 18,
+                boxSizing: 'border-box',
             };
 
             // TODO: instead of using and <input> field, create a MathRenderer
@@ -113,11 +111,12 @@ class Step extends Component {
             input = <div style={inputStyle}>
                 <MathRenderer
                     math={userInput.math}
-                    fontSize={26}
+                    fontSize={18}
                     active={true}
                     cursor={true}
                     color={'white'}
                 />
+                {userInput.incorrect && <span style={{position:'absolute',right:0,top:0}}>try again</span>}
             </div>;
         }
 

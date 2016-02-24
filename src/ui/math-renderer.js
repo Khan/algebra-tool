@@ -59,7 +59,10 @@ class MathRenderer extends Component {
 
         this.refs.container.appendChild(canvas);
 
-        this.setState({ context, layout, ratio });
+        const marginLeft = this.refs.container.offsetLeft;
+        const marginTop = this.refs.container.offsetTop;
+
+        this.setState({ context, layout, ratio, marginLeft, marginTop });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -392,6 +395,7 @@ class MathRenderer extends Component {
     render() {
 
         const { cursor, fontSize, math } = this.props;
+        const { marginLeft, marginTop } = this.state;
 
         // max number of cursors support is 2
         const cursors = [];
@@ -412,14 +416,12 @@ class MathRenderer extends Component {
 
                 for (const node of layout.children) {
                     if (node.id === placeholder.id) {
-                        x = node.x + 20;
+                        x = node.x + marginLeft;
                         for (const glyph of node.children) {
                             x += glyph.advance;
                         }
 
-                        // 6 is padding built into the canvas rendering
-                        // -15 is padding above the container
-                        y = node.y + 6 - 15;
+                        y = node.y + marginTop - fontSize * 0.85;
                     }
                 }
                 cursors.push(<Cursor x={x} y={y} width={2} height={fontSize} />);
