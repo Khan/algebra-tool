@@ -35,6 +35,18 @@ class Keypad extends Component {
 
     };
 
+    handleUndo = () => {
+        store.dispatch({
+            type: 'UNDO',
+        });
+    };
+
+    handleRedo = () => {
+        store.dispatch({
+            type: 'REDO',
+        });
+    };
+
     render() {
         const width = this.props.width;
         const margin = 1;
@@ -68,15 +80,12 @@ class Keypad extends Component {
             ...emptyColors,
             bgColor: "#999",
             bgActive: "#666"
-            //transparent: true
         };
-        //&#x232B;
-        //&#x2610;/&#x2610;
 
         return <div style={{marginTop:1, flexShrink:0, cursor: 'default'}}>
             <div style={rowStyle}>
-                <Button {...topRowColor}>...</Button>
-                <Button {...topRowColor}>&nbsp;</Button>
+                <Button {...topRowColor} onTap={this.handleUndo}>&#x21BA;</Button>
+                <Button {...topRowColor} onTap={this.handleRedo}>&#x21BB;</Button>
                 <Button {...topRowColor} onTap={this.handleLeft}>&#x2190;</Button>
                 <Button {...topRowColor} onTap={this.handleRight}>&#x2192;</Button>
                 <Button {...topRowColor} onTap={this.handleEnter}>&#x21B5;</Button>

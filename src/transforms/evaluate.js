@@ -34,9 +34,7 @@ function doTransform(selections, userInput) {
         if (['Expression', 'Product'].includes(selection.first.type) && selection.length === 1) {
             selection = selection.first.children;
         }
-        if (userInput) {
-            console.log(userInput);
-        }
+
         const [first, ...rest] = selection;
         const parent = first.parent;
         rest.forEach(node => parent.remove(node));

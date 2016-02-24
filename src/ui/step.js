@@ -66,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, finished, userInput } = this.props;
+        const { math, maxId, selections, active, cursor, finished, userInput, current } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -99,13 +99,11 @@ class Step extends Component {
                 position: 'absolute',
                 width:'100%',
                 backgroundColor: '#444',
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 15,
-                paddingBottom: 15,
+                border: 'solid 10px #444',
                 fontFamily: 'helvetica-light',
                 color: 'white',
                 fontSize: 18,
+                boxSizing: 'border-box',
             };
 
             // TODO: instead of using and <input> field, create a MathRenderer
@@ -113,11 +111,12 @@ class Step extends Component {
             input = <div style={inputStyle}>
                 <MathRenderer
                     math={userInput.math}
-                    fontSize={26}
+                    fontSize={18}
                     active={true}
                     cursor={true}
                     color={'white'}
                 />
+                {userInput.incorrect && <span style={{position:'absolute',right:0,top:0}}>try again</span>}
             </div>;
         }
 
@@ -128,7 +127,7 @@ class Step extends Component {
                         maxId={maxId}
                         fontSize={26}
                         math={math}
-                        active={active}
+                        active={current}
                         selections={selections}
                         showMenu={this.showMenu}
                         hideMenu={this.hideMenu}
@@ -138,35 +137,6 @@ class Step extends Component {
             </div>
             {input}
             {active && menu}
-            {finished && <div
-                    style={{
-                        position: 'absolute',
-                        width:'100%',
-                        borderLeft: 'solid 20px #444',
-                        borderRight: 'solid 20px #444',
-                        boxSizing: 'border-box',
-                        paddingTop: 15,
-                        paddingBottom: 15,
-                        fontFamily: 'helvetica-light',
-                        fontSize: 26,
-                        backgroundColor: '#444',
-                        color: '#FFF'
-                    }}
-                >
-                    You made it, yay!
-                    <button
-                        style={{
-                            position: 'absolute',
-                            right: 0,
-                            fontSize: 22,
-                            backgroundColor: '#2F0',
-                            color: '#444',
-                            border: 'none',
-                            borderRadius: 4,
-                        }}
-                    >next</button>
-                </div>
-            }
         </div>;
     }
 }

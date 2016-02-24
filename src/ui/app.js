@@ -11,13 +11,14 @@ class AuxApp extends Component {
     static propTypes = {
         goal: PropTypes.any.isRequired,
         steps: PropTypes.arrayOf(PropTypes.any).isRequired,
-        currentStep: PropTypes.any.isRequired,
+        currentIndex: PropTypes.number.isRequired,
+        activeIndex: PropTypes.number.isRequired,
     };
 
     select = i => {
         store.dispatch({
             type: 'SELECT_STEP',
-            step: i
+            index: i
         });
     };
 
@@ -30,12 +31,17 @@ class AuxApp extends Component {
     }
 
     render() {
+        const { steps, currentIndex, activeIndex, finished } = this.props;
+        const currentStep = steps[currentIndex];
+        const previousSteps = steps.slice(0, currentIndex);
+
         const style = {
             display: 'flex',
             flexDirection: 'column',
             height: this.props.height,
             width: this.props.width,
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            position: 'relative',
         };
 
         const containerStyle = {
@@ -78,11 +84,11 @@ class AuxApp extends Component {
 
         const history = [];
 
-        this.props.steps.forEach((step, i, steps) => {
-            const previousActive = i > 0 && steps[i - 1].active;
-            const active = step.active || previousActive;
+        previousSteps.forEach((step, i, steps) => {
+            const previousActive = i - 1 === activeIndex;
+            const active = activeIndex === i || previousActive;
             const maxId = previousActive && i > 0 && steps[i - 1].action && steps[i - 1].action.maxId || Infinity;
-            const selections = step.active && step.action && step.action.selections || [];
+            const selections = activeIndex === i && step.action && step.action.selections || [];
 
             history.push(<Step
                 {...step}
@@ -94,7 +100,7 @@ class AuxApp extends Component {
             />);
 
             const style = {
-                backgroundColor: '#444',
+                backgroundColor: '#999',
                 color: 'white',
                 fontFamily: 'helvetica-light',
                 paddingLeft: 20,
@@ -103,7 +109,7 @@ class AuxApp extends Component {
                 paddingBottom: 15,
             };
 
-            if (step.active && step.action) {
+            if (i === activeIndex && step.action) {
                 // TODO: handle nodes other than Literals
                 if (step.action.value) {
                     const value = step.action.value.value;
@@ -126,19 +132,53 @@ class AuxApp extends Component {
         // flex-direction is column-reverse
         history.reverse();
 
+        const maxId = activeIndex == previousSteps.length - 1 && steps[activeIndex].action && steps[activeIndex].action.maxId || Infinity;
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
-                    {...this.props.currentStep}
-                    onClick={() => this.select(-1)}
-                    active={this.props.currentStep.active || this.props.steps[this.props.steps.length - 1].active}
+                    {...currentStep}
+                    onClick={() => this.select(currentIndex)}
+                    active={activeIndex >= previousSteps.length - 1}
+                    current={activeIndex === currentIndex && !currentStep.userInput}
+                    maxId={activeIndex === currentIndex ? currentStep.maxId : maxId}
                     key="currentStep"
                 />}
                 {history}
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
-            {goal}
+            {false && goal}
+            {finished && <div
+                style={{
+                        position: 'absolute',
+                        width:'100%',
+                        bottom: 166,
+                        borderLeft: 'solid 20px #444',
+                        borderRight: 'solid 20px #444',
+                        boxSizing: 'border-box',
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        fontFamily: 'helvetica-light',
+                        fontSize: 26,
+                        backgroundColor: '#444',
+                        color: '#FFF'
+                    }}
+            >
+                You made it, yay!
+                <button
+                    style={{
+                            position: 'absolute',
+                            right: 0,
+                            fontSize: 22,
+                            backgroundColor: '#2F0',
+                            color: '#444',
+                            border: 'none',
+                            borderRadius: 4,
+                        }}
+                >next</button>
+            </div>
+            }
             <Keypad width={this.props.width}/>
         </div>;
     }

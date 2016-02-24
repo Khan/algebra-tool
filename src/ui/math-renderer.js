@@ -28,13 +28,28 @@ class MathRenderer extends Component {
 
         const layout = createFlatLayout(math, fontSize, 6);
         const bounds = layout.bounds;
+        const { width, height } = bounds;
 
         const canvas = document.createElement('canvas');
-        canvas.width = bounds.width;
-        canvas.height = bounds.height;
+        canvas.width = width;
+        canvas.height = height;
         canvas.style.display = 'block';
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
 
         const context = canvas.getContext('2d');
+        const devicePixelRatio = window.devicePixelRatio || 1;
+        const backingStoreRatio = context.webkitBackingStorePixelRatio ||
+            context.mozBackingStorePixelRatio ||
+            context.msBackingStorePixelRatio ||
+            context.oBackingStorePixelRatio ||
+            context.backingStorePixelRatio || 1;
+
+        const ratio = devicePixelRatio / backingStoreRatio;
+
+        canvas.width = ratio * canvas.width;
+        canvas.height = ratio * canvas.height;
+        context.scale(ratio, ratio);
 
         if (selections.length > 0) {
             this.drawSelection(context, selections, null, layout);
@@ -44,7 +59,10 @@ class MathRenderer extends Component {
 
         this.refs.container.appendChild(canvas);
 
-        this.setState({ context, layout });
+        const marginLeft = this.refs.container.offsetLeft;
+        const marginTop = this.refs.container.offsetTop;
+
+        this.setState({ context, layout, ratio, marginLeft, marginTop });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,7 +80,7 @@ class MathRenderer extends Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        const { context } = this.state;
+        const { context, ratio } = this.state;
 
         if (context) {
             const canvas = context.canvas;
@@ -86,16 +104,22 @@ class MathRenderer extends Component {
                 // if the cursor is showing don't animate because we're in the
                 // process of typing something in
                 if (nextProps.cursor) {
-                    canvas.width = nextLayout.bounds.width;
-                    canvas.height = nextLayout.bounds.height;
+                    canvas.width = ratio * nextLayout.bounds.width;
+                    canvas.height = ratio * nextLayout.bounds.height;
+                    canvas.style.width = `${nextLayout.bounds.right}px`;
+                    canvas.style.height = `${nextLayout.bounds.bottom}px`;
+                    context.scale(ratio, ratio);
                     this.drawLayout(context, nextLayout, options);
                 } else {
                     const animatedLayout = new AnimatedLayout(
                         currentLayout,
                         nextLayout,
                         () => {
-                            canvas.width = animatedLayout.bounds.right;
-                            canvas.height = animatedLayout.bounds.bottom;
+                            canvas.width = ratio * animatedLayout.bounds.right;
+                            canvas.height = ratio * animatedLayout.bounds.bottom;
+                            canvas.style.width = `${animatedLayout.bounds.right}px`;
+                            canvas.style.height = `${animatedLayout.bounds.bottom}px`;
+                            context.scale(ratio, ratio);
                             this.drawLayout(context, animatedLayout, options);
                         },
                         () => {
@@ -171,6 +195,8 @@ class MathRenderer extends Component {
         const padding = 4;
 
         context.fillStyle = 'rgba(0, 208, 208, 1.0)';
+        context.strokeStyle = 'rgba(0, 208, 208, 1.0)';
+        context.lineWidth = 2;
 
         for (const {shape, bounds} of highlights) {
             if (shape === 'circle') {
@@ -184,7 +210,7 @@ class MathRenderer extends Component {
                 const y = bounds.top - radius;
                 const width = bounds.right - bounds.left + 2 * radius;
                 const height = bounds.bottom - bounds.top + 2 * radius;
-                roundRect(context, x, y, width, height, radius);
+                roundRect(context, x, y, width, height, radius, 'fill');
             }
         }
     }
@@ -371,6 +397,7 @@ class MathRenderer extends Component {
     render() {
 
         const { cursor, fontSize, math } = this.props;
+        const { marginLeft, marginTop } = this.state;
 
         // max number of cursors support is 2
         const cursors = [];
@@ -391,14 +418,12 @@ class MathRenderer extends Component {
 
                 for (const node of layout.children) {
                     if (node.id === placeholder.id) {
-                        x = node.x + 20;
+                        x = node.x + marginLeft;
                         for (const glyph of node.children) {
                             x += glyph.advance;
                         }
 
-                        // 6 is padding built into the canvas rendering
-                        // -15 is padding above the container
-                        y = node.y + 6 - 15;
+                        y = node.y + marginTop - fontSize * 0.85;
                     }
                 }
                 cursors.push(<Cursor x={x} y={y} width={2} height={fontSize} />);

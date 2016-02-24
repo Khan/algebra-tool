@@ -119,7 +119,7 @@ const evaluate = function(node, dict = {}) {
             throw new Error(`${node.name} not found in dict`);
         }
     } else if (node.type === 'Literal') {
-        return node.value;
+        return parseFloat(node.value);
     } else if (node.type === 'Product') {
         let result = 1;
 
