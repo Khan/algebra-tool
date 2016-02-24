@@ -72,5 +72,5 @@ module.exports = {
     label: 'evaluate',
     canTransform,
     doTransform,
-    needsUserInput: true,
+    needsUserInput: false,
 };

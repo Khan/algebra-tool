@@ -298,6 +298,52 @@ const reducer = (state = initialState, action) => {
         case 'CHECK_ANSWER':
             const finished = deepEqual(state.goal, currentStep.math);
 
+            const jsonifyAction = function(action) {
+                if (action) {
+                    const json = {
+                        type: action.type
+                    };
+
+                    if (json.type === 'TRANSFORM') {
+                        json.transform = action.transform.label;
+                        json.selections = action.selections.map(selection => selection.toExpression().toString());
+                        // TODO: figure out how to serialize these
+                        // once we deserialize the JSON for the current step
+                        // and the JSON for the selections we can use that to
+                        // determine that paths for the selections and then
+                        // direct the learner to select the correct thing in their
+                        // version of the object
+                        // TODO: we need two serializations... one with out the id's which can be easily compared
+                        // TODO: and one with the id's which can be used to get selected nodes after deserialization
+                        // could just remove the 'id's from a deep copy and stringify to create key
+                    } else if (json.type === 'INSERT') {
+                        json.operation = action.operation;
+                        json.value = action.value.toString();
+                    }
+
+                    return json;
+                } else {
+                    return null;
+                }
+            };
+
+            if (finished) {
+                $.ajax({
+                    url: 'http://localhost:3000/api/steps',
+                    method: 'post',
+                    data: {
+                        steps: state.steps.map(step => {
+                            return {
+                                math: step.math.toString(),
+                                action: jsonifyAction(step.action)
+                            }
+                        })
+                    }
+                }).then(res => {
+                    console.log(res);
+                });
+            }
+
             return {
                 ...state,
                 finished: finished,
