@@ -31,7 +31,7 @@ class AuxApp extends Component {
     }
 
     render() {
-        const { steps, currentIndex, activeIndex } = this.props;
+        const { steps, currentIndex, activeIndex, finished } = this.props;
         const currentStep = steps[currentIndex];
         const previousSteps = steps.slice(0, currentIndex);
 
@@ -99,7 +99,7 @@ class AuxApp extends Component {
             />);
 
             const style = {
-                backgroundColor: '#444',
+                backgroundColor: '#999',
                 color: 'white',
                 fontFamily: 'helvetica-light',
                 paddingLeft: 20,
@@ -145,7 +145,37 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {false && goal}
-            <Keypad width={this.props.width}/>
+            {finished && <div
+                style={{
+                        position: 'absolute',
+                        width:'100%',
+                        bottom: 0,
+                        borderLeft: 'solid 20px #444',
+                        borderRight: 'solid 20px #444',
+                        boxSizing: 'border-box',
+                        paddingTop: 15,
+                        paddingBottom: 15,
+                        fontFamily: 'helvetica-light',
+                        fontSize: 26,
+                        backgroundColor: '#444',
+                        color: '#FFF'
+                    }}
+            >
+                You made it, yay!
+                <button
+                    style={{
+                            position: 'absolute',
+                            right: 0,
+                            fontSize: 22,
+                            backgroundColor: '#2F0',
+                            color: '#444',
+                            border: 'none',
+                            borderRadius: 4,
+                        }}
+                >next</button>
+            </div>
+            }
+            {!finished && <Keypad width={this.props.width}/>}
         </div>;
     }
 }

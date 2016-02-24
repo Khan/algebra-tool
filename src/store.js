@@ -300,14 +300,7 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        finished: finished,
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ],
+                finished: finished,
             };
         case 'GET_USER_INPUT':
             const selection = action.selections[0];
