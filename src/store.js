@@ -291,7 +291,6 @@ const reducer = (state = initialState, action) => {
                 ],
             };
         case 'GET_USER_INPUT':
-            console.log(action);
             const selection = action.selections[0];
             const math = parser.parse('a=b');
             const left = selection.toExpression();

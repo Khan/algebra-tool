@@ -17,9 +17,6 @@ function canTransform(selections) {
         const a = aSel.toExpression();
         const b = bSel.toExpression();
 
-        console.log(a.toString());
-        console.log(b.toString());
-
         // TODO: proxy .first on selection to selection.first.parent
         if (a.parent.type === 'Fraction') {
             aFrac = a.parent;
