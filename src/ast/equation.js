@@ -14,6 +14,14 @@ export default class Equation extends Node {
         return `${this.type}:[${this.left} = ${this.right}]`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            left: this.left.toJSON(),
+            right: this.right.toJSON(),
+        };
+    }
+
     clone(uniqueId = false) {
         var copy = Object.create(Equation.prototype);
         copy.type = this.type;

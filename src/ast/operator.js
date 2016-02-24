@@ -11,6 +11,13 @@ export default class Operator extends Node {
         return `${this.type}:${this.operator}`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            operator: this.operator,
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Operator.prototype);
         copy.type = this.type;

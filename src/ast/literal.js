@@ -11,6 +11,13 @@ export default class Literal extends Node {
         return `${this.type}:${this.value}(${this.id})`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            value: this.value,
+        };
+    }
+
     clone(uniqueId = false) {
         var copy = Object.create(Literal.prototype);
         copy.type = this.type;

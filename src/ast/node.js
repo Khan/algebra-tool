@@ -11,6 +11,13 @@ class Node {
         this.next = null;
         this.prev = null;
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            type: this.type,
+        };
+    }
 }
 
 export { generateId, Node as default };

@@ -14,6 +14,13 @@ export default class Product extends Node {
         return `${this.type}:${this.children.toString()}`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            children: [...f(this.children).map(child => child.toJSON())],
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Product.prototype);
         copy.type = this.type;

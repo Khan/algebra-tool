@@ -12,6 +12,13 @@ export default class Math extends Node {
         return `[${this.type}:${this.root}]`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            root: this.root.toJSON(),
+        };
+    }
+
     clone(uniqueId = false) {
         const clone = Object.create(Math.prototype);
         clone.id = uniqueId ? generateId() : this.id;

@@ -14,6 +14,14 @@ export default class Fraction extends Node {
         return `[${this.type}:${this.numerator}/${this.denominator}]`;
     }
 
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            numerator: this.numerator.toJSON(),
+            denominator: this.denominator.toJSON(),
+        };
+    }
+
     clone(uniqueId = false) {
         const copy = Object.create(Fraction.prototype);
         copy.type = this.type;
