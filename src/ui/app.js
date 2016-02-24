@@ -132,6 +132,8 @@ class AuxApp extends Component {
         // flex-direction is column-reverse
         history.reverse();
 
+        const maxId = activeIndex == previousSteps.length - 1 && steps[activeIndex].action && steps[activeIndex].action.maxId || Infinity;
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
@@ -140,6 +142,7 @@ class AuxApp extends Component {
                     onClick={() => this.select(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
                     current={activeIndex === currentIndex && !currentStep.userInput}
+                    maxId={maxId}
                     key="currentStep"
                 />}
                 {history}
