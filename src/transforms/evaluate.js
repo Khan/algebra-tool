@@ -1,5 +1,7 @@
-const Literal = require('../ast/literal');
-const { generateId } = require('../ast/node');
+import { generateId } from '../ast/node';
+import Selection from '../ui/selection';
+import eliminateZero from './eliminate-zero';
+import params from '../params'
 
 const operations = {
     '+': (a, b) => a + b,
@@ -64,6 +66,15 @@ function doTransform(selections, userInput) {
                     parent.parent.replace(parent, replacement);
                 }
             }
+
+            if (params.eliminateZero) {
+                const selections = [];
+                selections.push(new Selection(replacement));
+
+                if (eliminateZero.canTransform(selections)) {
+                    eliminateZero.doTransform(selections);
+                }
+            }
         }
     }
 }
@@ -73,4 +84,5 @@ module.exports = {
     canTransform,
     doTransform,
     needsUserInput: false,
+    needsUserInput: !params.autoeval,
 };
