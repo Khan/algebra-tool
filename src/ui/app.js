@@ -18,7 +18,7 @@ class AuxApp extends Component {
     select = i => {
         store.dispatch({
             type: 'SELECT_STEP',
-            step: i
+            index: i
         });
     };
 
@@ -87,7 +87,7 @@ class AuxApp extends Component {
             const previousActive = i - 1 === activeIndex;
             const active = activeIndex === i || previousActive;
             const maxId = previousActive && i > 0 && steps[i - 1].action && steps[i - 1].action.maxId || Infinity;
-            const selections = step.active && step.action && step.action.selections || [];
+            const selections = activeIndex === i && step.action && step.action.selections || [];
 
             history.push(<Step
                 {...step}
@@ -108,7 +108,7 @@ class AuxApp extends Component {
                 paddingBottom: 15,
             };
 
-            if (step.active && step.action) {
+            if (i === activeIndex && step.action) {
                 // TODO: handle nodes other than Literals
                 if (step.action.value) {
                     const value = step.action.value.value;
@@ -136,7 +136,7 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
                     {...currentStep}
-                    onClick={() => this.select(-1)}
+                    onClick={() => this.select(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
                     key="currentStep"
                 />}

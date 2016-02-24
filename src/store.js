@@ -27,47 +27,9 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
         case 'SELECT_STEP':
-            if (action.step === -1) {
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.map(step => {
-                            return {
-                                ...step,
-                                active: false,
-                            };
-                        }),
-                    ],
-                    currentStep: {
-                        ...currentStep,
-                        active: true,
-                    },
-                };
-            }
             return {
                 ...state,
-                currentStep: {
-                    ...currentStep,
-                    active: false,
-                },
-                steps: [
-                    ...state.steps.slice(0, action.step).map(step => {
-                        return {
-                            ...step,
-                            active: false,
-                        };
-                    }),
-                    {
-                        ...state.steps[action.step],
-                        active: true
-                    },
-                    ...state.steps.slice(action.step + 1).map(step => {
-                        return {
-                            ...step,
-                            active: false,
-                        };
-                    }),
-                ],
+                activeIndex: action.index,
             };
         case 'SELECT_MATH':
             return {
@@ -276,17 +238,22 @@ const reducer = (state = initialState, action) => {
                 return {
                     ...state,
                     steps: [
-                        ...previousSteps,
+                        ...previousSteps.slice(0, previousSteps.length - 1),
                         {
-                            math: newMath,
-                            cursor: false,
+                            ...previousSteps[previousSteps.length - 1],
                             action: {
                                 ...lastStep.action,
                                 value: value.clone(),
-                                maxId: Infinity,
+                                maxId: currentStep.maxId,
                             },
                         },
-                    ]
+                        {
+                            ...currentStep,
+                            math: newMath,
+                            cursor: null,
+                            maxId: Infinity,
+                        },
+                    ],
                 };
             }
         case 'ADD_STEP':
