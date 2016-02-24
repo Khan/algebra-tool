@@ -153,7 +153,7 @@ class AuxApp extends Component {
                 style={{
                         position: 'absolute',
                         width:'100%',
-                        bottom: 0,
+                        bottom: 166,
                         borderLeft: 'solid 20px #444',
                         borderRight: 'solid 20px #444',
                         boxSizing: 'border-box',
@@ -179,7 +179,7 @@ class AuxApp extends Component {
                 >next</button>
             </div>
             }
-            {!finished && <Keypad width={this.props.width}/>}
+            <Keypad width={this.props.width}/>
         </div>;
     }
 }

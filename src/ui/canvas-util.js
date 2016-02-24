@@ -1,4 +1,4 @@
-function roundRect(ctx, x, y, width, height, radius) {
+function roundRect(ctx, x, y, width, height, radius, op = 'fill') {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -10,7 +10,11 @@ function roundRect(ctx, x, y, width, height, radius) {
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
-    ctx.fill();
+    if (op === 'fill') {
+        ctx.fill();
+    } else if (op === 'stroke') {
+        ctx.stroke();
+    }
 }
 
 function fillCircle(ctx, x, y, radius) {

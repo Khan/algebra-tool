@@ -195,6 +195,8 @@ class MathRenderer extends Component {
         const padding = 4;
 
         context.fillStyle = 'rgba(0, 208, 208, 1.0)';
+        context.strokeStyle = 'rgba(0, 208, 208, 1.0)';
+        context.lineWidth = 2;
 
         for (const {shape, bounds} of highlights) {
             if (shape === 'circle') {
@@ -208,7 +210,7 @@ class MathRenderer extends Component {
                 const y = bounds.top - radius;
                 const width = bounds.right - bounds.left + 2 * radius;
                 const height = bounds.bottom - bounds.top + 2 * radius;
-                roundRect(context, x, y, width, height, radius);
+                roundRect(context, x, y, width, height, radius, 'fill');
             }
         }
     }
