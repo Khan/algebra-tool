@@ -142,7 +142,7 @@ class AuxApp extends Component {
                     onClick={() => this.select(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
                     current={activeIndex === currentIndex && !currentStep.userInput}
-                    maxId={maxId}
+                    maxId={activeIndex === currentIndex ? currentStep.maxId : maxId}
                     key="currentStep"
                 />}
                 {history}
