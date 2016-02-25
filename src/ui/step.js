@@ -66,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, userInput, current } = this.props;
+        const { math, maxId, selections, active, cursor, userInput, current, finished } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -147,7 +147,6 @@ class Step extends Component {
                         hideMenu={this.hideMenu}
                         cursor={cursor}
                     />
-                    {current && hintButton}
                 </div>
             </div>
             {input}
