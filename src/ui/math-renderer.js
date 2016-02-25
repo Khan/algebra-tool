@@ -338,10 +338,12 @@ class MathRenderer extends Component {
             this.setState({
                 hitNode,
                 mouse: 'down',
+                scrolling: false
             });
         } else {
             this.setState({
                 mouse: 'down',
+                scrolling: true
             });
         }
     }
@@ -382,8 +384,6 @@ class MathRenderer extends Component {
                     selections: [...prevSels, selection]
                 });
             }
-        } else {
-            this.setState({ scrolling: true });
         }
     }
 
