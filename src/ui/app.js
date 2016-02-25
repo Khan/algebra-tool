@@ -22,6 +22,24 @@ class AuxApp extends Component {
         });
     };
 
+    handleHintRequest = i => {
+        console.log('requesting hint from server');
+
+        const { steps } = this.props;
+
+        $.ajax({
+            url: 'http://localhost:3000/api/next_step_for',
+            method: 'GET',
+            data: {
+                question: JSON.stringify(steps[0].math),
+                currentStep: JSON.stringify(steps[i].math),
+            },
+        }).then(res => {
+            console.log('next_step_for:');
+            console.log(res);
+        });
+    };
+
     componentDidMount() {
         const {offsetHeight, scrollHeight} = this.refs.container;
 
@@ -140,6 +158,7 @@ class AuxApp extends Component {
                 {<Step
                     {...currentStep}
                     onClick={() => this.select(currentIndex)}
+                    onHintRequest={() => this.handleHintRequest(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
                     current={activeIndex === currentIndex && !currentStep.userInput}
                     maxId={activeIndex === currentIndex ? currentStep.maxId : maxId}

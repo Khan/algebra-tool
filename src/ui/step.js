@@ -66,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, finished, userInput, current } = this.props;
+        const { math, maxId, selections, active, cursor, userInput, current } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -120,6 +120,20 @@ class Step extends Component {
             </div>;
         }
 
+        const hintButton = <button
+            style={{
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                backgroundColor: 'orange',
+                fontFamily: 'helvetica-light',
+                fontSize: 18,
+                border: 'none',
+                borderRadius: 4,
+            }}
+            onClick={this.props.onHintRequest}
+        >hint</button>;
+
         return <div style={{ position: 'relative', flexShrink: 0 }}>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
@@ -133,6 +147,7 @@ class Step extends Component {
                         hideMenu={this.hideMenu}
                         cursor={cursor}
                     />
+                    {current && hintButton}
                 </div>
             </div>
             {input}

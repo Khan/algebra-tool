@@ -4,6 +4,7 @@ var server = restify.createServer();
 
 // yay, middleware
 server.use(restify.bodyParser());
+server.use(restify.queryParser());
 
 // stringified version of the question math is the key
 // this should actually be the id of question that's a data structure containing
@@ -53,7 +54,29 @@ server.post('/api/steps', (req, res, next) => {
 
 server.get('/api/next_step_for', (req, res, next) => {
 
+    var question = req.params.question.replace(/"id":"[0-9]+",/g, '');
+    var currentStep = req.params.currentStep.replace(/"id":"[0-9]+",/g, '');
 
+    console.log('question');
+    console.log(question);
+    console.log('');
+
+    console.log('currentStep');
+    console.log(currentStep);
+    console.log('');
+
+    const solution = solutions[question];
+    console.log('solution');
+    console.log(solution);
+    console.log('');
+
+    const nextStep = solution[currentStep];
+    console.log('nextStep');
+    console.log(nextStep);
+    console.log('');
+
+    res.send(nextStep.action);
+    next();
 });
 
 server.listen(3001, function() {
