@@ -31,12 +31,14 @@ server.post('/api/steps', (req, res, next) => {
         if (solution[stepKey] && solution[stepKey].nextStepCount > nextStepCount) {
             solution[stepKey] = {
                 nextStepCount: nextStepCount,
-                action: step.action
+                action: step.action,
+                math: step.math
             };
         } else if (!solution.hasOwnProperty(stepKey)) {
             solution[stepKey] = {
                 nextStepCount: nextStepCount,
-                action: step.action
+                action: step.action,
+                math: step.math
             };
         }
     }
@@ -75,7 +77,10 @@ server.get('/api/next_step_for', (req, res, next) => {
     console.log(nextStep);
     console.log('');
 
-    res.send(JSON.stringify(nextStep.action));
+    res.send(JSON.stringify({
+        action: nextStep.action,
+        math: nextStep.math,
+    }));
     next();
 });
 

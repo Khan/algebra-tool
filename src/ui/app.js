@@ -5,6 +5,9 @@ import Keypad from './keypad';
 import Step from './step';
 import MathRenderer from './math-renderer';
 import store from './../store';
+import deserialize from '../ast/deserialize';
+import Selection from './selection';
+import { findNode } from '../ast/node-utils';
 
 
 class AuxApp extends Component {
@@ -25,7 +28,7 @@ class AuxApp extends Component {
     handleHintRequest = i => {
         console.log('requesting hint from server');
 
-        const { steps } = this.props;
+        const { steps, currentIndex } = this.props;
 
         $.ajax({
             url: 'http://localhost:3000/api/next_step_for',
@@ -35,8 +38,37 @@ class AuxApp extends Component {
                 currentStep: JSON.stringify(steps[i].math),
             },
         }).then(res => {
+            const currentStep = steps[currentIndex];
+
+            const {action, math} = JSON.parse(res);
+            const selections = action.selections.map(selection => {
+                const expr = deserialize(JSON.parse(selection));
+                return new Selection(expr.first, expr.last);
+            });
+            const newSelections = selections.map(selection => {
+                const first = findNode(currentStep.math, selection.first.id);
+                const last = findNode(currentStep.math, selection.last.id);
+                console.log('last = ');
+                console.log(last);
+                return new Selection(first, last);
+            });
+
             console.log('next_step_for:');
-            console.log(res);
+            console.log(action);
+
+            console.log('currentStep:');
+            console.log(currentStep);
+
+            console.log('selections:');
+            console.log(selections);
+
+            console.log('newSelections:');
+            console.log(newSelections);
+
+            store.dispatch({
+                type: 'SELECT_MATH',
+                selections: newSelections,
+            });
         });
     };
 
@@ -151,6 +183,8 @@ class AuxApp extends Component {
         history.reverse();
 
         const maxId = activeIndex == previousSteps.length - 1 && steps[activeIndex].action && steps[activeIndex].action.maxId || Infinity;
+
+        console.log(currentStep.math.toJSON());
 
         return <div style={style}>
             <div style={containerStyle} ref="container">
