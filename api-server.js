@@ -75,7 +75,7 @@ server.get('/api/next_step_for', (req, res, next) => {
     console.log(nextStep);
     console.log('');
 
-    res.send(nextStep.action);
+    res.send(JSON.stringify(nextStep.action));
     next();
 });
 
