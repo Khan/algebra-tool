@@ -4,11 +4,12 @@ function canTransform(selections) {
     }
     const selection = selections[0];
 
-    if (selection.type === 'range') {
+    if (selection.length > 1) {
         return false;
     }
     const node = selection.first;
     if (node && node.parent) {
+        // TODO: handle (2x+5) = 10
         if (node.type === 'Expression' && node.parent.type === 'Expression') {
             return node.prev == null || node.prev.operator === '+';
         } else {
