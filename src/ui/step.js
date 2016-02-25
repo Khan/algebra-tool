@@ -23,6 +23,10 @@ class Step extends Component {
             return new Selection(first, last);
         });
 
+        store.dispatch({
+            type: 'HIDE_MENU'
+        });
+
         if (transform.needsUserInput) {
             store.dispatch({
                 type: 'GET_USER_INPUT',
