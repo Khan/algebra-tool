@@ -18,6 +18,7 @@ module.exports = {
     remove_parens: require('./transforms/remove-parens.js'),
     replace_selection: require('./transforms/replace-selection.js'),
     rewrite_as_division: require('./transforms/rewrite-as-division.js'),
+    rewrite_as_negation: require('./transforms/rewrite-as-negation.js'),
     rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
     swap_sides: require('./transforms/swap-sides'),
