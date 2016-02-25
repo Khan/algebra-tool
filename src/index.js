@@ -18,8 +18,9 @@ window.onload = () => {
             display: 'flex',
             flexDirection: 'column',
             height: isMobile ? height : '100vh',
+            width: isMobile ? width : '100%',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
         };
 
         const provider = <Provider store={store}>
