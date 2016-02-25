@@ -298,6 +298,42 @@ const reducer = (state = initialState, action) => {
         case 'CHECK_ANSWER':
             const finished = deepEqual(state.goal, currentStep.math);
 
+            const jsonifyAction = function(action) {
+                if (action) {
+                    const json = { type: action.type };
+
+                    if (json.type === 'TRANSFORM') {
+                        json.transform = action.transform.label;
+                        json.selections = action.selections.map(
+                            selection => JSON.stringify(selection.toExpression()));
+                    } else if (json.type === 'INSERT') {
+                        json.operation = action.operation;
+                        json.value = JSON.stringify(action.value);
+                    }
+
+                    return json;
+                } else {
+                    return null;
+                }
+            };
+
+            if (finished) {
+                $.ajax({
+                    url: 'http://localhost:3000/api/steps',
+                    method: 'post',
+                    data: {
+                        steps: state.steps.map(step => {
+                            return {
+                                math: JSON.stringify(step.math),
+                                action: jsonifyAction(step.action)
+                            }
+                        })
+                    }
+                }).then(res => {
+                    console.log(res);
+                });
+            }
+
             return {
                 ...state,
                 finished: finished,

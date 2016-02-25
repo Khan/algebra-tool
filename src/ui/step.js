@@ -66,7 +66,7 @@ class Step extends Component {
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, finished, userInput, current } = this.props;
+        const { math, maxId, selections, active, cursor, userInput, current, finished } = this.props;
         const { menu } = this.state;
 
         const animate = false;
@@ -119,6 +119,20 @@ class Step extends Component {
                 {userInput.incorrect && <span style={{position:'absolute',right:0,top:0}}>try again</span>}
             </div>;
         }
+
+        const hintButton = <button
+            style={{
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                backgroundColor: 'orange',
+                fontFamily: 'helvetica-light',
+                fontSize: 18,
+                border: 'none',
+                borderRadius: 4,
+            }}
+            onClick={this.props.onHintRequest}
+        >hint</button>;
 
         return <div style={{ position: 'relative', flexShrink: 0 }}>
             <div style={lineStyle} onClick={this.props.onClick}>

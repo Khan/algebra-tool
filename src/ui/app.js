@@ -5,6 +5,9 @@ import Keypad from './keypad';
 import Step from './step';
 import MathRenderer from './math-renderer';
 import store from './../store';
+import deserialize from '../ast/deserialize';
+import Selection from './selection';
+import { findNode } from '../ast/node-utils';
 
 
 class AuxApp extends Component {
@@ -19,6 +22,78 @@ class AuxApp extends Component {
         store.dispatch({
             type: 'SELECT_STEP',
             index: i
+        });
+    };
+
+    handleHintRequest = i => {
+        console.log('requesting hint from server');
+
+        const { steps, currentIndex } = this.props;
+
+        $.ajax({
+            url: 'http://localhost:3000/api/next_step_for',
+            method: 'GET',
+            data: {
+                question: JSON.stringify(steps[0].math),
+                currentStep: JSON.stringify(steps[i].math),
+            },
+        }).then(res => {
+            const currentStep = steps[currentIndex];
+
+            const {action, math} = JSON.parse(res);
+
+            if (action.type === 'TRANSFORM') {
+                const selections = action.selections.map(selection => {
+                    const expr = deserialize(JSON.parse(selection));
+                    return new Selection(expr.first, expr.last);
+                });
+                const newSelections = selections.map(selection => {
+                    const first = findNode(currentStep.math, selection.first.id);
+                    const last = findNode(currentStep.math, selection.last.id);
+                    console.log('last = ');
+                    console.log(last);
+                    return new Selection(first, last);
+                });
+
+                // console.log('next_step_for:');
+                // console.log(action);
+                //
+                // console.log('currentStep:');
+                // console.log(currentStep);
+                //
+                // console.log('selections:');
+                // console.log(selections);
+                //
+                // console.log('newSelections:');
+                // console.log(newSelections);
+
+                store.dispatch({
+                    type: 'SELECT_MATH',
+                    selections: newSelections,
+                });
+            } else if (action.type === 'INSERT') {
+                console.log(action);
+                const operation = action.operation;
+                const value = JSON.parse(action.value);
+
+                store.dispatch({
+                    type: 'SIMPLE_OPERATION',
+                    operator: operation
+                });
+
+                if (value.type === "Literal") {
+                    console.log(value.value);
+                    store.dispatch({
+                        type: 'INSERT_NUMBER',
+                        number: value.value
+                    });
+                } else if (value.type === "Identifier") {
+                    console.log(value.name);
+                    throw new Error("we don't handle hints with variables yet");
+                } else {
+                    throw new Error(`we don't handle hints with ${value.type} operands yet`);
+                }
+            }
         });
     };
 
@@ -134,6 +209,22 @@ class AuxApp extends Component {
 
         const maxId = activeIndex == previousSteps.length - 1 && steps[activeIndex].action && steps[activeIndex].action.maxId || Infinity;
 
+        // console.log(currentStep.math.toJSON());
+
+        const hintButton = <button
+            style={{
+                position: 'absolute',
+                right: 10,
+                bottom: 166 + 10,
+                backgroundColor: 'orange',
+                fontFamily: 'helvetica-light',
+                fontSize: 18,
+                border: 'none',
+                borderRadius: 4,
+            }}
+            onClick={() => this.handleHintRequest(currentIndex)}
+        >take a hint</button>;
+
         return <div style={style}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
@@ -144,11 +235,13 @@ class AuxApp extends Component {
                     current={activeIndex === currentIndex && !currentStep.userInput}
                     maxId={activeIndex === currentIndex ? currentStep.maxId : maxId}
                     key="currentStep"
+                    finished={finished}
                 />}
                 {history}
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {false && goal}
+            {!finished && hintButton}
             {finished && <div
                 style={{
                         position: 'absolute',
