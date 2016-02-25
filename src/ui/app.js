@@ -8,6 +8,7 @@ import store from './../store';
 import deserialize from '../ast/deserialize';
 import Selection from './selection';
 import { findNode } from '../ast/node-utils';
+import params from '../params';
 
 
 class AuxApp extends Component {
@@ -164,6 +165,7 @@ class AuxApp extends Component {
         </div>;
 
         const history = [];
+        const expandHistory = params.expandHistory;
 
         previousSteps.forEach((step, i, steps) => {
             const previousActive = i - 1 === activeIndex;
@@ -176,7 +178,7 @@ class AuxApp extends Component {
                 onClick={() => this.select(i)}
                 key={i}
                 maxId={maxId}
-                active={active}
+                active={expandHistory ? finished : active}
                 selections={selections}
             />);
 
@@ -190,7 +192,7 @@ class AuxApp extends Component {
                 paddingBottom: 15,
             };
 
-            if (i === activeIndex && step.action) {
+            if (expandHistory ? finished : (i === activeIndex && step.action)) {
                 // TODO: handle nodes other than Literals
                 if (step.action.value) {
                     const value = step.action.value.value;
@@ -201,10 +203,10 @@ class AuxApp extends Component {
                         '/': `Divide both sides by ${value}`,
                     }[step.action.operation];
 
-                    history.push(<div key="action" style={style}>{message}</div>);
+                    history.push(<div key={`action-${i}`} style={style}>{message}</div>);
                 } else if (step.action.transform) {
                     const message = step.action.transform.label;
-                    history.push(<div key="action" style={style}>{message}</div>);
+                    history.push(<div key={`action-${i}`} style={style}>{message}</div>);
                 }
             }
         });
