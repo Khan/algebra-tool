@@ -4,12 +4,15 @@ function canTransform(selections) {
     if (selections.length !== 1) {
         return false;
     }
-    const selection = selections[0];
+    let selection = selections[0];
+    if (['Expression', 'Product'].includes(selection.first.type) && selection.length === 1) {
+        selection = selection.first.children;
+    }
 
     const {first, last} = selection;
 
     // only allow parens around multiple items
-    if (selection.type === 'single') {
+    if (selection.length === 1) {
         return false;
     }
 
@@ -32,7 +35,10 @@ function doTransform(selections) {
     if (selections.length !== 1) {
         return false;
     }
-    const selection = selections[0];
+    let selection = selections[0];
+    if (['Expression', 'Product'].includes(selection.first.type) && selection.length === 1) {
+        selection = selection.first.children;
+    }
 
     const {first, last} = selection;
     const {parent} = first;
