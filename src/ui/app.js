@@ -282,6 +282,8 @@ class AuxApp extends Component {
                             color: '#444',
                             border: 'none',
                             borderRadius: 4,
+                            paddingLeft: 8,
+                            paddingRight: 8,
                         }}
                 >next</button>
             </div>

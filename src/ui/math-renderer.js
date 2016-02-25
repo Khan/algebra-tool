@@ -328,6 +328,13 @@ class MathRenderer extends Component {
                 selections: newSelections
             });
 
+            // TODO: wait for touchend/mouseup to clear selection
+            if (newSelections.length === 0) {
+                if (this.props.hideMenu) {
+                    this.props.hideMenu();
+                }
+            }
+
             this.setState({
                 hitNode,
                 mouse: 'down',
@@ -395,8 +402,10 @@ class MathRenderer extends Component {
                     this.props.hideMenu();
                 }
             } else {
-                if (this.props.showMenu) {
-                    this.props.showMenu();
+                if (this.props.selections.length > 0) {
+                    if (this.props.showMenu) {
+                        this.props.showMenu();
+                    }
                 }
             }
 
