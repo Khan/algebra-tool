@@ -15,6 +15,7 @@ module.exports = {
     factor: require('./transforms/factor.js'),
     multiply_fractions: require('./transforms/multiply-fractions.js'),
     prime_factorization: require('./transforms/prime-factorization.js'),
+    remove_parens: require('./transforms/remove-parens.js'),
     rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
     swap_sides: require('./transforms/swap-sides'),
