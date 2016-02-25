@@ -13,6 +13,7 @@ module.exports = {
     eliminate_zero: require('./transforms/eliminate-zero.js'),
     evaluate: require('./transforms/evaluate.js'),
     factor: require('./transforms/factor.js'),
+    multiply_fractions: require('./transforms/multiply-fractions.js'),
     rewrite_as_subtraction: require('./transforms/rewrite-as-subtraction'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
     swap_sides: require('./transforms/swap-sides'),
