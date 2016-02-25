@@ -81,6 +81,14 @@ const reducer = (state = initialState, action) => {
                 }[action.operator];
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
+
+                if (action.value) {
+                    traverseNode(newMath, node => {
+                        if (node.type === 'Placeholder') {
+                            node.text += action.value;
+                        }
+                    });
+                }
             }
 
             return {

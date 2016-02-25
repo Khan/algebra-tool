@@ -79,20 +79,14 @@ class AuxApp extends Component {
                     selections: newSelections,
                 });
             } else if (action.type === 'INSERT') {
-                console.log(action);
                 const operation = action.operation;
                 const value = JSON.parse(action.value);
 
-                store.dispatch({
-                    type: 'SIMPLE_OPERATION',
-                    operator: operation
-                });
-
                 if (value.type === "Literal") {
-                    console.log(value.value);
                     store.dispatch({
-                        type: 'INSERT_NUMBER',
-                        number: value.value
+                        type: 'SIMPLE_OPERATION',
+                        operator: operation,
+                        value: value.value
                     });
                 } else if (value.type === "Identifier") {
                     console.log(value.name);
