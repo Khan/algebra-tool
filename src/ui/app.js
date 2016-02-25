@@ -42,10 +42,16 @@ class AuxApp extends Component {
 
             const {action, math} = JSON.parse(res);
 
+            // TODO: handle selections where the ids don't match
+            // this requires find the path of each node in each selection
             if (action.type === 'TRANSFORM') {
                 const selections = action.selections.map(selection => {
                     const expr = deserialize(JSON.parse(selection));
-                    return new Selection(expr.first, expr.last);
+                    if (['Expression', 'Product'].includes(expr.type)) {
+                        return new Selection(expr.first, expr.last);
+                    } else {
+                        return new Selection(expr);
+                    }
                 });
                 const newSelections = selections.map(selection => {
                     const first = findNode(currentStep.math, selection.first.id);
