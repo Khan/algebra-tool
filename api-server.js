@@ -68,19 +68,28 @@ server.get('/api/next_step_for', (req, res, next) => {
     console.log('');
 
     const solution = solutions[question];
-    console.log('solution');
-    console.log(solution);
-    console.log('');
+    if (solution) {
+        console.log('solution');
+        console.log(solution);
+        console.log('');
 
-    const nextStep = solution[currentStep];
-    console.log('nextStep');
-    console.log(nextStep);
-    console.log('');
+        const nextStep = solution[currentStep];
+        if (nextStep) {
+            console.log('nextStep');
+            console.log(nextStep);
+            console.log('');
 
-    res.send(JSON.stringify({
-        action: nextStep.action,
-        math: nextStep.math,
-    }));
+            res.send(JSON.stringify({
+                action: nextStep.action,
+                math: nextStep.math,
+            }));
+        } else {
+            return next(new restify.NotFoundError("no hint found for this step"));
+        }
+    } else {
+        return next(new restify.NotFoundError("no hints found for this question"));
+    }
+
     next();
 });
 

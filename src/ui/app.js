@@ -105,6 +105,10 @@ class AuxApp extends Component {
             store.dispatch({
                 type: 'SHOW_MENU',
             });
+        }, function(xhr, err) {
+            const res = JSON.parse(arguments[0].responseText);
+            console.log(res);
+            alert(res.message);
         });
     };
 
@@ -229,12 +233,14 @@ class AuxApp extends Component {
             style={{
                 position: 'absolute',
                 right: 10,
-                bottom: 166 + 10,
+                top: 10,
                 backgroundColor: 'orange',
                 fontFamily: 'helvetica-light',
                 fontSize: 18,
                 border: 'none',
                 borderRadius: 4,
+                paddingLeft: 8,
+                paddingRight: 8,
             }}
             onClick={() => this.handleHintRequest(currentIndex)}
         >take a hint</button>;
