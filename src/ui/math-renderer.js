@@ -227,6 +227,8 @@ class MathRenderer extends Component {
     }
 
     handleTouchStart = e => {
+        e.stopPropagation();
+        // e.preventDefault();
         if (!this.props.active || this.props.cursor) return;
 
         const touch = e.changedTouches[0];
@@ -236,16 +238,22 @@ class MathRenderer extends Component {
     };
 
     handleTouchMove = e => {
+        e.stopPropagation();
+        // e.preventDefault();
+
         if (!this.props.active || this.props.cursor) return;
         if (this.state.mouse !== 'down') return;
 
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
-        this.handlePointerMove(x, y);
+        this.handlePointerMove(x, y, e);
     };
 
     handleTouchEnd = e => {
+        e.stopPropagation();
+        // e.preventDefault();
+
         if (!this.props.active || this.props.cursor) return;
 
         e.preventDefault();
@@ -265,7 +273,7 @@ class MathRenderer extends Component {
         if (!this.props.active || this.props.cursor) return;
         if (this.state.mouse !== 'down') return;
         const { x, y } = this.getRelativeCoordinates(e);
-        this.handlePointerMove(x, y);
+        this.handlePointerMove(x, y, e);
     };
 
     handleMouseUp = e => {
@@ -331,13 +339,18 @@ class MathRenderer extends Component {
         }
     }
 
-    handlePointerMove(x, y) {
+    handlePointerMove(x, y, e) {
         const { math, selections } = this.props;
         const { layout } = this.state;
 
         const hitNode = layout.hitTest(x, y);
 
+        if (!this.state.scrolling) {
+            e.preventDefault();
+        }
+
         if (hitNode && hitNode.selectable) {
+            e.preventDefault();
             const id = hitNode.id.split(":")[0];
             let mathNode = findNode(math, id);
 

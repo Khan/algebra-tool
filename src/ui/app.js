@@ -194,6 +194,8 @@ class AuxApp extends Component {
                 paddingRight: 20,
                 paddingTop: 15,
                 paddingBottom: 15,
+                flexShrink: 0,
+
             };
 
             if (expandHistory ? finished : (i === activeIndex && step.action)) {

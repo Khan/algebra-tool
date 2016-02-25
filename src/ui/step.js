@@ -135,7 +135,7 @@ class Step extends Component {
             onClick={this.props.onHintRequest}
         >hint</button>;
 
-        return <div style={{ position: 'relative', flexShrink: 0 }}>
+        return <div style={{ position: 'relative', flexShrink: 0, WebkitUserSelect: 'none' }}>
             <div style={lineStyle} onClick={this.props.onClick}>
                 <div style={textStyle}>
                     <MathRenderer

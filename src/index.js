@@ -9,18 +9,18 @@ const container = document.getElementById('app-container');
 
 window.onload = () => {
     setTimeout(() => {
-        const style = {
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100vh',
-            alignItems: 'center',
-            justifyContent: 'center'
-        };
-
         const isMobile = /mobile/i.test(navigator.userAgent);
 
         const width = isMobile ? window.innerWidth : 320;
         const height = isMobile ? window.innerHeight : 568;
+
+        const style = {
+            display: 'flex',
+            flexDirection: 'column',
+            height: isMobile ? height : '100vh',
+            alignItems: 'center',
+            justifyContent: 'center'
+        };
 
         const provider = <Provider store={store}>
             <div style={style}>
