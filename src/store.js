@@ -304,7 +304,8 @@ const reducer = (state = initialState, action) => {
 
                     if (json.type === 'TRANSFORM') {
                         json.transform = action.transform.label;
-                        json.selections = action.selections.map(selection => selection.toExpression().toString());
+                        json.selections = action.selections.map(
+                            selection => JSON.stringify(selection.toExpression()));
                     } else if (json.type === 'INSERT') {
                         json.operation = action.operation;
                         json.value = JSON.stringify(action.value);
