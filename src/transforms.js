@@ -4,6 +4,7 @@ module.exports = {
     cancel_addtion: require('./transforms/cancel-addition.js'),
     cancel_factor: require('./transforms/cancel-factor.js'),
     cancel_subtraction: require('./transforms/cancel-subtraction.js'),
+    collect_like_terms: require('./transforms/collect-like-terms.js'),
     commute: require('./transforms/commute'),
     distribute_backwards: require('./transforms/distribute-backwards'),
     distribute_forwards: require('./transforms/distribute-forwards'),
