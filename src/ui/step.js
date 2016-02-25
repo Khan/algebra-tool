@@ -46,6 +46,21 @@ class Step extends Component {
         }
     };
 
+    handleClick = e => {
+        // TODO: pass down the number of the step as a prop so we don't need to
+        // ask app.js to dispatch a 'SELECT_STEP' action
+        if (this.props.onClick) {
+            this.props.onClick();
+        }
+
+        // deselect all math in the current step if we click somewhere that
+        // contains no math
+        store.dispatch({
+            type: 'SELECT_MATH',
+            selections: []
+        });
+    };
+
     createMenu = () => {
         const { selections } = this.props;
 
@@ -140,9 +155,10 @@ class Step extends Component {
         >hint</button>;
 
         return <div style={{ position: 'relative', flexShrink: 0, WebkitUserSelect: 'none' }}>
-            <div style={lineStyle} onClick={this.props.onClick}>
+            <div style={lineStyle}>
                 <div style={textStyle}>
                     <MathRenderer
+                        onClick={this.handleClick}
                         maxId={maxId}
                         fontSize={26}
                         math={math}

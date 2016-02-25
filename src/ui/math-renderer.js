@@ -33,7 +33,7 @@ class MathRenderer extends Component {
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
-        canvas.style.display = 'block';
+        canvas.style.display = 'inline-block';
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height}px`;
 
@@ -228,7 +228,6 @@ class MathRenderer extends Component {
 
     handleTouchStart = e => {
         e.stopPropagation();
-        // e.preventDefault();
         if (!this.props.active || this.props.cursor) return;
 
         const touch = e.changedTouches[0];
@@ -239,7 +238,6 @@ class MathRenderer extends Component {
 
     handleTouchMove = e => {
         e.stopPropagation();
-        // e.preventDefault();
 
         if (!this.props.active || this.props.cursor) return;
         if (this.state.mouse !== 'down') return;
@@ -252,11 +250,9 @@ class MathRenderer extends Component {
 
     handleTouchEnd = e => {
         e.stopPropagation();
-        // e.preventDefault();
 
         if (!this.props.active || this.props.cursor) return;
 
-        e.preventDefault();
         const touch = e.changedTouches[0];
 
         const { x, y } = this.getRelativeCoordinates(touch);
@@ -460,6 +456,7 @@ class MathRenderer extends Component {
             onMouseDown={this.handleMouseDown}
             onMouseMove={this.handleMouseMove}
             onMouseUp={this.handleMouseUp}
+            onClick={this.props.onClick}
         >
             {cursors[0]}
             {cursors[1]}
