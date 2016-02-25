@@ -101,6 +101,10 @@ class AuxApp extends Component {
                     throw new Error(`we don't handle hints with ${value.type} operands yet`);
                 }
             }
+
+            store.dispatch({
+                type: 'SHOW_MENU',
+            });
         });
     };
 

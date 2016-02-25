@@ -375,6 +375,30 @@ const reducer = (state = initialState, action) => {
                 currentIndex: Math.min(state.currentIndex + 1, state.steps.length - 1),
                 activeIndex: Math.min(state.currentIndex + 1, state.steps.length - 1),
             };
+        case 'SHOW_MENU':
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, state.currentIndex),
+                    {
+                        ...currentStep,
+                        menuVisible: true,
+                    },
+                    ...state.steps.slice(state.currentIndex + 1)
+                ],
+            };
+        case 'HIDE_MENU':
+            return {
+                ...state,
+                steps: [
+                    ...state.steps.slice(0, state.currentIndex),
+                    {
+                        ...currentStep,
+                        menuVisible: false,
+                    },
+                    ...state.steps.slice(state.currentIndex + 1)
+                ],
+            };
         default:
             return state;
     }

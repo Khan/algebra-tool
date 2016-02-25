@@ -9,10 +9,6 @@ import transforms from '../transforms';
 
 
 class Step extends Component {
-    state = {
-        menu: null
-    };
-
     static defaultProps = {
         selections: [],
     };
@@ -44,13 +40,9 @@ class Step extends Component {
                 transform: transform,
             });
         }
-
-        this.setState({
-            menu: null
-        });
     };
 
-    showMenu = () => {
+    createMenu = () => {
         const { selections } = this.props;
 
         const items = Object.values(transforms).filter(
@@ -58,16 +50,25 @@ class Step extends Component {
 
         const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
 
-        this.setState({ menu: <div style={{position: 'absolute', width:'100%'}}>{menu}</div> });
+        return <div style={{position: 'absolute', width:'100%'}}>{menu}</div>;
+    };
+
+    showMenu = () => {
+        store.dispatch({
+            type: 'SHOW_MENU'
+        });
     };
 
     hideMenu = () => {
-        this.setState({ menu: null });
+        store.dispatch({
+            type: 'HIDE_MENU'
+        });
     };
 
     render() {
-        const { math, maxId, selections, active, cursor, userInput, current, finished } = this.props;
-        const { menu } = this.state;
+        const { math, maxId, selections, active, cursor, userInput, current, menuVisible } = this.props;
+
+        const menu = menuVisible ? this.createMenu() : null;
 
         const animate = false;
         const transitionStyle = animate ? {
