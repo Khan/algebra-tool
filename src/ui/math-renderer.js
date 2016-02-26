@@ -412,6 +412,14 @@ class MathRenderer extends Component {
         }
     }
 
+    handleClick = e => {
+        // TODO: make this better... using scrolling as a proxy as to whether
+        // we started a selection when dragging is not a good way to go about things
+        if (this.props.onClick && this.state.scrolling) {
+            this.props.onClick();
+        }
+    };
+
     render() {
 
         const { cursor, fontSize, math } = this.props;
@@ -456,7 +464,7 @@ class MathRenderer extends Component {
             onMouseDown={this.handleMouseDown}
             onMouseMove={this.handleMouseMove}
             onMouseUp={this.handleMouseUp}
-            onClick={this.props.onClick}
+            onClick={this.handleClick}
         >
             {cursors[0]}
             {cursors[1]}
