@@ -23,5 +23,6 @@ module.exports = {
     rewrite_division: require('./transforms/rewrite-division.js'),
     rewrite_negation: require('./transforms/rewrite-negation.js'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
+    simplify_to_zero: require('./transforms/simplify-to-zero.js'),
     swap_sides: require('./transforms/swap-sides'),
 };
