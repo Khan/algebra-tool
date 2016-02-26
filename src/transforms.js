@@ -24,6 +24,7 @@ module.exports = {
     rewrite_negation: require('./transforms/rewrite-negation.js'),
     rewrite_subtraction: require('./transforms/rewrite-subtraction'),
     simplify_to_zero: require('./transforms/simplify-to-zero.js'),
-    split_faction_addition: require('./transforms/split-fraction-addition.js'),
+    split_fraction_addition: require('./transforms/split-fraction-addition.js'),
+    split_fraction_multiplication: require('./transforms/split-fraction-multiplication.js'),
     swap_sides: require('./transforms/swap-sides'),
 };
