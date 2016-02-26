@@ -415,7 +415,7 @@ class MathRenderer extends Component {
     handleClick = e => {
         // TODO: make this better... using scrolling as a proxy as to whether
         // we started a selection when dragging is not a good way to go about things
-        if (this.props.onClick && this.state.scrolling) {
+        if (this.props.onClick && (this.state.scrolling || !this.props.active)) {
             this.props.onClick();
         }
     };
