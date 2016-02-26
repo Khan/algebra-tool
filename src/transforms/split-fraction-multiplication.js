@@ -31,7 +31,7 @@ function doTransform(selections) {
     const product = new Product();
     for (const [num, den] of f.zip(numerator.children, denominator.children)) {
         if (num.type === 'Operator' && den.type === 'Operator') {
-            product.children.append(new Operator('*'));
+            product.children.append(num.clone());
         } else if (num.type !== 'Operator' && den.type !== 'Operator') {
             product.children.append(div(num.clone(), den.clone()));
         } else {
