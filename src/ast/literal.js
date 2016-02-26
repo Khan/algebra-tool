@@ -14,7 +14,7 @@ export default class Literal extends Node {
     toJSON() {
         return {
             ...super.toJSON(),
-            value: this.value,
+            value: String(this.value),
         };
     }
 
