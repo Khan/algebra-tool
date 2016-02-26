@@ -207,10 +207,14 @@ class AuxApp extends Component {
                         '/': `Divide both sides by ${value}`,
                     }[step.action.operation];
 
-                    history.push(<div key={`action-${i}`} style={style}>{message}</div>);
+                    history.push(<div key={`action-${i}`} style={style}>
+                        <i className="fa fa-arrow-down"/> {message}
+                    </div>);
                 } else if (step.action.transform) {
                     const message = step.action.transform.label;
-                    history.push(<div key={`action-${i}`} style={style}>{message}</div>);
+                    history.push(<div key={`action-${i}`} style={style}>
+                        <i className="fa fa-arrow-down"/> {message}
+                    </div>);
                 }
             }
         });

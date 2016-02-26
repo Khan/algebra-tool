@@ -79,17 +79,19 @@ class Keypad extends Component {
         const topRowColor = {
             ...emptyColors,
             bgColor: "#999",
-            bgActive: "#666"
+            bgActive: "#666",
+            text: "white",
+            fontSize: 18,
         };
 
         return <div style={{marginTop:1, flexShrink:0, cursor: 'default'}}>
             <div style={rowStyle}>
-                <Button {...topRowColor} onTap={this.handleUndo}>&#x21BA;</Button>
-                <Button {...topRowColor} onTap={this.handleRedo}>&#x21BB;</Button>
-                <Button {...topRowColor} onTap={this.handleLeft}>&#x2190;</Button>
-                <Button {...topRowColor} onTap={this.handleRight}>&#x2192;</Button>
-                <Button {...topRowColor} onTap={this.handleEnter}>&#x21B5;</Button>
-                <Button {...topRowColor} onTap={this.handleBackspace}>&#x232B;</Button>
+                <Button {...topRowColor} onTap={this.handleUndo}><i className="fa fa-undo"/></Button>
+                <Button {...topRowColor} onTap={this.handleRedo}><i className="fa fa-repeat"/></Button>
+                <Button {...topRowColor} onTap={this.handleLeft}>&nbsp;</Button>
+                <Button {...topRowColor} onTap={this.handleRight}>&nbsp;</Button>
+                <Button {...topRowColor} onTap={this.handleEnter}><i className="fa fa-check"/></Button>
+                <Button {...topRowColor} onTap={this.handleBackspace}><i className="fa fa-backward"/></Button>
             </div>
             <div style={rowStyle}>
                 <Button {...emptyColors}>&nbsp;</Button>
