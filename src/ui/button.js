@@ -18,20 +18,26 @@ class Button extends Component {
 
     handleTouchStart = (e) => {
         e.preventDefault();
-        this.setState({ active: true });
+        if (!this.props.disabled) {
+            this.setState({active: true});
+        }
     };
 
     handleTouchEnd = () => {
-        this.setState({ active: false });
-        this.props.onTap(this.props.children);
+        if (!this.props.disabled) {
+            this.setState({active: false});
+            this.props.onTap(this.props.children);
+        }
     };
 
     handleClick = () => {
-        this.props.onTap(this.props.children);
+        if (!this.props.disabled) {
+            this.props.onTap(this.props.children);
+        }
     };
 
     render() {
-        const {bgColor, bgActive, text, transparent, width, height, fontSize} = this.props;
+        const {bgColor, bgActive, text, transparent, width, height, fontSize, disabled} = this.props;
 
         const color = this.state.active ? bgActive : bgColor;
 
@@ -45,7 +51,7 @@ class Button extends Component {
             lineHeight: `${height}px`,
             textAlign: 'center',
             marginLeft: 1,
-            fontFamily: 'helvetica-light'
+            fontFamily: disabled ? 'helvetica' : 'helvetica-light',
         };
 
         return <div
@@ -54,7 +60,9 @@ class Button extends Component {
             onTouchEnd={this.handleTouchEnd}
             onClick={this.handleClick}
         >
-            {this.props.children}
+            <div style={{opacity:disabled ? 0.25 : 1.0}}>
+                {this.props.children}
+            </div>
         </div>;
     }
 }

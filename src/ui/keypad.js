@@ -88,30 +88,30 @@ class Keypad extends Component {
             <div style={rowStyle}>
                 <Button {...topRowColor} onTap={this.handleUndo}><i className="fa fa-undo"/></Button>
                 <Button {...topRowColor} onTap={this.handleRedo}><i className="fa fa-repeat"/></Button>
-                <Button {...topRowColor} onTap={this.handleLeft}>&nbsp;</Button>
-                <Button {...topRowColor} onTap={this.handleRight}>&nbsp;</Button>
+                <Button {...topRowColor} disabled onTap={this.handleLeft}><i className="fa fa-arrow-left"/></Button>
+                <Button {...topRowColor} disabled onTap={this.handleRight}><i className="fa fa-arrow-right"/></Button>
                 <Button {...topRowColor} onTap={this.handleEnter}><i className="fa fa-check"/></Button>
                 <Button {...topRowColor} onTap={this.handleBackspace}><i className="fa fa-backward"/></Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>&nbsp;</Button>
-                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors} disabled>(</Button>
+                <Button {...emptyColors} disabled>)</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>7</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>8</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>9</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('+')}>+</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>&nbsp;</Button>
-                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors} disabled>&radic;</Button>
+                <Button {...emptyColors} disabled>^</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>4</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>5</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>6</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('-')}>–</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>&nbsp;</Button>
-                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors} disabled>&pi;</Button>
+                <Button {...emptyColors} disabled>e</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>1</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>2</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>3</Button>
@@ -122,7 +122,7 @@ class Keypad extends Component {
                 <Button {...emptyColors} onTap={this.handleNumber}>y</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>0</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>.</Button>
-                <Button {...emptyColors}>=</Button>
+                <Button {...emptyColors} disabled>=</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('/')}>÷</Button>
             </div>
         </div>;
