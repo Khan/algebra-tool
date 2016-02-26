@@ -75,11 +75,17 @@ class AuxApp extends Component {
             data: {
                 question: JSON.stringify(steps[0].math),
                 currentStep: JSON.stringify(steps[i].math),
+                steps: steps.slice(0, currentIndex + 1).map(step => JSON.stringify(step.math)),
             },
         }).then(res => {
             const currentStep = steps[currentIndex];
 
-            const {action, math} = JSON.parse(res);
+            const {action, backup, math} = JSON.parse(res);
+
+            if (backup > 0) {
+                alert(`backup ${backup} steps and 'take a hint' again`);
+                return;
+            }
 
             // console.log('ACTION');
             // console.log(action);

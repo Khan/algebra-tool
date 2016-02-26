@@ -10,7 +10,6 @@ server.use(restify.queryParser());
 // this should actually be the id of question that's a data structure containing
 // textual instructions, as well as starting math, but it's hackathon so we're
 // keeping this simple
-// TODO: create a property way to serialize and deserialize math AST objects
 var solutions = {};
 
 server.post('/api/steps', (req, res, next) => {
@@ -58,39 +57,52 @@ server.get('/api/next_step_for', (req, res, next) => {
 
     var question = req.params.question.replace(/"id":"[0-9]+",/g, '');
     var currentStep = req.params.currentStep.replace(/"id":"[0-9]+",/g, '');
+    var steps = req.params.steps.map(step => {
+        return step.replace(/"id":"[0-9]+",/g, '');
+    });
 
-    console.log('question');
-    console.log(question);
-    console.log('');
+    console.log('STEPS');
+    console.log(steps);
 
-    console.log('currentStep');
-    console.log(currentStep);
-    console.log('');
+    // console.log('question');
+    // console.log(question);
+    // console.log('');
+    //
+    // console.log('currentStep');
+    // console.log(currentStep);
+    // console.log('');
 
     const solution = solutions[question];
     if (solution) {
-        console.log('solution');
-        console.log(solution);
-        console.log('');
+        console.log('SOLUTION KEYS');
+        console.log(Object.keys(solution));
+        // console.log('');
 
-        const nextStep = solution[currentStep];
-        if (nextStep) {
-            console.log('nextStep');
-            console.log(nextStep);
-            console.log('');
+        for (var i = steps.length - 1; i > -1; i--) {
+            console.log(`STEP ${i}`);
+            console.log(steps[i]);
 
-            res.send(JSON.stringify({
-                action: nextStep.action,
-                math: nextStep.math,
-            }));
-        } else {
-            return next(new restify.NotFoundError("no hint found for this step"));
+            if (solution[steps[i]]) {
+                const nextStep = solution[steps[i]];
+
+                console.log('NEXTSTEP');
+                console.log(nextStep);
+
+                res.send(JSON.stringify({
+                    action: nextStep.action,
+                    backup: steps.length - 1 - i,
+                    math: nextStep.math,
+                }));
+
+                return next();
+            }
         }
+
+        // this should never happen
+        return next(new restify.NotFoundError("no hint found for this step"));
     } else {
         return next(new restify.NotFoundError("no hints found for this question"));
     }
-
-    next();
 });
 
 server.listen(3001, function() {
