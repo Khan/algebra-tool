@@ -92,24 +92,24 @@ class Keypad extends Component {
                 <Button {...topRowColor} onTap={this.handleBackspace}>&#x232B;</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>(</Button>
-                <Button {...emptyColors}>)</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>7</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>8</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>9</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('+')}>+</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>&#x221a;</Button>
-                <Button {...emptyColors}>^</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>4</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>5</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>6</Button>
                 <Button {...opColors} onTap={() => this.handleOperator('-')}>–</Button>
             </div>
             <div style={rowStyle}>
-                <Button {...emptyColors}>&pi;</Button>
-                <Button {...emptyColors}>e</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
+                <Button {...emptyColors}>&nbsp;</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>1</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>2</Button>
                 <Button {...numStyle} onTap={this.handleNumber}>3</Button>
