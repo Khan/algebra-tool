@@ -188,6 +188,10 @@ class AuxApp extends Component {
         this.setState({showHints: params.hints});
     };
 
+    handleNextProblem = e => {
+        location.reload();
+    };
+
     componentWillMount() {
         const { currentIndex } = this.props;
         this.doHintCall(currentIndex, this.enableHints.bind(this));
@@ -376,6 +380,7 @@ class AuxApp extends Component {
                             paddingLeft: 8,
                             paddingRight: 8,
                         }}
+                    onClick={this.handleNextProblem}
                 >next</button>
             </div>
             }
