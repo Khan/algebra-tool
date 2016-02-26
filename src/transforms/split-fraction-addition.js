@@ -22,9 +22,17 @@ function doTransform(selections) {
 
     const { numerator, denominator } = selection.first;
     const expression = numerator.clone();
+    let first = true;
     for (const node of expression.children) {
         if (node.type !== 'Operator') {
-            expression.replace(node, div(node.clone(), denominator.clone(true)));
+            //We keep the denominator in the first split fraction to make the
+            //animation look smoother.
+            if (first) {
+                expression.replace(node, div(node.clone(), denominator));
+                first = false;
+            } else {
+                expression.replace(node, div(node.clone(), denominator.clone(true)));
+            }
         }
     }
     selection.first.parent.replace(selection.first, expression);
@@ -35,4 +43,3 @@ module.exports = {
     canTransform,
     doTransform,
 };
-
