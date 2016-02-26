@@ -57,6 +57,13 @@ class AuxApp extends Component {
         activeIndex: PropTypes.number.isRequired,
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            showHints: false
+        };
+    };
+
     select = i => {
         store.dispatch({
             type: 'SELECT_STEP',
@@ -64,7 +71,7 @@ class AuxApp extends Component {
         });
     };
 
-    handleHintRequest = i => {
+    doHintCall = (i, success, error) => {
         console.log('requesting hint from server');
 
         const { steps, currentIndex } = this.props;
@@ -77,7 +84,15 @@ class AuxApp extends Component {
                 currentStep: JSON.stringify(steps[i].math),
                 steps: steps.slice(0, currentIndex + 1).map(step => JSON.stringify(step.math)),
             },
-        }).then(res => {
+        }).then(success, error);
+    };
+
+    handleHintRequest = i => {
+        console.log('requesting hint from server');
+
+        const { steps, currentIndex } = this.props;
+
+        const success = res => {
             const currentStep = steps[currentIndex];
 
             const {action, backup, math} = JSON.parse(res);
@@ -158,11 +173,24 @@ class AuxApp extends Component {
             store.dispatch({
                 type: 'SHOW_MENU',
             });
-        }, function(xhr, err) {
+        };
+
+        const error = (xhr, err) => {
             const res = JSON.parse(arguments[0].responseText);
             console.log(res);
             alert(res.message);
-        });
+        }
+
+        this.doHintCall(i, success, error);
+    };
+
+    enableHints() {
+        this.setState({showHints: params.hints});
+    };
+
+    componentWillMount() {
+        const { currentIndex } = this.props;
+        this.doHintCall(currentIndex, this.enableHints.bind(this));
     };
 
     componentDidMount() {
@@ -171,7 +199,7 @@ class AuxApp extends Component {
         if (scrollHeight > offsetHeight) {
             this.refs.container.scrollTop = scrollHeight - offsetHeight;
         }
-    }
+    };
 
     render() {
         const { steps, currentIndex, activeIndex, finished } = this.props;
@@ -318,7 +346,7 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {false && goal}
-            {params.hints && !finished && currentIndex == activeIndex && hintButton}
+            {this.state.showHints && !finished && currentIndex == activeIndex && hintButton}
             {finished && <div
                 style={{
                         position: 'absolute',
@@ -353,7 +381,7 @@ class AuxApp extends Component {
             }
             <Keypad width={this.props.width}/>
         </div>;
-    }
+    };
 }
 
 module.exports = connect(state => state)(AuxApp);
