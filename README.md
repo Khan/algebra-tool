@@ -33,13 +33,14 @@ A tool for manipulating algebraic expressions and equations.
 
 [khan.github.io/algebra-tool](khan.github.io/algebra-tool)
 
-### Support URL Params
+### Supported URL Params
 
-- start: URL encoded expression or equation, default: `2x + 5 = 10`
-- end: URL encoded expression or equation, default: `x = 5/2`
-- eliminateZero: if an `evaluate` action results in a zero, we will automatically remove it.  TODO: handle division by zero
-- eliminateDivByOne: if a `cancel` operation results in division by one, we will automatically remove it.
-- autoeval: compute the result of an `evaluate` action instead of asking the user to input the result.
+- __start__: URL encoded expression or equation, default: `2x + 5 = 10`
+- __end__: URL encoded expression or equation, default: `x = 5/2`
+- __eliminateZero__: if an `evaluate` action results in a zero, we will automatically remove it.  TODO: handle division by zero
+- __eliminateDivByOne__: if a `cancel` operation results in division by one, we will automatically remove it.
+- __autoeval__: compute the result of an `evaluate` action instead of asking the user to input the result.
+- __hints__: enables hint system (only works when running locally)
 
 ## Contributing
 
