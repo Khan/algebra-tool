@@ -325,7 +325,7 @@ const reducer = (state = initialState, action) => {
                 }
             };
 
-            if (finished) {
+            if (params.hints && finished) {
                 $.ajax({
                     url: 'http://localhost:3000/api/steps',
                     method: 'post',
