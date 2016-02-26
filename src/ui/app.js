@@ -7,9 +7,47 @@ import MathRenderer from './math-renderer';
 import store from './../store';
 import deserialize from '../ast/deserialize';
 import Selection from './selection';
-import { findNode } from '../ast/node-utils';
+import { findNode, superTraverseNode } from '../ast/node-utils';
 import params from '../params';
 
+
+var getPath = function(root, selection) {
+    var path = [];
+    var firstPath = null;
+    var lastPath = null;
+
+    superTraverseNode(
+        root,
+        (node, parent, property, index) => {    // enter
+            path.push({ property, index });
+            if (selection.first.id === node.id) {
+                firstPath = [...path];
+            }
+            if (selection.last.id === node.id) {
+                lastPath = [...path];
+            }
+        },
+        (node, parent, property, index) => {    // leave
+            path.pop();
+        }
+    );
+
+    return { firstPath, lastPath };
+};
+
+
+var navigateToPath = function(root, path) {
+    if (path.length === 0) {
+        return root;
+    } else {
+        const pathComponent = path.shift();
+        if (pathComponent.property === 'children') {
+            return navigateToPath(root.children.at(pathComponent.index), path);
+        } else {
+            return navigateToPath(root[pathComponent.property], path);
+        }
+    }
+};
 
 class AuxApp extends Component {
     static propTypes = {
@@ -43,6 +81,11 @@ class AuxApp extends Component {
 
             const {action, math} = JSON.parse(res);
 
+            // console.log('ACTION');
+            // console.log(action);
+            // console.log('MATH');
+            // console.log(math);
+
             // TODO: handle selections where the ids don't match
             // this requires find the path of each node in each selection
             if (action.type === 'TRANSFORM') {
@@ -54,11 +97,21 @@ class AuxApp extends Component {
                         return new Selection(expr);
                     }
                 });
+
+
                 const newSelections = selections.map(selection => {
-                    const first = findNode(currentStep.math, selection.first.id);
-                    const last = findNode(currentStep.math, selection.last.id);
-                    console.log('last = ');
-                    console.log(last);
+                    const path = getPath(JSON.parse(math), selection);
+                    // console.log("PATH");
+                    // console.log(path);
+
+                    const first = navigateToPath(currentStep.math, path.firstPath);
+                    const last = navigateToPath(currentStep.math, path.lastPath);
+
+                    // console.log('first = ');
+                    // console.log(first);
+                    // console.log('last = ');
+                    // console.log(last);
+
                     return new Selection(first, last);
                 });
 

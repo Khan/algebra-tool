@@ -115,6 +115,17 @@ export default class List {
         return -1;
     }
 
+    at(index) {
+        let i = 0;
+        for (const child of this) {
+            if (index === i) {
+                return child;
+            }
+            i++;
+        }
+        return null;
+    }
+
     *[Symbol.iterator]() {
         let node = this.first;
         while (node != this.last) {

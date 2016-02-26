@@ -60,6 +60,49 @@ function traverseNode(node, callback) {
     }
 }
 
+function superTraverseNode(node, enter, leave) {
+    console.log(node);
+    if (node.type === 'Expression') {
+        let i = 0;
+        for (const child of node.children) {
+            enter(child, node, 'children', i);
+            superTraverseNode(child, enter, leave);
+            leave(child, node, 'children', i);
+            i++;
+        }
+    } else if (node.type === 'Product') {
+        let i = 0;
+        for (const child of node.children) {
+            enter(child, node, 'children', i);
+            superTraverseNode(child, enter, leave);
+            leave(child, node, 'children', i);
+            i++;
+        }
+    } else if (node.type === "Equation") {
+        enter(node.left, node, 'left');
+        superTraverseNode(node.left, enter, leave);
+        leave(node.left, node, 'left');
+        enter(node.right, node, 'right');
+        superTraverseNode(node.right, enter, leave);
+        leave(node.right, node, 'right');
+    } else if (node.type === "Fraction") {
+        enter(node.numerator, node, 'numerator');
+        superTraverseNode(node.numerator, enter, leave);
+        leave(node.numerator, node, 'numerator');
+        enter(node.denominator, node, 'denominator');
+        superTraverseNode(node.denominator, enter, leave);
+        leave(node.denominator, node, 'denominator');
+    } else if (node.type === "Negation") {
+        enter(node.value, node, 'value');
+        superTraverseNode(node.value, enter, leave);
+        leave(node.value, node, 'value');
+    } else if (node.type === "Math") {
+        enter(node.root, node, 'root');
+        superTraverseNode(node.root, enter, leave);
+        leave(node.root, node, 'root');
+    }
+}
+
 function getLeafNodes(root) {
     const leafNodes = [];
     traverseNode(root, node => {
@@ -262,6 +305,7 @@ const deepEqual = function(node1, node2) {
 export {
     findNode,
     traverseNode,
+    superTraverseNode,
     getLeafNodes,
     getPath,
     findCommonAncestor,
