@@ -318,7 +318,7 @@ class AuxApp extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
             </div>
             {false && goal}
-            {!finished && currentIndex == activeIndex && hintButton}
+            {params.hints && !finished && currentIndex == activeIndex && hintButton}
             {finished && <div
                 style={{
                         position: 'absolute',
