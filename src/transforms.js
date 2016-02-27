@@ -1,9 +1,8 @@
 module.exports = {
     add_fractions: require('./transforms/add-fractions.js'),
     add_parens: require('./transforms/add-parens.js'),
-    cancel_addtion: require('./transforms/cancel-addition.js'),
+    cancel_terms: require('./transforms/cancel-terms.js'),
     cancel_factor: require('./transforms/cancel-factor.js'),
-    cancel_subtraction: require('./transforms/cancel-subtraction.js'),
     collect_like_terms: require('./transforms/collect-like-terms.js'),
     commute: require('./transforms/commute'),
     distribute_backwards: require('./transforms/distribute-backwards'),
