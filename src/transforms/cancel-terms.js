@@ -45,9 +45,17 @@ function canTransform(selections) {
     // TODO: handle terms that are products
     if (a.parent === b.parent && a.parent.type === 'Expression') {
         if (a.prev && a.prev.operator === '+' || !a.prev) {
-            return b.prev && b.prev.operator === '-' && compare(a,b);
+            if (b.prev && b.prev.operator === '-') {
+                return compare(a,b);
+            } else if (b.prev && b.prev.operator === '+' || !b.prev) {
+                return compare(a, new Negation(b.clone()));
+            }
         } else if (b.prev && b.prev.operator === '+' || !b.prev) {
-            return a.prev && a.prev.operator === '-' && compare(a,b);
+            if (a.prev && a.prev.operator === '-') {
+                return compare(a,b);
+            } else if (a.prev && a.prev.operator === '+' || !a.prev) {
+                return compare(new Negation(a.clone()), b);
+            }
         }
     }
 
@@ -81,7 +89,8 @@ function doTransform(selections) {
 
 // tests
 // 2x + 5 - 2x - 5
-// 2x + 5 + (-2x) + (-5)    // not working yet
+// 2x + 5 + (-2x) + (-5)
+// (-2x) + (-5) - (-2x) - (-5)
 
 module.exports = {
     label: 'cancel',
