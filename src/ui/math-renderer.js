@@ -63,6 +63,8 @@ class MathRenderer extends Component {
         const marginTop = this.refs.container.offsetTop;
 
         this.setState({ context, layout, ratio, marginLeft, marginTop });
+
+        document.body.addEventListener('mouseup', this.handleMouseUp);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -135,6 +137,10 @@ class MathRenderer extends Component {
                 this.drawLayout(context, currentLayout, options);
             }
         }
+    }
+
+    componentWillUnmount() {
+        document.body.removeEventListener('mouseup', this.handleMouseUp);
     }
 
     // TODO: get rid of the need for hitNode
@@ -334,12 +340,14 @@ class MathRenderer extends Component {
             this.setState({
                 hitNode,
                 mouse: 'down',
-                scrolling: false
+                scrolling: false,
+                selecting: true,
             });
         } else {
             this.setState({
                 mouse: 'down',
-                scrolling: true
+                scrolling: true,
+                selecting: false,
             });
         }
     }
@@ -384,12 +392,17 @@ class MathRenderer extends Component {
     }
 
     handlePointerEnd(x, y) {
-        const { layout, mouse, scrolling } = this.state;
-        const hitNode = layout.hitTest(x, y);
+        const { mouse, selecting } = this.state;
 
         // TODO: figure out selection semantics that prevent users from creating non-sensical selections
         if (mouse === 'down') {
-            if (!hitNode && !scrolling) {
+            if (selecting) {
+                if (this.props.selections.length > 0) {
+                    if (this.props.showMenu) {
+                        this.props.showMenu();
+                    }
+                }
+            } else {
                 store.dispatch({
                     type: 'SELECT_MATH',
                     selections: []
@@ -397,17 +410,12 @@ class MathRenderer extends Component {
                 if (this.props.hideMenu) {
                     this.props.hideMenu();
                 }
-            } else {
-                if (this.props.selections.length > 0) {
-                    if (this.props.showMenu) {
-                        this.props.showMenu();
-                    }
-                }
             }
 
             this.setState({
                 mouse: 'up',
                 scrolling: false,
+                selecting: false,
             });
         }
     }
