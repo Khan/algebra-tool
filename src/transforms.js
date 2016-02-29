@@ -6,6 +6,8 @@ module.exports = {
     collect_like_terms: require('./transforms/collect-like-terms.js'),
     commute: require('./transforms/commute'),
     distribute: require('./transforms/distribute'),
+    distribute_minus: require('./transforms/distribute-minus'),
+    distribute_negation: require('./transforms/distribute-negation'),
     eliminate_div_by_one: require('./transforms/eliminate-div-by-one.js'),
     eliminate_one: require('./transforms/eliminate-one.js'),
     eliminate_zero: require('./transforms/eliminate-zero.js'),

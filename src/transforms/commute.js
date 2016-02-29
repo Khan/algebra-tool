@@ -8,6 +8,9 @@ function canTransform(selections) {
     if (selection && selection.length === 3) {
         const [first, operator, ] = selection;
 
+        if (operator.type !== 'Operator') {
+            return false;
+        }
         if (operator.operator === '-') {
             return false;
         }
