@@ -7,7 +7,7 @@ function canTransform(selections) {
     }
     const selection = selections[0];
 
-    if (selection.type === 'range') {
+    if (selection.length !== 1) {
         return false;
     }
     const node = selection.first;
