@@ -27,9 +27,11 @@ function canTransform(selections) {
     return false;
 }
 
-function getLabel(selection) {
+function getLabel(selections) {
+    let selection = selections[0];
+
     if (selection.length === 1 && selection.first.type === 'Expression') {
-        selection = selection.first;
+        selection = selection.first.children;
     }
     const [ , operator, ] = selection;
     if (operator.operator === '+') {

@@ -67,7 +67,7 @@ class Step extends Component {
         const items = Object.values(transforms).filter(
             transform => transform.canTransform(selections));
 
-        const menu = items.length > 0 ? <Menu items={items} onTap={this.handleTap} /> : null;
+        const menu = items.length > 0 ? <Menu selections={selections} items={items} onTap={this.handleTap} /> : null;
 
         return <div style={{position: 'absolute', width:'100%'}}>{menu}</div>;
     };

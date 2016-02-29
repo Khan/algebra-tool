@@ -47,7 +47,7 @@ class Menu extends Component {
     };
 
     render() {
-        const { items } = this.props;
+        const { items, selections } = this.props;
 
         const sepColor = '#666';
 
@@ -75,7 +75,7 @@ class Menu extends Component {
                 {items.map(item =>
                     <MenuItem
                         key={item.label}
-                        label={item.label}
+                        label={item.getLabel ? item.getLabel(selections) : item.label}
                         onTap={() => this.props.onTap(item)}
                     />)
                 }
