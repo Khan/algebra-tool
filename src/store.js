@@ -50,6 +50,31 @@ const reducer = (state = initialState, action) => {
             // TODO: reduce for tree traversal
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
 
+
+            if (currentStep.userInput) {
+                traverseNode(newMath, node => {
+                    if (node.type === 'Placeholder') {
+                        node.text += action.operator;
+                    }
+                });
+
+                return {
+                    ...state,
+                    steps: [
+                        ...state.steps.slice(0, state.currentIndex),
+                        {
+                            ...currentStep,
+                            userInput: {
+                                ...currentStep.userInput,
+                                math: newMath,
+                                incorrect: false,
+                            },
+                        },
+                        ...state.steps.slice(state.currentIndex + 1)
+                    ],
+                };
+            }
+
             if (currentStep.cursor) {
                 traverseNode(newMath, node => {
                     if (node.type === 'Placeholder') {

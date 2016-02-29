@@ -20,7 +20,7 @@ function canTransform(selections) {
         return first.type !== 'Operator';
     }
     if (first.parent.type === 'Expression' && last.parent.type === 'Expression') {
-        if (first.type !== 'Operator') {
+        if (first.type !== 'Operator' && last.type !== 'Operator') {
             if (first.prev) {
                 return first.prev.operator !== '-';
             } else {
