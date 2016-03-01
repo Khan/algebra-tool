@@ -16,7 +16,39 @@ class Button extends Component {
         text: 'white'
     };
 
-    handleTouchStart = (e) => {
+    handleMouseDown = e => {
+        e.preventDefault();
+        if (!this.props.disabled) {
+            this.setState({
+                active: true,
+                mousedown: true,
+            });
+        }
+    };
+
+    handleMouseUp = () => {
+        if (!this.props.disabled && this.state.active) {
+            this.setState({
+                active: false,
+                mousedown: false,
+            });
+            this.props.onTap(this.props.children);
+        }
+    };
+
+    handleMouseEnter = () => {
+        if (this.state.mousedown) {
+            this.setState({active: true});
+        }
+    };
+
+    handleMouseLeave = () => {
+        if (this.state.mousedown) {
+            this.setState({active: false});
+        }
+    };
+
+    handleTouchStart = e => {
         e.preventDefault();
         if (!this.props.disabled) {
             this.setState({active: true});
@@ -24,14 +56,8 @@ class Button extends Component {
     };
 
     handleTouchEnd = () => {
-        if (!this.props.disabled) {
+        if (!this.props.disabled && this.state.active) {
             this.setState({active: false});
-            this.props.onTap(this.props.children);
-        }
-    };
-
-    handleClick = () => {
-        if (!this.props.disabled) {
             this.props.onTap(this.props.children);
         }
     };
@@ -56,9 +82,12 @@ class Button extends Component {
 
         return <div
             style={style}
+            onMouseDown={this.handleMouseDown}
+            onMouseUp={this.handleMouseUp}
+            onMouseEnter={this.handleMouseEnter}
+            onMouseLeave={this.handleMouseLeave}
             onTouchStart={this.handleTouchStart}
             onTouchEnd={this.handleTouchEnd}
-            onClick={this.handleClick}
         >
             <div style={{opacity:disabled ? 0.25 : 1.0}}>
                 {this.props.children}

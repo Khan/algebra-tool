@@ -24,7 +24,7 @@ window.onload = () => {
         };
 
         const provider = <Provider store={store}>
-            <div style={style}>
+            <div style={style} onMouseDown={e => e.preventDefault()}>
                 <App width={width} height={height} />
             </div>
         </Provider>;

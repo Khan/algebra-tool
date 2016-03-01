@@ -334,7 +334,7 @@ class AuxApp extends Component {
             onClick={() => this.handleHintRequest(currentIndex)}
         >take a hint</button>;
 
-        return <div style={style}>
+        return <div style={style} onMouseDown={e => e.preventDefault()}>
             <div style={containerStyle} ref="container">
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
