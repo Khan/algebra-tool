@@ -31,7 +31,12 @@ A tool for manipulating algebraic expressions and equations.
 
 ## Live Demo
 
-[khan.github.io/algebra-tool](khan.github.io/algebra-tool)
+[khan.github.io/algebra-tool](https://khan.github.io/algebra-tool)
+
+- [2x + 5 = 10](https://khan.github.io/algebra-tool/?start=2x+5%3D10&end=x%3D5/2)
+- [1/2 + 1/3](https://khan.github.io/algebra-tool/?start=1/2+1/3&end=5/6)
+- [12 = 2(x - 1)](https://khan.github.io/algebra-tool/?start=12%3D2(x-1)&end5%3Dx)
+- [(4 - x)/3 = 9](https://khan.github.io/algebra-tool/?start=(4-x)/3%3D9&-23%3Dx)
 
 ### Supported URL Params
 
