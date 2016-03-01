@@ -176,10 +176,10 @@ class AuxApp extends Component {
         };
 
         const error = (xhr, err) => {
-            const res = JSON.parse(arguments[0].responseText);
+            const res = JSON.parse(xhr.responseText);
             console.log(res);
             alert(res.message);
-        }
+        };
 
         this.doHintCall(i, success, error);
     };
