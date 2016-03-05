@@ -10,14 +10,21 @@ import Selection from './ui/selection';
 
 const parser = new Parser();
 
+let stepId = 0;
+
+const generateId = function() {
+    return stepId++;
+};
+
 const initialState = {
     steps: [{
-        id: 0,
+        id: generateId(),
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
     }],
     currentIndex: 0,
     activeIndex: 0,
-    goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
+    goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2'),
+    selections: [],
 };
 
 const updateCurrentStep = function(state, updatedStep) {
@@ -55,7 +62,6 @@ const jsonifyAction = function(action) {
 const reducer = (state = initialState, action) => {
     const currentStep = state.steps[state.currentIndex];
     const newMath = currentStep.userInput ? currentStep.userInput.math.clone() : currentStep.math.clone();
-    const lastStep = state.steps[state.steps.length - 1];
     const previousSteps = state.steps.slice(0, state.currentIndex);
     let maxId = 0;
 
@@ -66,10 +72,10 @@ const reducer = (state = initialState, action) => {
                 activeIndex: action.index,
             };
         case 'SELECT_MATH':
-            return updateCurrentStep(state, {
-                ...currentStep,
+            return {
+                ...state,
                 selections: action.selections,
-            });
+            };
         case PERFORM_OPERATION:
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
 
@@ -182,7 +188,7 @@ const reducer = (state = initialState, action) => {
             });
 
             if (currentStep.userInput) {
-                const selections = currentStep.selections;
+                const selections = state.selections;
                 const {transform} = currentStep.userInput;
 
                 const newNewMath = currentStep.math.clone();
@@ -198,9 +204,6 @@ const reducer = (state = initialState, action) => {
                         transform.doTransform(newSelections, newMath.root.right.clone());
                     }
 
-                    // TODO: make this less hacky
-                    const step = addStep();
-
                     return {
                         ...state,
                         steps: [
@@ -208,7 +211,6 @@ const reducer = (state = initialState, action) => {
                             {
                                 id: currentStep.id,
                                 math: currentStep.math.clone(),
-                                selections: [],
                                 action: {
                                     type: 'TRANSFORM',
                                     transform: transform,
@@ -216,12 +218,11 @@ const reducer = (state = initialState, action) => {
                                 },
                             },
                             {
-                                id: step.id,
+                                id: generateId(),
                                 math: newNewMath,
-                                selections: [],
-                                active: true,
                             },
                         ],
+                        selections: [],
                         activeIndex: state.activeIndex + 1,
                         currentIndex: state.currentIndex + 1,
                     };
@@ -242,18 +243,19 @@ const reducer = (state = initialState, action) => {
                         {
                             ...previousSteps[previousSteps.length - 1],
                             action: {
-                                ...lastStep.action,
+                                ...currentStep.action,
                                 value: value.clone(),
                                 maxId: currentStep.maxId,
                             },
                         },
                         {
-                            ...currentStep,
+                            id: currentStep.id,
                             math: newMath,
-                            cursor: null,
-                            maxId: Infinity,
                         },
                     ],
+                    // we don't actually create a new step here, yet...
+                    // activeIndex: state.activeIndex + 1,
+                    // currentIndex: state.currentIndex + 1,
                 };
             }
         case ADD_STEP:
@@ -271,7 +273,7 @@ const reducer = (state = initialState, action) => {
                         },
                     },
                     {
-                        id: action.id,
+                        id: generateId(),
                         math: action.math,
                     },
                 ],

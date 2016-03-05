@@ -4,7 +4,6 @@ function canTransform(selections) {
     if (selections.length !== 1) return false;
 
     let selection = selections[0];
-    console.log(selection.first);
     return selection.length === 1 && selection.first.type === 'Negation' &&
         selection.first.value.type === 'Expression';
 }

@@ -48,6 +48,8 @@ class Step extends Component {
 
         // deselect all math in the current step if we click somewhere that
         // contains no math
+        // TODO: don't deselect if this step is current
+        // TODO: don't render selection if step isn't current
         store.dispatch({
             type: 'SELECT_MATH',
             selections: []

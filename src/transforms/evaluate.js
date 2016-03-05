@@ -48,6 +48,15 @@ function doTransform(selections, userInput) {
                     parent.parent.replace(parent, userInput);
                 }
             }
+
+            if (params.eliminateZero) {
+                const selections = [];
+                selections.push(new Selection(userInput));
+
+                if (eliminateZero.canTransform(selections)) {
+                    eliminateZero.doTransform(selections);
+                }
+            }
         } else {
             const replacement = first.clone();
             for (let i = 0; i < rest.length; i += 2) {

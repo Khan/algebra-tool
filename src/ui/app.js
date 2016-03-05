@@ -223,7 +223,7 @@ class App extends Component {
     };
 
     render() {
-        const { steps, currentIndex, activeIndex, finished } = this.props;
+        const { steps, currentIndex, activeIndex, finished, selections } = this.props;
         const currentStep = steps[currentIndex];
         const previousSteps = steps.slice(0, currentIndex);
 
@@ -356,6 +356,7 @@ class App extends Component {
                 <div style={{height:180,flexShrink:0}}></div>
                 {<Step
                     {...currentStep}
+                    selections={selections}
                     onClick={() => this.select(currentIndex)}
                     active={activeIndex >= previousSteps.length - 1}
                     current={activeIndex === currentIndex && !currentStep.userInput}
