@@ -205,6 +205,30 @@ class App extends Component {
         }
     };
 
+    handleNumber = number => {
+        store.dispatch({
+            type: 'INSERT_CHAR',
+            char: number
+        });
+    };
+
+    handleOperation = operation => {
+        const { steps, currentIndex } = this.props;
+        const currentStep = steps[currentIndex];
+
+        if (currentStep.userInput || currentStep.cursor) {
+            store.dispatch({
+                type: 'INSERT_CHAR',
+                char: operation,
+            });
+        } else {
+            store.dispatch({
+                type: 'PERFORM_OPERATION',
+                operator: operation
+            });
+        }
+    };
+
     render() {
         const { steps, currentIndex, activeIndex, finished } = this.props;
         const currentStep = steps[currentIndex];
@@ -384,7 +408,11 @@ class App extends Component {
                 >next</button>
             </div>
             }
-            <Keypad width={this.props.width}/>
+            <Keypad
+                width={this.props.width}
+                onNumber={this.handleNumber}
+                onOperation={this.handleOperation}
+            />
         </div>;
     };
 }

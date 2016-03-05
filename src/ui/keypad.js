@@ -4,22 +4,24 @@ import Button from './button';
 import store from './../store';
 
 class Keypad extends Component {
-    handleNumber = key => {
-        store.dispatch({
-            type: 'INSERT_NUMBER',
-            number: key
-        });
+    static defaultProps = {
+        onNumber() {},
+        onOperation() {},
     };
 
+    // context dependent actions
+    handleNumber = key => {
+        this.props.onNumber(key);
+    };
+
+    handleOperator = operation => {
+        this.props.onOperation(operation);
+    };
+
+    // text editing operations
     handleBackspace = () =>
         store.dispatch({
             type: 'BACKSPACE'
-        });
-
-    handleOperator = operator =>
-        store.dispatch({
-            type: 'PERFORM_OPERATION',
-            operator: operator
         });
 
     handleEnter = () =>
@@ -35,6 +37,7 @@ class Keypad extends Component {
 
     };
 
+    // global actions
     handleUndo = () => {
         store.dispatch({
             type: 'UNDO',

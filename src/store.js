@@ -44,58 +44,10 @@ const reducer = (state = initialState, action) => {
                 ],
             };
         case 'PERFORM_OPERATION':
-            // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
 
             // TODO: reduce for tree traversal
             traverseNode(newMath, node => maxId = Math.max(maxId, node.id));
-
-
-            if (currentStep.userInput) {
-                traverseNode(newMath, node => {
-                    if (node.type === 'Placeholder') {
-                        node.text += action.operator;
-                    }
-                });
-
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            userInput: {
-                                ...currentStep.userInput,
-                                math: newMath,
-                                incorrect: false,
-                            },
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
-            }
-
-            if (currentStep.cursor) {
-                traverseNode(newMath, node => {
-                    if (node.type === 'Placeholder') {
-                        node.text += action.operator;
-                    }
-                });
-
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            math: newMath,
-                            maxId: currentStep.maxId,
-                            cursor: true,
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
-            }
 
             if (currentStep.math.root.type === 'Equation') {
                 const op = {
@@ -145,10 +97,10 @@ const reducer = (state = initialState, action) => {
                     ...state.steps.slice(state.currentIndex + 1)
                 ]
             };
-        case 'INSERT_NUMBER':
+        case 'INSERT_CHAR':
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
-                    node.text += action.number;
+                    node.text += action.char;
                 }
             });
 
@@ -168,7 +120,7 @@ const reducer = (state = initialState, action) => {
                         ...state.steps.slice(state.currentIndex + 1)
                     ],
                 };
-            } else {
+            } else if (currentStep.cursor) {
                 return {
                     ...state,
                     steps: [
@@ -180,6 +132,8 @@ const reducer = (state = initialState, action) => {
                         ...state.steps.slice(state.currentIndex + 1)
                     ],
                 };
+            } else {
+                return state;
             }
         case 'BACKSPACE':
             traverseNode(newMath, node => {
