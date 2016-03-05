@@ -18,7 +18,7 @@ class Keypad extends Component {
 
     handleOperator = operator =>
         store.dispatch({
-            type: 'SIMPLE_OPERATION',
+            type: 'PERFORM_OPERATION',
             operator: operator
         });
 

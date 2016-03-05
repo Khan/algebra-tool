@@ -43,7 +43,7 @@ const reducer = (state = initialState, action) => {
                     ...state.steps.slice(state.currentIndex + 1)
                 ],
             };
-        case 'SIMPLE_OPERATION':
+        case 'PERFORM_OPERATION':
             // TODO: have two modes... when we're in insertion mode any keystroke get's appended to the current insertionText
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
 

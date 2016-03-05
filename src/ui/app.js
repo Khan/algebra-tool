@@ -49,7 +49,7 @@ var navigateToPath = function(root, path) {
     }
 };
 
-class AuxApp extends Component {
+class App extends Component {
     static propTypes = {
         goal: PropTypes.any.isRequired,
         steps: PropTypes.arrayOf(PropTypes.any).isRequired,
@@ -158,7 +158,7 @@ class AuxApp extends Component {
 
                 if (value.type === "Literal") {
                     store.dispatch({
-                        type: 'SIMPLE_OPERATION',
+                        type: 'PERFORM_OPERATION',
                         operator: operation,
                         value: value.value
                     });
@@ -389,4 +389,4 @@ class AuxApp extends Component {
     };
 }
 
-module.exports = connect(state => state)(AuxApp);
+module.exports = connect(state => state)(App);
