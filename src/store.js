@@ -1,5 +1,6 @@
 import { createStore } from 'redux';
 
+import { ADD_STEP, GET_USER_INPUT, PERFORM_OPERATION, addStep } from './actions/index';
 import Parser from './parser';
 import Placeholder from './ast/placeholder';
 import { add, sub, mul, div } from './operations';
@@ -11,11 +12,44 @@ const parser = new Parser();
 
 const initialState = {
     steps: [{
+        id: 0,
         math: params.start ? parser.parse(params.start) : parser.parse('2x+5=10'),
     }],
     currentIndex: 0,
     activeIndex: 0,
     goal: params.end ? parser.parse(params.end) : parser.parse('x=5/2')
+};
+
+const updateCurrentStep = function(state, updatedStep) {
+    return {
+        ...state,
+        steps: state.steps.map(step => {
+            if (step.id === updatedStep.id) {
+                return updatedStep;
+            } else {
+                return step;
+            }
+        }),
+    };
+};
+
+const jsonifyAction = function(action) {
+    if (action) {
+        const json = { type: action.type };
+
+        if (json.type === 'TRANSFORM') {
+            json.transform = action.transform.label;
+            json.selections = action.selections.map(
+                selection => JSON.stringify(selection.toExpression()));
+        } else if (json.type === PERFORM_OPERATION) {
+            json.operation = action.operation;
+            json.value = JSON.stringify(action.value);
+        }
+
+        return json;
+    } else {
+        return null;
+    }
 };
 
 const reducer = (state = initialState, action) => {
@@ -32,18 +66,11 @@ const reducer = (state = initialState, action) => {
                 activeIndex: action.index,
             };
         case 'SELECT_MATH':
-            return {
-                ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        selections: action.selections,
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ],
-            };
-        case 'PERFORM_OPERATION':
+            return updateCurrentStep(state, {
+                ...currentStep,
+                selections: action.selections,
+            });
+        case PERFORM_OPERATION:
             // TODO: we need to keep track of the operation we're using during the insertion mode so we can insert parens appropriately
 
             // TODO: reduce for tree traversal
@@ -73,10 +100,11 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps.slice(0, state.currentIndex + 1),
                     {
+                        id: action.id,
                         math: newMath,
                         maxId: maxId,
                         action: {
-                            type: 'PERFORM_OPERATION',
+                            type: PERFORM_OPERATION,
                             operation: action.operation,
                             value: null,
                         },
@@ -86,17 +114,10 @@ const reducer = (state = initialState, action) => {
                 activeIndex: state.activeIndex + 1,
             };
         case 'SHOW_CURSOR':
-            return {
-                ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        cursor: true,
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ]
-            };
+            return updateCurrentStep(state, {
+                ...currentStep,
+                cursor: true,
+            });
         case 'INSERT_CHAR':
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
@@ -105,37 +126,24 @@ const reducer = (state = initialState, action) => {
             });
 
             if (currentStep.userInput) {
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            userInput: {
-                                ...currentStep.userInput,
-                                math: newMath,
-                                incorrect: false,
-                            },
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
+                return updateCurrentStep(state, {
+                    ...currentStep,
+                    userInput: {
+                        ...currentStep.userInput,
+                        math: newMath,
+                        incorrect: false,
+                    },
+                });
             } else if (currentStep.cursor) {
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            math: newMath,
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
+                return updateCurrentStep(state, {
+                    ...currentStep,
+                    math: newMath,
+                });
             } else {
                 return state;
             }
         case 'BACKSPACE':
+            // TODO: abstract out similarities between BACKSPACE and INSERT_CHAR
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
                     if (node.text === '') {
@@ -147,33 +155,21 @@ const reducer = (state = initialState, action) => {
             });
 
             if (currentStep.userInput) {
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            userInput: {
-                                ...currentStep.userInput,
-                                math: newMath,
-                                incorrect: false,
-                            },
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
+                return updateCurrentStep(state, {
+                    ...currentStep,
+                    userInput: {
+                        ...currentStep.userInput,
+                        math: newMath,
+                        incorrect: false,
+                    },
+                });
+            } else if (currentStep.cursor) {
+                return updateCurrentStep(state, {
+                    ...currentStep,
+                    math: newMath,
+                });
             } else {
-                return {
-                    ...state,
-                    steps: [
-                        ...state.steps.slice(0, state.currentIndex),
-                        {
-                            ...currentStep,
-                            math: newMath,
-                        },
-                        ...state.steps.slice(state.currentIndex + 1)
-                    ],
-                };
+                return state;
             }
         case 'ACCEPT_STEP':
             let value = null;
@@ -202,13 +198,17 @@ const reducer = (state = initialState, action) => {
                         transform.doTransform(newSelections, newMath.root.right.clone());
                     }
 
+                    // TODO: make this less hacky
+                    const step = addStep();
+
                     return {
                         ...state,
                         steps: [
                             ...previousSteps,
                             {
-                                selections: [],
+                                id: currentStep.id,
                                 math: currentStep.math.clone(),
+                                selections: [],
                                 action: {
                                     type: 'TRANSFORM',
                                     transform: transform,
@@ -216,6 +216,7 @@ const reducer = (state = initialState, action) => {
                                 },
                             },
                             {
+                                id: step.id,
                                 math: newNewMath,
                                 selections: [],
                                 active: true,
@@ -225,23 +226,15 @@ const reducer = (state = initialState, action) => {
                         currentIndex: state.currentIndex + 1,
                     };
                 } else {
-                    return {
-                        ...state,
-                        steps: [
-                            ...state.steps.slice(0, state.currentIndex),
-                            {
-                                ...currentStep,
-                                userInput: {
-                                    ...currentStep.userInput,
-                                    incorrect: true,
-                                },
-                            },
-                            ...state.steps.slice(state.currentIndex + 1)
-                        ],
-                    };
+                    return updateCurrentStep(state, {
+                        ...currentStep,
+                        userInput: {
+                            ...currentStep.userInput,
+                            incorrect: true,
+                        },
+                    });
                 }
             } else {
-                console.log(`value = ${value.toString()}`);
                 return {
                     ...state,
                     steps: [
@@ -263,12 +256,13 @@ const reducer = (state = initialState, action) => {
                     ],
                 };
             }
-        case 'ADD_STEP':
+        case ADD_STEP:
             return {
                 ...state,
                 steps: [
                     ...previousSteps,
                     {
+                        id: currentStep.id,
                         math: currentStep.math.clone(),
                         action: {
                             type: 'TRANSFORM',
@@ -277,6 +271,7 @@ const reducer = (state = initialState, action) => {
                         },
                     },
                     {
+                        id: action.id,
                         math: action.math,
                     },
                 ],
@@ -285,25 +280,6 @@ const reducer = (state = initialState, action) => {
             };
         case 'CHECK_ANSWER':
             const finished = deepEqual(state.goal, currentStep.math);
-
-            const jsonifyAction = function(action) {
-                if (action) {
-                    const json = { type: action.type };
-
-                    if (json.type === 'TRANSFORM') {
-                        json.transform = action.transform.label;
-                        json.selections = action.selections.map(
-                            selection => JSON.stringify(selection.toExpression()));
-                    } else if (json.type === 'PERFORM_OPERATION') {
-                        json.operation = action.operation;
-                        json.value = JSON.stringify(action.value);
-                    }
-
-                    return json;
-                } else {
-                    return null;
-                }
-            };
 
             if (params.hints && finished) {
                 $.ajax({
@@ -326,7 +302,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 finished: finished,
             };
-        case 'GET_USER_INPUT':
+        case GET_USER_INPUT:
             const selection = action.selections[0];
             const math = parser.parse('a=b');
             const left = selection.toExpression();
@@ -336,21 +312,14 @@ const reducer = (state = initialState, action) => {
             math.root.right = right;
             right.parent = math.root;
 
-            return {
-                ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        userInput: {
-                            transform: action.transform,
-                            value: '',
-                            math: math,
-                        },
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ],
-            };
+            return updateCurrentStep(state, {
+                ...currentStep,
+                userInput: {
+                    transform: action.transform,
+                    value: '',
+                    math: math,
+                },
+            });
         case 'UNDO':
             return {
                 ...state,
@@ -364,29 +333,15 @@ const reducer = (state = initialState, action) => {
                 activeIndex: Math.min(state.currentIndex + 1, state.steps.length - 1),
             };
         case 'SHOW_MENU':
-            return {
-                ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        menuVisible: true,
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ],
-            };
+            return updateCurrentStep(state, {
+                ...currentStep,
+                menuVisible: true,
+            });
         case 'HIDE_MENU':
-            return {
-                ...state,
-                steps: [
-                    ...state.steps.slice(0, state.currentIndex),
-                    {
-                        ...currentStep,
-                        menuVisible: false,
-                    },
-                    ...state.steps.slice(state.currentIndex + 1)
-                ],
-            };
+            return updateCurrentStep(state, {
+                ...currentStep,
+                menuVisible: false,
+            });
         default:
             return state;
     }

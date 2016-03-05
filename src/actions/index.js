@@ -1,9 +1,12 @@
+export const ADD_STEP = 'ADD_STEP';
+export const GET_USER_INPUT = 'GET_USER_INPUT';
+export const PERFORM_OPERATION = 'PERFORM_OPERATION';
 
-let stepId = 0;
+let stepId = 1;
 
 export const addStep = (math, transform) => {
     return {
-        type: 'ADD_STEP',
+        type: ADD_STEP,
         id: stepId++,
         math,
         transform,
@@ -12,8 +15,7 @@ export const addStep = (math, transform) => {
 
 export const getUserInput = (selections, transform) => {
     return {
-        type: 'GET_USER_INPUT',
-        id: stepId++,
+        type: GET_USER_INPUT,
         selections,
         transform,
     };
@@ -23,7 +25,7 @@ export const getUserInput = (selections, transform) => {
 // TODO: modify this action to modify the current step
 export const performOperation = (operation, value = null) => {
     return {
-        type: 'PERFORM_OPERATION',
+        type: PERFORM_OPERATION,
         id: stepId++,
         operation,
         value,
