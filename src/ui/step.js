@@ -6,6 +6,7 @@ import Selection from './selection';
 import { findNode } from '../ast/node-utils';
 import store from './../store';
 import transforms from '../transforms';
+import actions from '../actions/index';
 
 
 class Step extends Component {
@@ -17,32 +18,24 @@ class Step extends Component {
         const { math, selections } = this.props;
         const newMath = math.clone();
 
-        const newSelections = selections.map(selection => {
-            const first = findNode(newMath, selection.first.id);
-            const last = findNode(newMath, selection.last.id);
-            return new Selection(first, last);
-        });
-
         store.dispatch({
             type: 'HIDE_MENU'
         });
 
         if (transform.needsUserInput) {
-            store.dispatch({
-                type: 'GET_USER_INPUT',
-                transform: transform,
-                selections: selections,
-            });
+            store.dispatch(actions.getUserInput(selections, transform));
         } else {
+            const newSelections = selections.map(selection => {
+                const first = findNode(newMath, selection.first.id);
+                const last = findNode(newMath, selection.last.id);
+                return new Selection(first, last);
+            });
+
             if (transform.canTransform(newSelections)) {
                 transform.doTransform(newSelections);
             }
 
-            store.dispatch({
-                type: 'ADD_STEP',
-                math: newMath,
-                transform: transform,
-            });
+            store.dispatch(actions.addStep(newMath, transform));
         }
     };
 

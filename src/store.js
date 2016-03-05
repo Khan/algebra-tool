@@ -55,7 +55,7 @@ const reducer = (state = initialState, action) => {
                     '-': sub,
                     '*': mul,
                     '/': div
-                }[action.operator];
+                }[action.operation];
                 const placeholder = new Placeholder();
                 newMath.root = op(newMath.root, placeholder);
 
@@ -70,20 +70,20 @@ const reducer = (state = initialState, action) => {
 
             return {
                 ...state,
-                currentIndex: state.currentIndex + 1,
-                activeIndex: state.activeIndex + 1,
                 steps: [
                     ...state.steps.slice(0, state.currentIndex + 1),
                     {
                         math: newMath,
                         maxId: maxId,
                         action: {
-                            type: 'INSERT',
-                            operation: action.operator,
-                            value: null
+                            type: 'PERFORM_OPERATION',
+                            operation: action.operation,
+                            value: null,
                         },
                     },
                 ],
+                currentIndex: state.currentIndex + 1,
+                activeIndex: state.activeIndex + 1,
             };
         case 'SHOW_CURSOR':
             return {
@@ -241,6 +241,7 @@ const reducer = (state = initialState, action) => {
                     };
                 }
             } else {
+                console.log(`value = ${value.toString()}`);
                 return {
                     ...state,
                     steps: [
@@ -293,7 +294,7 @@ const reducer = (state = initialState, action) => {
                         json.transform = action.transform.label;
                         json.selections = action.selections.map(
                             selection => JSON.stringify(selection.toExpression()));
-                    } else if (json.type === 'INSERT') {
+                    } else if (json.type === 'PERFORM_OPERATION') {
                         json.operation = action.operation;
                         json.value = JSON.stringify(action.value);
                     }

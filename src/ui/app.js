@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import Keypad from './keypad';
 import Step from './step';
 import MathRenderer from './math-renderer';
-import store from './../store';
+import store from '../store';
+import actions from '../actions/index';
 import deserialize from '../ast/deserialize';
 import Selection from './selection';
 import { findNode, superTraverseNode } from '../ast/node-utils';
@@ -152,18 +153,13 @@ class App extends Component {
                     type: 'SELECT_MATH',
                     selections: newSelections,
                 });
-            } else if (action.type === 'INSERT') {
+            } else if (action.type === 'PERFORM_OPERATION') {
                 const operation = action.operation;
                 const value = JSON.parse(action.value);
 
                 if (value.type === "Literal") {
-                    store.dispatch({
-                        type: 'PERFORM_OPERATION',
-                        operator: operation,
-                        value: value.value
-                    });
+                    store.dispatch(actions.performOperation(operation, value.value));
                 } else if (value.type === "Identifier") {
-                    console.log(value.name);
                     throw new Error("we don't handle hints with variables yet");
                 } else {
                     throw new Error(`we don't handle hints with ${value.type} operands yet`);
@@ -222,10 +218,7 @@ class App extends Component {
                 char: operation,
             });
         } else {
-            store.dispatch({
-                type: 'PERFORM_OPERATION',
-                operator: operation
-            });
+            store.dispatch(actions.performOperation(operation));
         }
     };
 
