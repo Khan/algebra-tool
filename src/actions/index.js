@@ -3,10 +3,10 @@ export const GET_USER_INPUT = 'GET_USER_INPUT';
 export const PERFORM_OPERATION = 'PERFORM_OPERATION';
 
 
-export const addStep = (math, transform) => {
+export const addStep = (selections, transform) => {
     return {
         type: ADD_STEP,
-        math,
+        selections,
         transform,
     };
 };

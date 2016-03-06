@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import MathRenderer from './math-renderer';
 import Menu from './menu';
-import Selection from './selection';
-import { findNode } from '../ast/node-utils';
 import store from './../store';
 import transforms from '../transforms';
 import actions from '../actions/index';
@@ -15,8 +13,7 @@ class Step extends Component {
     };
 
     handleTap = transform => {
-        const { math, selections } = this.props;
-        const newMath = math.clone();
+        const { selections } = this.props;
 
         store.dispatch({
             type: 'HIDE_MENU'
@@ -25,17 +22,7 @@ class Step extends Component {
         if (transform.needsUserInput) {
             store.dispatch(actions.getUserInput(selections, transform));
         } else {
-            const newSelections = selections.map(selection => {
-                const first = findNode(newMath, selection.first.id);
-                const last = findNode(newMath, selection.last.id);
-                return new Selection(first, last);
-            });
-
-            if (transform.canTransform(newSelections)) {
-                transform.doTransform(newSelections);
-            }
-
-            store.dispatch(actions.addStep(newMath, transform));
+            store.dispatch(actions.addStep(selections, transform));
         }
     };
 

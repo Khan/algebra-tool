@@ -259,6 +259,17 @@ const reducer = (state = initialState, action) => {
                 };
             }
         case ADD_STEP:
+            const { selections, transform } = action;
+            const newSelections = selections.map(selection => {
+                const first = findNode(newMath, selection.first.id);
+                const last = findNode(newMath, selection.last.id);
+                return new Selection(first, last);
+            });
+
+            if (transform.canTransform(newSelections)) {
+                transform.doTransform(newSelections);
+            }
+
             return {
                 ...state,
                 steps: [
@@ -274,7 +285,7 @@ const reducer = (state = initialState, action) => {
                     },
                     {
                         id: generateId(),
-                        math: action.math,
+                        math: newMath,
                     },
                 ],
                 activeIndex: state.activeIndex + 1,
