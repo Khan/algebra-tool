@@ -66,6 +66,13 @@ class Step extends Component {
         });
     };
 
+    cancelUserInput = () => {
+        console.log('cancel user input');
+        store.dispatch({
+            type: 'CANCEL_USER_INPUT'
+        });
+    };
+
     render() {
         const { math, maxId, selections, active, cursor, userInput, current, menuVisible } = this.props;
 
@@ -106,19 +113,25 @@ class Step extends Component {
                 color: 'white',
                 fontSize: 18,
                 boxSizing: 'border-box',
+                display: 'flex',
+                flexDirection: 'row',
+                lineHeight: 0, // prevent extra space at bottom of div
             };
 
             // TODO: instead of using and <input> field, create a MathRenderer
             // with an equation with a Placeholder node on the right
             input = <div style={inputStyle}>
-                <MathRenderer
-                    math={userInput.math}
-                    fontSize={18}
-                    active={true}
-                    cursor={true}
-                    color={'white'}
-                />
-                {userInput.incorrect && <span style={{position:'absolute',right:0,top:0}}>try again</span>}
+                <span style={{flexGrow:1,alignSelf:'center'}}>
+                    <MathRenderer
+                        math={userInput.math}
+                        fontSize={18}
+                        active={true}
+                        cursor={true}
+                        color={'white'}
+                    />
+                </span>
+                {userInput.incorrect && <span style={{flexShrink:0,paddingRight:10,alignSelf:'center'}}>try again</span>}
+                <span style={{flexShrink:0,opacity:0.25,alignSelf:'center'}} onClick={this.cancelUserInput}><i className="fa fa-times-circle"/></span>
             </div>;
         }
 

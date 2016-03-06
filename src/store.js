@@ -349,6 +349,12 @@ const reducer = (state = initialState, action) => {
                     math: math,
                 },
             });
+        case 'CANCEL_USER_INPUT':
+            return updateCurrentStep(state, {
+                ...currentStep,
+                userInput: undefined,
+                menuVisible: true,
+            });
         case 'UNDO':
             return {
                 ...state,
