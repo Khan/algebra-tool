@@ -109,6 +109,7 @@ const reducer = (state = initialState, action) => {
                         id: action.id,
                         math: newMath,
                         maxId: maxId,
+                        cursor: true,
                         action: {
                             type: PERFORM_OPERATION,
                             operation: action.operation,

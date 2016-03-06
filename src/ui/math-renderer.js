@@ -125,9 +125,6 @@ class MathRenderer extends Component {
                             this.drawLayout(context, animatedLayout, options);
                         },
                         () => {
-                            if (shouldShowCursor) {
-                                store.dispatch({ type: 'SHOW_CURSOR' });
-                            }
                             store.dispatch({ type: 'CHECK_ANSWER' });
                         });
 
