@@ -105,7 +105,9 @@ class MathRenderer extends Component {
             if (currentLayout !== nextLayout) {
                 // if the cursor is showing don't animate because we're in the
                 // process of typing something in
-                if (nextProps.cursor) {
+                // we check if the previous state has a cursor so that we don't
+                // animate when backing out PERFORM_OPERATION
+                if (nextProps.cursor || this.props.cursor) {
                     canvas.width = ratio * nextLayout.bounds.width;
                     canvas.height = ratio * nextLayout.bounds.height;
                     canvas.style.width = `${nextLayout.bounds.right}px`;

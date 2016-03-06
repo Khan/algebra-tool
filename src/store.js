@@ -151,15 +151,29 @@ const reducer = (state = initialState, action) => {
             }
         case 'BACKSPACE':
             // TODO: abstract out similarities between BACKSPACE and INSERT_CHAR
+            let backup = false;
             traverseNode(newMath, node => {
                 if (node.type === 'Placeholder') {
                     if (node.text === '') {
-                        // TODO: think about how to undo the operation
+                        backup = true;
                     } else {
                         node.text = node.text.slice(0, node.text.length - 1);
                     }
                 }
             });
+
+            if (backup) {
+                if (currentStep.cursor) {
+                    return {
+                        ...state,
+                        steps: state.steps.slice(0, state.currentIndex),
+                        currentIndex: state.currentIndex - 1,
+                        activeIndex: state.activeIndex - 1,
+                    };
+                } else {
+                    return state;
+                }
+            }
 
             if (currentStep.userInput) {
                 return updateCurrentStep(state, {
@@ -289,6 +303,7 @@ const reducer = (state = initialState, action) => {
                         math: newMath,
                     },
                 ],
+                selections: [],
                 activeIndex: state.activeIndex + 1,
                 currentIndex: state.currentIndex + 1,
             };
