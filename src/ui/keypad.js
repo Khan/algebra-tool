@@ -9,6 +9,26 @@ class Keypad extends Component {
         onOperation() {},
     };
 
+    componentDidMount() {
+        document.addEventListener('keypress', this.handleKeyPress);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keypress', this.handleKeyPress);
+    }
+
+    handleKeyPress = e => {
+        if (/[0-9\.]/.test(e.key)) {
+            this.props.onNumber(e.key);
+        } else if (/[\+\-\*\/]/.test(e.key)) {
+            this.props.onOperation(e.key);
+        } else if (e.key === 'Enter') {
+            store.dispatch({
+                type: 'ACCEPT_STEP'
+            });
+        }
+    };
+
     // context dependent actions
     handleNumber = key => {
         this.props.onNumber(key);

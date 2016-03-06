@@ -90,6 +90,7 @@ class Step extends Component {
             paddingTop: 15,
             paddingBottom: 15,
             paddingLeft: 20,
+            lineHeight: 0,
         };
 
         if (active) {
