@@ -46,8 +46,19 @@ class Step extends Component {
     createMenu = () => {
         const { selections } = this.props;
 
-        const items = Object.values(transforms).filter(
-            transform => transform.canTransform(selections));
+        const hideList = [];
+
+        const items = Object.values(transforms)
+            .filter(transform => {
+                if (transform.canTransform(selections)) {
+                    if (transform.hides) {
+                        hideList.push(transform.hides)
+                    }
+                    return true;
+                }
+                return false;
+            })
+            .filter(transform => !hideList.includes(transform.label));
 
         // sort items by priority with high priority items appearing first
         items.sort((a, b) => {

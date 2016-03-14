@@ -49,5 +49,6 @@ function doTransform(selections) {
 module.exports = {
     label: 'remove parentheses',
     canTransform,
-    doTransform
+    doTransform,
+    hides: 'add parentheses'   // don't show 'add parentheses' if 'remove parentheses' is present
 };
