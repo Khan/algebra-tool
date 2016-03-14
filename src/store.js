@@ -106,7 +106,7 @@ const reducer = (state = initialState, action) => {
                 steps: [
                     ...state.steps.slice(0, state.currentIndex + 1),
                     {
-                        id: action.id,
+                        id: generateId(),
                         math: newMath,
                         maxId: maxId,
                         cursor: true,
