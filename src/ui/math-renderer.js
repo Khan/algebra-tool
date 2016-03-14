@@ -365,6 +365,8 @@ class MathRenderer extends Component {
             e.preventDefault();
             const id = hitNode.id.split(":")[0];
             let mathNode = findNode(math, id);
+            const originalHitNode = this.state.hitNode;
+            const originalMathNode = findNode(math, originalHitNode.id);
 
             if (selections.length > 0) {
                 const prevSels = selections.slice(0, selections.length - 1);
@@ -373,8 +375,7 @@ class MathRenderer extends Component {
                     return;
                 }
 
-                const selection = selections[selections.length - 1].clone();
-
+                const selection = new Selection(originalMathNode);
                 selection.add(mathNode);
 
                 // abort if the new selection in intersecting previous selections
