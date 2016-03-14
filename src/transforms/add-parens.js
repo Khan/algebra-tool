@@ -95,5 +95,6 @@ function doTransform(selections) {
 module.exports = {
     label: 'add parentheses',
     canTransform,
-    doTransform
+    doTransform,
+    priority: -1
 };

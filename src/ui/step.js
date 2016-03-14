@@ -49,6 +49,19 @@ class Step extends Component {
         const items = Object.values(transforms).filter(
             transform => transform.canTransform(selections));
 
+        // sort items by priority with high priority items appearing first
+        items.sort((a, b) => {
+            a = a.priority !== undefined ? a.priority : 0;
+            b = b.priority !== undefined ? b.priority : 0;
+            if (a > b) {
+                return -1;
+            } else if (b > a) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
         const menu = items.length > 0 ? <Menu selections={selections} items={items} onTap={this.handleTap} /> : null;
 
         return <div style={{position: 'absolute', width:'100%'}}>{menu}</div>;
