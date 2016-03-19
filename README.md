@@ -26,8 +26,9 @@ A tool for manipulating algebraic expressions and equations.
 ## Installation
 
 - `npm install`
-- `npm start`
+- `npm start` (requires node version 4+)
 - in another terminal `node api-server.js`
+- open [http://localhost:3000](http://localhost:3000) in a browser
 
 ## Live Demo
 
