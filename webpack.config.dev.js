@@ -8,6 +8,11 @@ module.exports = {
             'webpack-dev-server/client?http://localhost:3000',
             'webpack/hot/only-dev-server',
             './src/index'
+        ],
+        editor: [
+            'webpack-dev-server/client?http://localhost:3000',
+            'webpack/hot/only-dev-server',
+            './src/editor'
         ]
     },
     output: {
