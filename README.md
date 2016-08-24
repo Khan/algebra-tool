@@ -48,6 +48,8 @@ A tool for manipulating algebraic expressions and equations.
 - __autoeval__: compute the result of an `evaluate` action instead of asking the user to input the result.
 - __hints__: enables hint system (only works when running locally)
 
+e.g. `localhost:3000/?start=x-1%3D5&end=x%3D6&eliminateZero&eliminateDivByOne&autoeval&hints`
+
 ## Contributing
 
 Please report bugs and feature requests to https://github.com/khan/algebra-tool/issues.
