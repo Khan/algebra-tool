@@ -16,6 +16,7 @@ function formatText(text, parens) {
 
 class Layout {
     constructor(children, atomic = false) {
+        this.type = 'layout';
         this.x = 0;
         this.y = 0;
         this.selectable = true;

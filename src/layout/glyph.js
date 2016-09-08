@@ -2,6 +2,7 @@ import Rect from './rect';
 
 class Glyph {
     constructor(c, font) {
+        this.type = 'glyph';
         this.x = 0;
         this.y = 0;
         this.text = c;
