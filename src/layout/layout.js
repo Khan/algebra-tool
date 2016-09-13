@@ -74,20 +74,33 @@ class Layout {
 
     hitTest(x, y) {
         if (this.atomic) {
-            let bounds = this.bounds;
+            // TODO: if (x,y) is within the bounds of the parent then return
+            // the rectangle that's closet to the (x,y)
+            const index = [...this.children].findIndex((child) => {
+                let bounds = child.bounds;
 
-            let paddingX = 2;
-            let paddingY = 2;
-            if (bounds.width < 14) {
-                paddingX += (14 - bounds.width) / 2;
+                let paddingX = 2;
+                let paddingY = 2;
+                if (bounds.width < 14) {
+                    paddingX += (14 - bounds.width) / 2;
+                }
+
+                bounds = bounds.addPadding(paddingX, paddingY);
+
+                return bounds.contains(x - this.x, y - this.y);
+            });
+
+            if (index !== -1) {
+                return {
+                    id: this.id,
+                    selectable: this.selectable,
+                    index: index,
+                };
             }
-
-            bounds = bounds.addPadding(paddingX, paddingY);
-            return bounds.contains(x, y) ? this : null;
         }
 
         for (const child of this.children) {
-            const result = child.hitTest(x - this.x, y - this.y);
+            let result = child.hitTest(x - this.x, y - this.y);
             if (result) {
                 return result;
             }

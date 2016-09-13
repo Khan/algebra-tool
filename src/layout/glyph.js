@@ -51,7 +51,12 @@ class Glyph {
     }
 
     hitTest(x, y) {
-        return this.bounds.contains(x,y) ? this : null;
+        if (this.bounds.contains(x, y)) {
+            return {
+                id: this.id,
+                selectable: this.selectable,
+            };
+        }
     }
 }
 

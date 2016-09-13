@@ -42,6 +42,11 @@ export default class Box {
     }
 
     hitTest(x, y) {
-        return this.bounds.contains(x, y) ? this : null;
+        if (this.bounds.contains(x, y)) {
+            return {
+                is: this.id,
+                selectable: this.selectable,
+            };
+        }
     }
 }

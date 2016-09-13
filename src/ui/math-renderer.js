@@ -52,7 +52,7 @@ class MathRenderer extends Component {
         context.scale(ratio, ratio);
 
         if (selections.length > 0) {
-            this.drawSelection(context, selections, null, layout);
+            this.drawSelection(context, selections, layout);
         }
 
         this.drawLayout(context, layout, { maxId, color });
@@ -91,11 +91,10 @@ class MathRenderer extends Component {
             const currentLayout = this.state.layout;
             const nextLayout = nextState.layout;
 
-            const { hitNode, shouldShowCursor } = nextState;
             const { selections, maxId } = nextProps;
 
             if (selections.length > 0) {
-                this.drawSelection(context, selections, hitNode, nextLayout);
+                this.drawSelection(context, selections, nextLayout);
             }
 
             context.fillStyle = nextProps.color;
@@ -142,8 +141,7 @@ class MathRenderer extends Component {
         document.body.removeEventListener('mouseup', this.handleMouseUp);
     }
 
-    // TODO: get rid of the need for hitNode
-    getSelectionHighlights(layout, selections, hitNode) {
+    getSelectionHighlights(layout, selections) {
         const layoutDict = {};
 
         // layout node ids start with the math node's id but may contain additional
@@ -195,8 +193,8 @@ class MathRenderer extends Component {
         currentLayout.render(context, options);
     }
 
-    drawSelection(context, selections, hitNode, layout) {
-        const highlights = this.getSelectionHighlights(layout, selections, hitNode);
+    drawSelection(context, selections, layout) {
+        const highlights = this.getSelectionHighlights(layout, selections);
         const padding = 4;
 
         context.fillStyle = 'rgba(0, 208, 208, 1.0)';

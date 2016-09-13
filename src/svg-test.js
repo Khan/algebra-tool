@@ -12,26 +12,20 @@ class SvgTest extends Component {
         super();
 
         const mathAST = parser.parse(props.math);
+        const layout = createFlatLayout(mathAST, 32);
+        layout.x = 50;
+        layout.y = 50;
+        console.log(layout);
 
         this.state = {
             cursor: null,
-            layout: createFlatLayout(mathAST, 32),
+            layout: layout,
         };
     }
 
-    renderLayout(layout, dx = 0, dy = 0) {
-        const handleClick = layout.id !== undefined
-            ? () => {
-                console.log(`${layout.id} clicked`);
-                this.setState({ cursor: layout.id });
-            }
-            : null;
-
+    renderLayout(layout) {
         if (layout.type === 'layout') { // TODO(kevinb) change this to group
-            return <g
-                transform={`translate(${layout.x + dx}, ${layout.y + dy})`}
-                onClick={handleClick}
-            >
+            return <g transform={`translate(${layout.x}, ${layout.y})`} >
                 {layout.children.map(child => this.renderLayout(child))}
             </g>
         } else if (layout.type === 'glyph') {
@@ -41,7 +35,6 @@ class SvgTest extends Component {
                 y={layout.y}
                 fontFamily="Helvetica-Light"
                 fontSize={layout.font.size}
-                onClick={handleClick}
             >
                 {layout.text}
             </text>;
@@ -51,16 +44,25 @@ class SvgTest extends Component {
                 y={layout.y}
                 width={layout.width}
                 height={layout.height}
-                onClick={() => console.log(`${layout.id} clicked`)}
             />;
         }
     }
 
+    handleClick = (e) => {
+        const node = this.state.layout.hitTest(e.pageX, e.pageY);
+        console.log(node);
+    };
+
     render() {
         const {layout} = this.state;
 
-        const svg = <svg width="512" height="512" style={{backgroundColor:'white'}}>
-            {this.renderLayout(layout, 100, 100)}
+        const svg = <svg
+            width="512"
+            height="512"
+            style={{backgroundColor:'white'}}
+            onClick={this.handleClick}
+        >
+            {this.renderLayout(layout)}
         </svg>;
 
         return svg;
